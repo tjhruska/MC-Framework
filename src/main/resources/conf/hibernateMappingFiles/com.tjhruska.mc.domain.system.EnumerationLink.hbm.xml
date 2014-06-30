@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+        
+<hibernate-mapping auto-import="false" package="com.tjhruska.mc.domain.system">
+
+
+    <typedef name="LinkCreationRule" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.LinkCreationRule</param>
+        <param name="identifierMethod">getLinkCreationRuleEvId</param>
+        <param name="valueOfMethod">getLinkCreationRuleById</param>
+    </typedef>
+
+    <typedef name="DbIndex" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.DbIndex</param>
+        <param name="identifierMethod">getDbIndexEvId</param>
+        <param name="valueOfMethod">getDbIndexById</param>
+    </typedef>
+
+    <typedef name="DbIndex" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.DbIndex</param>
+        <param name="identifierMethod">getDbIndexEvId</param>
+        <param name="valueOfMethod">getDbIndexById</param>
+    </typedef>
+
+    <typedef name="Datatype" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.Datatype</param>
+        <param name="identifierMethod">getDatatypeEvId</param>
+        <param name="valueOfMethod">getDatatypeById</param>
+    </typedef>
+
+    <typedef name="DbIndex" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.DbIndex</param>
+        <param name="identifierMethod">getDbIndexEvId</param>
+        <param name="valueOfMethod">getDbIndexById</param>
+    </typedef>
+
+    <typedef name="Datatype" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.Datatype</param>
+        <param name="identifierMethod">getDatatypeEvId</param>
+        <param name="valueOfMethod">getDatatypeById</param>
+    </typedef>
+
+    <typedef name="DbIndex" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.DbIndex</param>
+        <param name="identifierMethod">getDbIndexEvId</param>
+        <param name="valueOfMethod">getDbIndexById</param>
+    </typedef>
+
+    <typedef name="Datatype" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.Datatype</param>
+        <param name="identifierMethod">getDatatypeEvId</param>
+        <param name="valueOfMethod">getDatatypeById</param>
+    </typedef>
+
+    <typedef name="DbIndex" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.DbIndex</param>
+        <param name="identifierMethod">getDbIndexEvId</param>
+        <param name="valueOfMethod">getDbIndexById</param>
+    </typedef>
+
+    <typedef name="Datatype" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.Datatype</param>
+        <param name="identifierMethod">getDatatypeEvId</param>
+        <param name="valueOfMethod">getDatatypeById</param>
+    </typedef>
+
+    <typedef name="DbIndex" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.DbIndex</param>
+        <param name="identifierMethod">getDbIndexEvId</param>
+        <param name="valueOfMethod">getDbIndexById</param>
+    </typedef>
+
+    <typedef name="Datatype" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.Datatype</param>
+        <param name="identifierMethod">getDatatypeEvId</param>
+        <param name="valueOfMethod">getDatatypeById</param>
+    </typedef>
+
+    <typedef name="DbIndex" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.DbIndex</param>
+        <param name="identifierMethod">getDbIndexEvId</param>
+        <param name="valueOfMethod">getDbIndexById</param>
+    </typedef>
+
+    <class name="EnumerationLink" table="enumeration_link" schema="mc" dynamic-update="true">
+        
+        <id name="id" type="int" column="enumeration_link_id">
+            <meta attribute="scope-set">protected</meta>
+            <generator class="sequence">
+                <param name="sequence">enumeration_link_enumeration_link_id_seq</param>
+            </generator>
+        </id>
+
+        <property name="addDate" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime" not-null="true" column="add_date" insert="false" update="false" />
+
+        <property name="linkCreationRule" type="LinkCreationRule" column="link_creation_rule_ev_id" not-null="true"/>
+        <property name="enumerationAId" type="integer" column="enumeration_a_id" not-null="true"/>
+        <property name="enumerationBId" type="integer" column="enumeration_b_id" not-null="true"/>
+        <property name="enumerationAIndex" type="DbIndex" column="enumeration_a_index_ev_id" not-null="false"/>
+        <property name="enumerationBIndex" type="DbIndex" column="enumeration_b_index_ev_id" not-null="false"/>
+        <property name="uniqueFlag" type="boolean" column="unique_flag" not-null="true"/>
+        <property name="notNullFlag" type="boolean" column="not_null_flag" not-null="false"/>
+        <property name="name" type="string" column="name" not-null="true"/>
+        <property name="tableName" type="string" column="tablename" not-null="true"/>
+        <property name="tableNameCamelCase" type="string" column="tablename_camel_case" not-null="true"/>
+        <property name="schemaName" type="string" column="schema_name" not-null="false"/>
+        <property name="postCreateSQL" type="string" column="post_create_sql" not-null="false"/>
+        <property name="childTableSynchMethod" type="integer" column="child_table_synch_method_ev_id" not-null="true"/>
+        <property name="column1Name" type="string" column="column1_name" not-null="false"/>
+        <property name="column1NameCamelCase" type="string" column="column1_name_camel_case" not-null="false"/>
+        <property name="column1DataType" type="Datatype" column="column1_datatype_ev_id" not-null="false"/>
+        <property name="column1DBIndex" type="DbIndex" column="column1_index_ev_id" not-null="false"/>
+        <property name="column1NotNullFlag" type="boolean" column="column1_not_null_flag" not-null="false"/>
+        <property name="column1Default" type="string" column="column1_default" not-null="false"/>
+        <property name="column2Name" type="string" column="column2_name" not-null="false"/>
+        <property name="column2NameCamelCase" type="string" column="column2_name_camel_case" not-null="false"/>
+        <property name="column2DataType" type="Datatype" column="column2_datatype_ev_id" not-null="false"/>
+        <property name="column2DBIndex" type="DbIndex" column="column2_index_ev_id" not-null="false"/>
+        <property name="column2NotNullFlag" type="boolean" column="column2_not_null_flag" not-null="false"/>
+        <property name="column2Default" type="string" column="column2_default" not-null="false"/>
+        <property name="column3Name" type="string" column="column3_name" not-null="false"/>
+        <property name="column3NameCamelCase" type="string" column="column3_name_camel_case" not-null="false"/>
+        <property name="column3DataType" type="Datatype" column="column3_datatype_ev_id" not-null="false"/>
+        <property name="column3DBIndex" type="DbIndex" column="column3_index_ev_id" not-null="false"/>
+        <property name="column3NotNullFlag" type="boolean" column="column3_not_null_flag" not-null="false"/>
+        <property name="column3Default" type="string" column="column3_default" not-null="false"/>
+        <property name="column4Name" type="string" column="column4_name" not-null="false"/>
+        <property name="column4NameCamelCase" type="string" column="column4_name_camel_case" not-null="false"/>
+        <property name="column4DataType" type="Datatype" column="column4_datatype_ev_id" not-null="false"/>
+        <property name="column4DBIndex" type="DbIndex" column="column4_index_ev_id" not-null="false"/>
+        <property name="column4NotNullFlag" type="boolean" column="column4_not_null_flag" not-null="false"/>
+        <property name="column4Default" type="string" column="column4_default" not-null="false"/>
+        <property name="column5Name" type="string" column="column5_name" not-null="false"/>
+        <property name="column5NameCamelCase" type="string" column="column5_name_camel_case" not-null="false"/>
+        <property name="column5DataType" type="Datatype" column="column5_datatype_ev_id" not-null="false"/>
+        <property name="column5DBIndex" type="DbIndex" column="column5_index_ev_id" not-null="false"/>
+        <property name="column5NotNullFlag" type="boolean" column="column5_not_null_flag" not-null="false"/>
+        <property name="column5Default" type="string" column="column5_default" not-null="false"/>
+        <list name="linkValues" schema="mc" table="enumeration_link_value" fetch="subselect" inverse="false" lazy="false" cascade="save-update" >
+            <key column="enumeration_link_id" />
+            <list-index column="sequence" /><one-to-many class="EnumerationLinkValue" />
+        </list>
+    </class>    
+</hibernate-mapping>

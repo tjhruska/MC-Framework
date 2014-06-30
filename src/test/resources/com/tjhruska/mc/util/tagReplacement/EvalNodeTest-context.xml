@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <util:map id="replacementValues" key-type="java.lang.String" value-type="java.lang.String">
+        <entry key="AAA" value=""/> 
+        <entry key="BBB" value="Hello World" /> 
+        <entry key="CCC" value="10" /> 
+        <entry key="DDD" value="50" /> 
+    </util:map>
+
+    <util:list id="badEvalStrings" value-type="java.lang.String">
+        <value>(AAA</value>
+        <value>AAA)</value>
+        <value>()</value>
+        <value>||</value>
+        <value>&amp;</value>
+        <value>AAA&amp;&amp;</value>
+        <value>||AAA</value>
+        <value>AAA||</value>
+        <value>AAA!</value>
+        <value>!AAA=="HI"</value>
+        <value>AAA="HI"</value>
+        <value>AAA!="HI</value>
+        <value>AAA!="X"</value>
+        <value>==AAA</value>
+        <value>!</value>
+        <value>(AAA)(BBB)</value>
+        <value><![CDATA[AAA&&(BBB]]></value>
+        <value>:</value>
+        <value>:()</value>
+        <value>(AAA:</value>
+        <value>AAA):</value>
+        <value>():</value>
+        <value>AAA&amp;&amp;:</value>
+        <value>AAA||:</value>
+        <value>!AAA=="HI":</value>
+        <value>AAA!="HI:</value>
+        <value>!:</value>
+        <value>(AAA)(BBB):</value>
+        <value><![CDATA[AAA&&(BBB:]]></value>
+        <value>:():</value>
+        <value>::</value>
+        <value>||:</value>
+        <value>||AAA:</value>
+    </util:list>
+    <util:map id="goodEvalStrings" key-type="java.lang.String" value-type="java.lang.Boolean">
+        <entry key="(AAA):" value="true" />
+        <entry key="(((AAA))):" value="true" />
+        <entry key="!(!(!(AAA))):" value="false" />
+        <entry key="(!(!(AAA))):" value="true" />
+        <entry key="((!(AAA))):" value="false" />
+        <entry key="!EEE:" value="true" />
+        <entry key="EEE:" value="false" />
+        <entry key="BBB=='Hello World':" value="true" />
+        <entry key="BBB==&quot;Hello World&quot;:" value="true" />
+        <entry key="BBB!='hi there':" value="true" />
+        <entry key="BBB=='hi there':" value="false" />
+        <entry key="AAA&amp;&amp;BBB:" value="true" />
+        <entry key="AAA&amp;&amp;EEE:" value="false" />
+        <entry key="AAA||EEE:" value="true" />
+        <entry key="EEE||AAA:" value="true" />
+        <entry key="EEE||FFF||AAA:" value="true" />
+        <entry key="EEE||FFF&amp;&amp;AAA:" value="false" />
+        <entry key="EEE&amp;&amp;FFF||AAA:" value="false" />
+        <entry key="EEE&amp;&amp;(FFF||AAA):" value="false" />
+        <entry key="(EEE&amp;&amp;FFF)||AAA:" value="true" />
+    </util:map>
+</beans>

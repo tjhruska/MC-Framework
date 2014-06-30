@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <bean id="getExistingTablesAndViews" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="template">
+            <value><![CDATA[
+select table_schema || '.' || table_name as key, table_type from information_schema.tables where table_schema not in ('pg_catalog', 'information_schema')
+]]></value>
+        </property> 
+    </bean>
+    
+</beans>

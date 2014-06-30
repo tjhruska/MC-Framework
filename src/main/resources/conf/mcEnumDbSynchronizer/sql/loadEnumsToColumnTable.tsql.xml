@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <bean id="loadEnumsToColumnTable" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="template">
+            <value><![CDATA[
+      
+begin transaction;
+---------------------------------------------------------
+--insert the enumerations into the mc_table table
+---------------------------------------------------------
+
+INSERT INTO -=[schema_name]=-.mc_table(
+            mc_table_id, add_date, system_no_modify_flag, "name", description, 
+            name_camel_case, table_creation_rule_ev_id, suppress_table_changes_flag, 
+            create_iud_table_flag, schema_name, within_create_sql, post_create_sql, 
+            create_pojo_flag, src_folder_tag, suppress_pojo_changes_flag, 
+            java_package, java_fq_superclass, constructor_from_field_flag, 
+            extra_java_code, create_orm_flag, suppress_orm_changes_flag, extra_orm_code, 
+            orm_discriminator_column_id, create_gui_data_service_flag, suppress_gui_data_service_changes_flag, 
+            gui_pagify_flag, gui_records_per_page)  
+select 
+    e.mc_table_id, e.add_date, true as system_no_modify_flag, lower(e.name) || '_ev' as name, 'Enumeration of ' || tablename_camel_case || ' values' as description,
+    e.tablename_camel_case as name_camel_case, 35 as table_creation_rule_ev_id, null as suppress_table_changes_flag,
+    null as create_iud_table_flag, null as schema_name, null as within_create_sql, null as post_create_sql,
+    false as create_pojo_flag, null as src_folder_tag, null as suppress_pojo_changes_flag,
+    e.java_package as java_package, null as java_fq_superclass, null as constructor_from_field_flag,
+    null as extra_java_code, null as create_orm_flag, null as suppress_orm_changes_flag, null as extra_orm_code,
+    null as orm_discriminator_column_id, null as create_gui_data_service_flag, null as suppress_gui_data_service_changes_flag,
+    null as gui_pagify_flag, null as gui_records_per_page
+from -=[schema_name]=-.enumeration as e
+where not exists (
+    select 1 from -=[schema_name]=-.mc_table where mc_table.mc_table_id = e.mc_table_id);
+
+---------------------------------------------------------
+--insert in the enumeration defined columns into the mc_column table
+---------------------------------------------------------
+
+INSERT INTO -=[schema_name]=-.mc_column(
+            mc_column_id, add_date, mc_table_id, "sequence", "name", description, 
+            name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, 
+            not_null_flag )--, "default", constraint_sql, pojo_constructor_field_flag, 
+            --gui_header, gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
+            --gui_field_group_sequence, gui_field_group_guard_column_id, gui_field_group_field_required_flag)
+select 
+  nextval('-=[schema_name]=-.mc_column_mc_column_id_seq'::regclass) as mc_column_id, 
+  add_date, mc_table_id, 
+  sequence,
+  lower(case 
+    when sequence = 01 then tablename || '_id'
+    when sequence = 02 then 'enumeration_id'
+    when sequence = 03 then 'add_date'
+    when sequence = 04 then 'name'
+    when sequence = 05 then 'description'
+    when sequence = 06 then 'sequence'
+    when sequence = 07 then column1_name
+    when sequence = 08 then column2_name
+    when sequence = 09 then column3_name
+    when sequence = 10 then column4_name
+    when sequence = 11 then column5_name
+  end) as name,
+  case 
+    when sequence = 01 then 'Artificial PK'
+    when sequence = 02 then 'Enumeration Definition Id'
+    when sequence = 03 then 'Add Date'
+    when sequence = 04 then 'Programmable Name'
+    when sequence = 05 then 'English Description'
+    when sequence = 06 then 'Sequence'
+    when sequence = 07 then replace(column1_name, '_', ' ')
+    when sequence = 08 then column2_name
+    when sequence = 09 then column3_name
+    when sequence = 10 then column4_name
+    when sequence = 11 then column5_name
+  end as description,
+  case 
+    when sequence = 01 then lower(substring(tablename_camel_case, 1, 1)) || substring(tablename_camel_case, 2, 150) || 'Id'
+    when sequence = 02 then 'enumerationId'
+    when sequence = 03 then 'addDate'
+    when sequence = 04 then 'name'
+    when sequence = 05 then 'description'
+    when sequence = 06 then 'sequence'
+    when sequence = 07 then lower(substring(column1_name_camel_case, 1, 1)) || substring(column1_name_camel_case, 2, 150)
+    when sequence = 08 then lower(substring(column2_name_camel_case, 1, 1)) || substring(column2_name_camel_case, 2, 150)
+    when sequence = 09 then lower(substring(column3_name_camel_case, 1, 1)) || substring(column3_name_camel_case, 2, 150)
+    when sequence = 10 then lower(substring(column4_name_camel_case, 1, 1)) || substring(column4_name_camel_case, 2, 150)
+    when sequence = 11 then lower(substring(column5_name_camel_case, 1, 1)) || substring(column5_name_camel_case, 2, 150)
+  end as name_camel_case,
+  case 
+    when sequence = 01 then 2
+    when sequence = 02 then 2
+    when sequence = 03 then 46
+    when sequence = 04 then 3
+    when sequence = 05 then 3
+    when sequence = 06 then 44
+    when sequence = 07 then column1_datatype_ev_id
+    when sequence = 08 then column2_datatype_ev_id
+    when sequence = 09 then column3_datatype_ev_id
+    when sequence = 10 then column4_datatype_ev_id
+    when sequence = 11 then column5_datatype_ev_id
+  end as datatype_ev_id,
+  case 
+    when sequence = 07 then column1_index_ev_id
+    when sequence = 08 then column2_index_ev_id
+    when sequence = 09 then column3_index_ev_id
+    when sequence = 10 then column4_index_ev_id
+    when sequence = 11 then column5_index_ev_id
+    else null
+  end as index_ev_id,
+  case 
+    when sequence = 01 then true
+    else false
+  end as pk_flag,
+  case 
+    when sequence = 02 then true
+    else false
+  end as fk_flag,
+  case 
+    when sequence between 01 and 06 then true
+    when sequence = 07 then column1_not_null_flag
+    when sequence = 08 then column2_not_null_flag
+    when sequence = 09 then column3_not_null_flag
+    when sequence = 10 then column4_not_null_flag
+    when sequence = 11 then column5_not_null_flag
+  end as not_null_flag
+from 
+  (select enumeration.*, sequence.sequence from -=[schema_name]=-.enumeration, (select generate_series(1, 11) as sequence) as sequence
+order by enumeration_id, sequence) as foo
+where 
+  ((column1_name is null and foo.sequence <> 7) or (column1_name is not null)) and
+  ((column2_name is null and foo.sequence <> 8) or (column2_name is not null)) and
+  ((column3_name is null and foo.sequence <> 9) or (column3_name is not null)) and
+  ((column4_name is null and foo.sequence <> 10) or (column4_name is not null)) and
+  ((column5_name is null and foo.sequence <> 11) or (column5_name is not null)) and
+  not exists (
+    select 1
+    from -=[schema_name]=-.mc_column
+    where foo.mc_table_id = mc_column.mc_table_id
+      and foo.sequence = mc_column.sequence)
+order by enumeration_id, sequence;
+      
+commit transaction;
+            
+]]></value>
+        </property> 
+    </bean>
+    
+</beans>

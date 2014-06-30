@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <bean id="getOrmCodeFragments" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="template">
+            <value><![CDATA[
+-------------------------
+--Section 10 - open file, and list id, and add_date columns
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select t.mc_table_id as id, 10.000 as sequence, '0.000' as sequence2, false as suppress_changes_flag, 
+  'ormDirectory' as folder_tag, 
+  null as java_package, 
+  max(t.java_package) || '.' || max(t.name_camel_case) || '.hbm.xml' as fileName, 
+  null as fileName2, null as fragment2,
+  '<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+        
+<hibernate-mapping auto-import="false" package="' || max(t.java_package) || '">
+' || string_agg(distinct case when enum.enumeration_id is null then '' else '
+
+    <typedef name="' || enum.tablename_camel_case || '" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">' || enum.java_package || '.' || enum.tablename_camel_case || '</param>
+        <param name="identifierMethod">get' || enum.tablename_camel_case || 'EvId</param>
+        <param name="valueOfMethod">get' || enum.tablename_camel_case || 'ById</param>
+    </typedef>' end, '') || '
+
+    <class name="' || max(t.name_camel_case) || '" table="' || max(t.name) || '" schema="' || max(t.schema_name) || '" dynamic-update="true">
+        ' ||
+      case 
+        when max(pk_c.pk_column_count) = 1 then '
+        <id name="id" type="int" column="' || max(pk.name) || '">' ||
+          case when max(pk.datatype_ev_id) <> 45 then '' else '
+            <meta attribute="scope-set">protected</meta>
+            <generator class="sequence">
+                <param name="sequence">' || max(t.schema_name) || '.' || max(t.name) || '_' || max(pk.name) || '_seq</param>
+            </generator>'
+          end || '
+        </id>'
+        else '
+        <composite-id>
+            ' || string_agg(distinct '<key-property name="' || pk.name_camel_case 
+            || case 
+                when pk_enum.enumeration_id is not null 
+                then '" type="' || enum.tablename_camel_case
+                when pk.fk_flag = true and pk.fk_orm_lazy_flag is null and pk.name_camel_case <> 'id' 
+                then 'Id' 
+                else '' 
+               end
+            ||'" column="' || pk.name || '" />', '
+            ') || '
+        </composite-id>
+        '
+      end ||
+      max(case when add_date_col.mc_column_id is null then '' else '
+        <property name="addDate" type="' || add_date_datatype.hibernate 
+        || '" not-null="true" column="add_date" insert="false" update="false" />' end) || '
+' as fragment
+from
+  -=[schema_name]=-.mc_table as t
+    inner join
+  -=[schema_name]=-.mc_column as pk on t.mc_table_id = pk.mc_table_id and pk.pk_flag = true
+    left outer join
+  -=[schema_name]=-.enumeration as pk_enum on pk.fk_table_id = pk_enum.mc_table_id
+    inner join
+  (select count(1) as pk_column_count, mc_table_id from -=[schema_name]=-.mc_column where pk_flag = true group by mc_table_id) as pk_c
+    on t.mc_table_id = pk_c.mc_table_id
+    left outer join
+  -=[schema_name]=-.mc_column as add_date_col on t.mc_table_id = add_date_col.mc_table_id and add_date_col.name = 'add_date'
+    left outer join
+  -=[schema_name]=-.datatype_ev as add_date_datatype on add_date_col.datatype_ev_id = add_date_datatype.datatype_ev_id
+    left outer join
+  -=[schema_name]=-.mc_column as c_enum on (t.mc_table_id = c_enum.mc_table_id and c_enum.fk_flag = true)
+    left outer join
+  -=[schema_name]=-.enumeration as enum on c_enum.fk_table_id = enum.mc_table_id
+where
+  t.create_orm_flag = true
+group by
+  t.mc_table_id
+UNION
+-------------------------
+--Section 20 - list columns
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select t.mc_table_id as id, 20.000 as sequence, '0.000' as sequence2, false as suppress_changes_flag, 
+  'ormDirectory' as folder_tag, 
+  null as java_package, 
+  max(t.java_package) || '.' || max(t.name_camel_case) || '.hbm.xml' as fileName, 
+  null as fileName2, null as fragment2,
+  string_agg(case
+        when enum.enumeration_id is not null then '
+        <property name="' || c.name_camel_case || '" type="' || enum.tablename_camel_case || '" column="' || c.name || '" not-null="' || c.not_null_flag || '"/>'
+-----------
+--changing many to one backlinks to just id's so that it is easier to use json, and browser based crud operations
+--        when c.fk_flag = true and c.fk_pojo_collection_container_ev_id is not null then '
+--        <many-to-one name="' || c.name_camel_case || '" class="' || f.name_camel_case || '" column="' || c.name || '" not-null="' || c.not_null_flag || '"/>'
+        when 
+            c.fk_flag = true
+            and c.fk_orm_lazy_flag is null
+        then '
+        <property name="' || c.name_camel_case || 'Id'
+        || '" type="' || d.hibernate || '" column="' || c.name || '" not-null="' || c.not_null_flag || '"/>'
+        when 
+            c.fk_flag = true and c.fk_orm_lazy_flag is not null then '
+        <many-to-one name="' || c.name_camel_case || '" column="' || c.name || '" class="' || f.java_package || '.' || f.name_camel_case || '" cascade="save-update" not-null="' || c.not_null_flag || '" lazy="' || case when c.fk_orm_lazy_flag = false then 'false' else 'proxy' end || '"/>'
+        else '
+        <property name="' || c.name_camel_case || '" type="' || d.hibernate || '" column="' || c.name 
+        || '" not-null="' || c.not_null_flag || '"/>' end, '' order by c.sequence) as fragment
+from
+  -=[schema_name]=-.mc_table as t
+    inner join
+  -=[schema_name]=-.mc_column as c on t.mc_table_id = c.mc_table_id and c.pk_flag = false and c.name <> 'add_date'
+    inner join
+  -=[schema_name]=-.datatype_ev as d on c.datatype_ev_id = d.datatype_ev_id
+    left outer join
+  -=[schema_name]=-.mc_table as f on c.fk_table_id = f.mc_table_id
+    left outer join
+  -=[schema_name]=-.enumeration as enum on c.fk_table_id = enum.mc_table_id
+where
+  t.create_orm_flag = true
+group by
+  t.mc_table_id
+UNION
+-------------------------
+--Section 30 - list columns
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select t.mc_table_id as id, 30.000 as sequence, '0.000' as sequence2, false as suppress_changes_flag, 
+  'ormDirectory' as folder_tag, 
+  null as java_package, 
+  max(t.java_package) || '.' || max(t.name_camel_case) || '.hbm.xml' as fileName, 
+  null as fileName2, null as fragment2,
+  string_agg(case
+        when d.container_ev_id = 9 then '
+        <set name="' || c_with_fk.fk_pojo_collection_name_camel_case || '" lazy="' 
+            || c_with_fk.fk_orm_lazy_flag || '" cascade="all-delete-orphan" fetch="subselect" inverse="' 
+            || c_with_fk.fk_orm_inverse_flag || '">
+            <key column="' || c_with_fk.name || '"/>
+            <one-to-many class="' || collected_table.java_package || '.' || collected_table.name_camel_case || '"/>
+        </set>'
+        when d.container_ev_id = 10 then '
+        <list name="' || c_with_fk.fk_pojo_collection_name_camel_case || '" schema="' || link_table.schema_name || '" table="' || link_table.name 
+            || '" fetch="subselect" inverse="' 
+            || c_with_fk.fk_orm_inverse_flag || '" lazy="' -- where="xxx_id not in (15, 36, 29)"
+            || c_with_fk.fk_orm_lazy_flag || '" cascade="save-update" >
+            <key column="' || c_with_fk.name || '" />' || --property-ref="participantSet" />
+            '
+            <list-index column="' || key_column.name || '" />' || 
+            case
+            when link_table.mc_table_id = collected_table.mc_table_id 
+            then '<one-to-many class="' || collected_table.java_package || '.' || collected_table.name_camel_case || '" />'
+            else '<many-to-many column="' || collected_column.name || '" class="' || collected_table.java_package || '.' || collected_table.name_camel_case || '"/>' 
+            end || '
+        </list>'
+        when d.container_ev_id = 11 then '
+        <map name="' || c_with_fk.fk_pojo_collection_name_camel_case || '" schema="' || link_table.schema_name || '" table="' || link_table.name || '" lazy="' 
+            || c_with_fk.fk_orm_lazy_flag || '" inverse="' 
+            || c_with_fk.fk_orm_inverse_flag || '" cascade="save-update" fetch="subselect">
+            <key column="' || c_with_fk.name || '" unique="true" /> 
+            <map-key column="' || key_column.name || '" type="' || key_datatype.hibernate || '" />
+            <one-to-many class="' || collected_table.java_package || '.' || collected_table.name_camel_case || '" />
+        </map>'
+        else 'UNSUPPORTED_CONTAINER_HIBERNATE_MAPPING'
+        end, '' order by c_with_fk.sequence) as fragment
+from
+  -=[schema_name]=-.mc_table as t join
+  -=[schema_name]=-.mc_column as c_with_fk on t.mc_table_id = c_with_fk.fk_table_id join
+  -=[schema_name]=-.mc_table as link_table on c_with_fk.mc_table_id = link_table.mc_table_id join
+  -=[schema_name]=-.mc_column as collected_column on c_with_fk.fk_collected_table_pk_column_id = collected_column.mc_column_id join
+  -=[schema_name]=-.mc_table as collected_table 
+    on (collected_column.pk_flag = true and collected_column.mc_table_id = collected_table.mc_table_id)
+    or (collected_column.fk_flag = true and collected_column.fk_table_id = collected_table.mc_table_id) join
+  -=[schema_name]=-.container_ev d on c_with_fk.fk_pojo_collection_container_ev_id = d.container_ev_id
+    left outer join
+  -=[schema_name]=-.mc_column as key_column on (c_with_fk.fk_pojo_collection_local_key_column_id = key_column.mc_column_id)
+    left outer join
+  -=[schema_name]=-.datatype_ev as key_datatype on (key_column.datatype_ev_id = key_datatype.datatype_ev_id)
+where
+  t.create_orm_flag = true
+group by
+  t.mc_table_id
+UNION
+-------------------------
+--Section 40 - close the file
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select t.mc_table_id as id, 40.000 as sequence, '0.000' as sequence2, false as suppress_changes_flag, 
+  'ormDirectory' as folder_tag, 
+  null as java_package, 
+  t.java_package || '.' || t.name_camel_case || '.hbm.xml' as fileName, 
+  null as fileName2, null as fragment2,
+  '
+    </class>    
+</hibernate-mapping>' as fragment
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.create_orm_flag = true
+order by id, sequence, sequence2
+]]></value>
+        </property> 
+    </bean>
+    
+</beans>

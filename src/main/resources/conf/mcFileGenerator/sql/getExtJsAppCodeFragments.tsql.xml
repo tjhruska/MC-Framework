@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <bean id="getExtJsAppCodeFragments" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="template">
+            <value><![CDATA[
+-------------------------
+--Section 10.000 - open file beggining
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select 1 as id, 10.000 as sequence, 0.000 as sequence2, false as suppress_changes_flag, 
+  'extJsDirectory' as folder_tag, 
+  null as java_package, 
+  'model_controls_app.js' as fileName, 
+  null as fileName2, null as fragment2,
+  E'Ext.require([
+    \'Ext.panel.Panel\',
+    \'Ext.Viewport\',
+//    \'Ext.tab.*\',
+//    \'Ext.window.*\',
+//    \'Ext.tip.*\',
+    \'Ext.layout.container.Border\'
+]);
+
+var mainPanel;' as fragment
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.create_gui_data_service_flag = true
+group by
+  1
+
+union
+-------------------------
+--Section 14.000 - variables for enum data stores and static data sets
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select 1 as id, 14.000 as sequence, 0.000 as sequence2, false as suppress_changes_flag, 
+  'extJsDirectory' as folder_tag, 
+  null as java_package, 
+  'model_controls_app.js' as fileName, 
+  null as fileName2, null as fragment2, string_agg(E'
+var ' || lower(substring(e.tablename_camel_case, 1, 1)) || substring(e.tablename_camel_case, 2, length(e.tablename_camel_case)) || E'Store;
+var ' || lower(substring(e.tablename_camel_case, 1, 1)) || substring(e.tablename_camel_case, 2, length(e.tablename_camel_case)) || 'Data;', '') as fragment
+from
+  -=[schema_name]=-.enumeration as e
+group by 1
+
+union
+-------------------------
+--Section 17.000 - continue main file, open on ready function
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select 1 as id, 17.000 as sequence, 0.000 as sequence2, false as suppress_changes_flag, 
+  'extJsDirectory' as folder_tag, 
+  null as java_package, 
+  'model_controls_app.js' as fileName, 
+  null as fileName2, null as fragment2, E'
+
+Ext.onReady(function(){
+    Ext.QuickTips.init();
+    
+    mainPanel = new Ext.Viewport({
+        renderTo: document.body,
+        layout: \'border\',
+        items: [{
+            region: \'north\',
+            xtype: \'toolbar\',
+            items: [{ 
+                xtype: \'tbfill\'
+            },{
+                //xtype: \'button\', 
+                text: \'Administration\',
+                menu: [{
+                    text: \'Data Editors\',
+                    plain: false,
+                    //iconCls: \'no-icon\',
+                    menu: {
+                        plain: false,
+                        items: [' || string_agg(E'{
+                            text: \'' || t.name_camel_case || E'\',
+                            handler: onWindowGrid' || t.name_camel_case || 'Toggle
+                        }', ',' order by t.name) || E']
+                    }
+                }]
+            }]
+        },{
+            region: \'center\',
+            xtype: \'panel\',
+            id: \'mainPanelCenter\'//,
+            //html: \'<p>hi there</p>\'
+        },{
+            region: \'south\',
+            xtype: \'toolbar\',
+            items: [{
+                //xtype: \'button\', text: \'Bottom Button 1\' 
+            }]
+        }]
+    });' as fragment
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.create_gui_data_service_flag = true
+group by
+  1
+
+union
+-------------------------
+--Section 20.000 - build enum models, stores, and static data sets
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select 1 as id, 20.000 as sequence, 0.000 as sequence2, false as suppress_changes_flag, 
+  'extJsDirectory' as folder_tag, 
+  null as java_package, 
+  'model_controls_app.js' as fileName, 
+  null as fileName2, null as fragment2, E'
+ 
+    Ext.define(\'' || e.tablename_camel_case || E'\', {
+      extend: \'Ext.data.Model\',
+      fields: [
+        {type: \'string\', name: \'key\'},
+        {type: \'string\', name: \'desc\'}
+      ]
+    });
+
+    ' || lower(substring(e.tablename_camel_case, 1, 1)) || substring(e.tablename_camel_case, 2, length(e.tablename_camel_case)) || 'Data = [' || string_agg('
+        {"key":"' || ev.name || '","desc":"' || ev.description || '"}', ',' order by ev.sequence)  || '
+    ];
+
+    ' || lower(substring(e.tablename_camel_case, 1, 1)) || substring(e.tablename_camel_case, 2, length(e.tablename_camel_case)) || E'Store = Ext.create(\'Ext.data.Store\', {
+        model: \'' || e.tablename_camel_case || E'\',
+        data: ' || lower(substring(e.tablename_camel_case, 1, 1)) || substring(e.tablename_camel_case, 2, length(e.tablename_camel_case)) || 'Data
+    });' as fragment
+from
+  -=[schema_name]=-.enumeration as e
+    join
+  -=[schema_name]=-.enumeration_value as ev on e.enumeration_id = ev.enumeration_id
+group by e.enumeration_id, e.tablename_camel_case
+
+union
+-------------------------
+--Section 30.000 - single section to close file
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select 1 as id, 30.000 as sequence, 0.000 as sequence2, false as suppress_changes_flag, 
+  'extJsDirectory' as folder_tag, 
+  null as java_package, 
+  'model_controls_app.js' as fileName, 
+  null as fileName2, null as fragment2,'
+});' as fragment
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.create_gui_data_service_flag = true
+group by
+  1
+order by id, sequence, sequence2
+]]></value>
+        </property> 
+    </bean>
+    
+</beans>

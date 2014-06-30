@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <bean id="install_02.01_mc_table_ins" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="template">
+            <value><![CDATA[
+begin transaction;
+set constraints all deferred;
+
+---------------------------------------------
+--insert records for mc_table
+INSERT INTO -=[schema_name]=-.mc_table(add_date,
+  mc_table_id, system_no_modify_flag, "name", description, name_camel_case,
+  table_creation_rule_ev_id, suppress_table_changes_flag, create_iud_table_flag, schema_name, within_create_sql, post_create_sql,
+  create_pojo_flag, src_folder_tag, suppress_pojo_changes_flag, java_package, java_fq_superclass, constructor_from_field_flag, extra_java_code,
+  create_orm_flag, suppress_orm_changes_flag, extra_orm_code, orm_discriminator_column_id,
+  create_gui_data_service_flag, suppress_gui_data_service_changes_flag, gui_pagify_flag, gui_records_per_page)
+VALUES ('2011-02-23 07:17AM',
+  1, true, 'mc_table', 'A Table in our model, and the corresponding pojo, orm, and gui requirements.', 'Table', -- base
+  32, false, true, '-=[schema_name]=-', null, null, --table related
+  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', true, null, --pojo
+  true, false, null, null, --orm
+  true, false, true, 25); --gui
+
+---------------------------------------------
+--insert records for mc_column
+INSERT INTO -=[schema_name]=-.mc_table(add_date,
+  mc_table_id, system_no_modify_flag, "name", description, name_camel_case,
+  table_creation_rule_ev_id, suppress_table_changes_flag, create_iud_table_flag, schema_name, within_create_sql, post_create_sql,
+  create_pojo_flag, src_folder_tag, suppress_pojo_changes_flag, java_package, java_fq_superclass, constructor_from_field_flag, extra_java_code,
+  create_orm_flag, suppress_orm_changes_flag, extra_orm_code, orm_discriminator_column_id,
+  create_gui_data_service_flag, suppress_gui_data_service_changes_flag, gui_pagify_flag, gui_records_per_page)
+VALUES ('2011-02-23 07:17AM',
+  2, true, 'mc_column', 'Columns (fields) that are properties of a Table, and their meta data that describe how to maintain them.', 'Column', -- base
+  32, false, true, '-=[schema_name]=-', null, null, --table related
+  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', true, null, --pojo
+  true, false, null, null, --orm
+  true, false, true, 25); --gui
+  
+---------------------------------------------
+--insert records for mc_child
+INSERT INTO -=[schema_name]=-.mc_table(add_date,
+  mc_table_id, system_no_modify_flag, "name", description, name_camel_case,
+  table_creation_rule_ev_id, suppress_table_changes_flag, create_iud_table_flag, schema_name, within_create_sql, post_create_sql,
+  create_pojo_flag, src_folder_tag, suppress_pojo_changes_flag, java_package, java_fq_superclass, constructor_from_field_flag, extra_java_code,
+  create_orm_flag, suppress_orm_changes_flag, extra_orm_code, orm_discriminator_column_id,
+  create_gui_data_service_flag, suppress_gui_data_service_changes_flag, gui_pagify_flag, gui_records_per_page)
+VALUES ('2011-02-23 07:17AM',
+  4, true, 'mc_child', 'Child of a Table, and the discriminators and subclass definitions.', 'Child', -- base
+  32, false, true, '-=[schema_name]=-', null, null, --table related
+  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', true, null, --pojo
+  true, false, null, null, --orm
+  true, false, true, 25); --gui
+
+---------------------------------------------
+--insert records for mc_child_add_column
+INSERT INTO -=[schema_name]=-.mc_table(add_date,
+  mc_table_id, system_no_modify_flag, "name", description, name_camel_case,
+  table_creation_rule_ev_id, suppress_table_changes_flag, create_iud_table_flag, schema_name, within_create_sql, post_create_sql,
+  create_pojo_flag, src_folder_tag, suppress_pojo_changes_flag, java_package, java_fq_superclass, constructor_from_field_flag, extra_java_code,
+  create_orm_flag, suppress_orm_changes_flag, extra_orm_code, orm_discriminator_column_id,
+  create_gui_data_service_flag, suppress_gui_data_service_changes_flag, gui_pagify_flag, gui_records_per_page)
+VALUES ('2011-02-23 07:17AM',
+  5, true, 'mc_child_add_column', 'ChildAddedColumn is a new column(field) added by the child (subclass).  (if the column has a link in this table, then it only appears on children who are linked to it, and not on the original class.)', 'ChildAddedColumn', -- base
+  32, false, true, '-=[schema_name]=-', null, null, --table related
+  false, null, null, null, null, null, null, --pojo
+  false, null, null, null, --orm
+  false, null, null, null); --gui
+
+---------------------------------------------
+--insert records for mc_index
+INSERT INTO -=[schema_name]=-.mc_table(add_date,
+  mc_table_id, system_no_modify_flag, "name", description, name_camel_case,
+  table_creation_rule_ev_id, suppress_table_changes_flag, create_iud_table_flag, schema_name, within_create_sql, post_create_sql,
+  create_pojo_flag, src_folder_tag, suppress_pojo_changes_flag, java_package, java_fq_superclass, constructor_from_field_flag, extra_java_code,
+  create_orm_flag, suppress_orm_changes_flag, extra_orm_code, orm_discriminator_column_id,
+  create_gui_data_service_flag, suppress_gui_data_service_changes_flag, gui_pagify_flag, gui_records_per_page)
+VALUES ('2011-02-23 07:17AM',
+  6, true, 'mc_index', 'An multi-column Index for a Table.  (Single column indexes should be defined by Column.)', 'Index', -- base
+  32, false, true, '-=[schema_name]=-', null, null, --table related
+  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', true, null, --pojo
+  true, false, null, null, --orm
+  true, false, true, 25); --gui
+
+---------------------------------------------
+--insert records for mc_index_column
+INSERT INTO -=[schema_name]=-.mc_table(add_date,
+  mc_table_id, system_no_modify_flag, "name", description, name_camel_case,
+  table_creation_rule_ev_id, suppress_table_changes_flag, create_iud_table_flag, schema_name, within_create_sql, post_create_sql,
+  create_pojo_flag, src_folder_tag, suppress_pojo_changes_flag, java_package, java_fq_superclass, constructor_from_field_flag, extra_java_code,
+  create_orm_flag, suppress_orm_changes_flag, extra_orm_code, orm_discriminator_column_id,
+  create_gui_data_service_flag, suppress_gui_data_service_changes_flag, gui_pagify_flag, gui_records_per_page)
+VALUES ('2011-02-23 07:17AM',
+  7, true, 'mc_index_column', 'IndexColumn is a member of an ordered list that makes up an Index.', 'IndexColumn', -- base
+  32, false, true, '-=[schema_name]=-', null, null, --table related
+  false, null, null, null, null, null, null, --pojo
+  false, null, null, null, --orm
+  false, null, null, null); --gui
+
+---------------------------------------------
+--insert records for enumeration
+INSERT INTO -=[schema_name]=-.mc_table(add_date,
+  mc_table_id, system_no_modify_flag, "name", description, name_camel_case,
+  table_creation_rule_ev_id, suppress_table_changes_flag, create_iud_table_flag, schema_name, within_create_sql, post_create_sql,
+  create_pojo_flag, src_folder_tag, suppress_pojo_changes_flag, java_package, java_fq_superclass, constructor_from_field_flag, extra_java_code,
+  create_orm_flag, suppress_orm_changes_flag, extra_orm_code, orm_discriminator_column_id,
+  create_gui_data_service_flag, suppress_gui_data_service_changes_flag, gui_pagify_flag, gui_records_per_page)
+VALUES ('2011-02-23 07:17AM',
+  3, true, 'enumeration', 'Definition of a relatively low volumn, unchanging dataset for use with statically built enumerations.', 'Enumeration', -- base
+  32, false, true, '-=[schema_name]=-', null, null, --table related
+  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', false, null, --pojo
+  true, false, null, null, --orm
+  true, false, true, 25); --gui
+
+---------------------------------------------
+--insert records for enumeration_value
+INSERT INTO -=[schema_name]=-.mc_table(add_date,
+  mc_table_id, system_no_modify_flag, "name", description, name_camel_case,
+  table_creation_rule_ev_id, suppress_table_changes_flag, create_iud_table_flag, schema_name, within_create_sql, post_create_sql,
+  create_pojo_flag, src_folder_tag, suppress_pojo_changes_flag, java_package, java_fq_superclass, constructor_from_field_flag, extra_java_code,
+  create_orm_flag, suppress_orm_changes_flag, extra_orm_code, orm_discriminator_column_id,
+  create_gui_data_service_flag, suppress_gui_data_service_changes_flag, gui_pagify_flag, gui_records_per_page)
+VALUES ('2011-02-23 07:17AM',
+  8, true, 'enumeration_value', 'An entry into the set of values define for an enumeration.', 'EnumerationValue', -- base
+  32, false, true, '-=[schema_name]=-', null, null, --table related
+  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', false, null, --pojo
+  true, false, null, null, --orm
+  true, false, true, 25); --gui
+
+---------------------------------------------
+--insert records for enumeration_link
+INSERT INTO -=[schema_name]=-.mc_table(add_date,
+  mc_table_id, system_no_modify_flag, "name", description, name_camel_case,
+  table_creation_rule_ev_id, suppress_table_changes_flag, create_iud_table_flag, schema_name, within_create_sql, post_create_sql,
+  create_pojo_flag, src_folder_tag, suppress_pojo_changes_flag, java_package, java_fq_superclass, constructor_from_field_flag, extra_java_code,
+  create_orm_flag, suppress_orm_changes_flag, extra_orm_code, orm_discriminator_column_id,
+  create_gui_data_service_flag, suppress_gui_data_service_changes_flag, gui_pagify_flag, gui_records_per_page)
+VALUES ('2011-02-23 07:17AM',
+  9, true, 'enumeration_link', 'A link defined between to enumerations, and potential additional field definitions for that link.', 'EnumerationLink', -- base
+  32, false, true, '-=[schema_name]=-', null, null, --table related
+  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', false, null, --pojo
+  true, false, null, null, --orm
+  true, false, true, 25); --gui
+
+---------------------------------------------
+--insert records for enumeration_link_value
+INSERT INTO -=[schema_name]=-.mc_table(add_date,
+  mc_table_id, system_no_modify_flag, "name", description, name_camel_case,
+  table_creation_rule_ev_id, suppress_table_changes_flag, create_iud_table_flag, schema_name, within_create_sql, post_create_sql,
+  create_pojo_flag, src_folder_tag, suppress_pojo_changes_flag, java_package, java_fq_superclass, constructor_from_field_flag, extra_java_code,
+  create_orm_flag, suppress_orm_changes_flag, extra_orm_code, orm_discriminator_column_id,
+  create_gui_data_service_flag, suppress_gui_data_service_changes_flag, gui_pagify_flag, gui_records_per_page)
+VALUES ('2011-02-23 07:17AM',
+  10, true, 'enumeration_link_value', 'A entry into the set of links between two enumerations as defined by the EnumerationLink.', 'EnumerationLinkValue', -- base
+  32, false, true, '-=[schema_name]=-', null, null, --table related
+  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', false, null, --pojo
+  true, false, null, null, --orm
+  true, false, true, 25); --gui
+
+-------------------------------------------
+--link known system enumerations to mc_table
+update -=[schema_name]=-.enumeration set mc_table_id = 11 where enumeration_id = 1;
+update -=[schema_name]=-.enumeration set mc_table_id = 12 where enumeration_id = 2;
+update -=[schema_name]=-.enumeration set mc_table_id = 13 where enumeration_id = 3;
+update -=[schema_name]=-.enumeration set mc_table_id = 14 where enumeration_id = 4;
+update -=[schema_name]=-.enumeration set mc_table_id = 15 where enumeration_id = 5;
+update -=[schema_name]=-.enumeration set mc_table_id = 16 where enumeration_id = 6;
+update -=[schema_name]=-.enumeration set mc_table_id = 17 where enumeration_id = 7;
+update -=[schema_name]=-.enumeration set mc_table_id = 18 where enumeration_id = 8;
+
+--and here is where we mark the inserts as applied so that the enum link updates take precedence
+update -=[schema_name]=-.enumeration_iud set applied_flag = true;
+
+--from now on set the mc_table_id when you add a row to the enumeration table
+ALTER TABLE -=[schema_name]=-.enumeration ALTER COLUMN mc_table_id SET NOT NULL;
+
+select setval('-=[schema_name]=-.mc_table_mc_table_id_seq'::regclass, 1000);
+select setval('-=[schema_name]=-.mc_column_mc_column_id_seq'::regclass, 1000);
+
+--at this point we only support suppressing table changes, no alters have been codified
+update -=[schema_name]=-.mc_table set suppress_table_changes_flag = true;
+
+commit transaction;
+         ]]></value>
+        </property> 
+    </bean>
+
+</beans>

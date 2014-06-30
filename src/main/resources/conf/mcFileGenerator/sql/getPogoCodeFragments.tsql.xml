@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <bean id="getPogoCodeFragments" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="template">
+            <value><![CDATA[
+-------------------------
+--Section 10 - open class file and declare the package, import super class if needed
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select
+  t.mc_table_id as id, 10.000 as sequence, '0.000' as sequence2, t.suppress_pojo_changes_flag as suppress_changes_flag,
+  t.src_folder_tag as folder_tag, replace(t.java_package, '.', '/') as java_package, t.name_camel_case || '.groovy' as fileName, null::varchar as fileName2,
+  null::varchar as fragment2, --'
+--/**
+-- *   Copyright (c) ' || date_part('year', t.add_date) 
+--  || case when date_part('year', t.add_date) = date_part('year', now()) then '' else '-' || date_part('year', now()) end 
+--  || ' Timothy James Hruska (tjhruska@yahoo.com)
+-- *
+-- *   ' || t.java_package || '
+-- *   ' || t.name_camel_case || '.java
+-- *
+-- *   This program is free software: you can redistribute it and/or modify
+-- *   it under the terms of the LGNU Lesser General Public License as 
+-- *   published by the Free Software Foundation, either version 3 of the 
+-- *   License, or (at your option) any later version.
+-- *
+-- *   This program is distributed in the hope that it will be useful,
+-- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-- *   LGNU Lesser General Public License for more details.
+-- *
+-- *   You should have received a copy of the LGNU Lesser General Public License
+-- *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-- */
+'
+package ' || t.java_package || ';
+
+'
+|| case when t.java_fq_superclass is null then '' else '
+import ' || t.java_fq_superclass || ';' end as fragment
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.create_pojo_flag = true
+  
+UNION
+-------------------------
+--Section 20 - import a distinct list of containers and classes that represented by foreign keys on another table
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select
+  t.mc_table_id as id, 20.000 as sequence, 
+    case 
+      when what.a = 1 then 'import ' || d.java_package || '.' || d.java_class || ';'
+      when what.a = 2 then 'import ' || d.java_package || '.' || d.java_implementation || ';'
+      when what.a = 3 then 'import ' || collected_table.java_package || '.' || collected_table.name_camel_case || ';'
+      else 'import com.fasterxml.jackson.annotation.JsonBackReference;'
+    end as sequence2,
+  t.suppress_pojo_changes_flag as suppress_changes_flag,
+  t.src_folder_tag as folder_tag, replace(t.java_package, '.', '/') as java_package, t.name_camel_case || '.groovy' as fileName, null::varchar as fileName2,
+  null::varchar as fragment2, 
+  case 
+    when what.a = 1 then '
+import ' || d.java_package || '.' || d.java_class || ';'
+    when what.a = 2 then '
+import ' || d.java_package || '.' || d.java_implementation || ';'
+    when what.a = 3 then '
+import ' || collected_table.java_package || '.' || collected_table.name_camel_case || ';'
+    else '
+import com.fasterxml.jackson.annotation.JsonBackReference;'
+  end as fragment
+from
+  -=[schema_name]=-.mc_table as t join
+  -=[schema_name]=-.mc_column as c_with_fk on t.mc_table_id = c_with_fk.fk_table_id join
+  -=[schema_name]=-.mc_column as collected_column on c_with_fk.fk_collected_table_pk_column_id = collected_column.mc_column_id join
+  -=[schema_name]=-.mc_table as collected_table on collected_column.mc_table_id = collected_table.mc_table_id join
+  -=[schema_name]=-.container_ev d on c_with_fk.fk_pojo_collection_container_ev_id = d.container_ev_id,
+  generate_series(1,4) as what(a)
+where
+  t.create_pojo_flag = true
+  and ((what.a = 3 and t.mc_table_id <> collected_table.mc_table_id) or what.a <> 3)
+  -- and what.a <> 2 -- groovy doesn't need to know about the implementation right now, might need it later if we init in a constructor...
+  and what.a <> 4 -- we currently don't need the back reference for Json
+
+UNION
+-------------------------
+--Section 20 - import classes represented by foreign classes
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select
+  t.mc_table_id as id, 20.000 as sequence, 
+  case
+    when e.enumeration_id is null then 'import com.tjhruska.mc.database.DaoDomain;'
+    when what.a = 1 then 'import ' || fkt.java_package || '.' || fkt.name_camel_case || ';' 
+    else 'import com.fasterxml.jackson.annotation.JsonManagedReference;'
+  end as sequence2, 
+  t.suppress_pojo_changes_flag as suppress_changes_flag,
+  t.src_folder_tag as folder_tag, replace(t.java_package, '.', '/') as java_package, t.name_camel_case || '.groovy' as fileName, null::varchar as fileName2,
+  null::varchar as fragment2, 
+--  case
+--    when e.enumeration_id is null then '
+--import com.tjhruska.mc.database.DaoDomain
+--import javax.annotation.Resource
+--import com.fasterxml.jackson.annotation.JsonManagedReference
+--import com.fasterxml.jackson.annotation.JsonIgnore'
+--    when what.a = 1 then 
+'
+import ' || fkt.java_package || '.' || fkt.name_camel_case
+--    else '' end
+ as fragment
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_column as c,
+  -=[schema_name]=-.mc_table as fkt left outer join
+  -=[schema_name]=-.enumeration as e on fkt.mc_table_id = e.mc_table_id,
+  generate_series(1,2) as what(a)
+where
+  t.create_pojo_flag = true
+  and t.mc_table_id = c.mc_table_id
+  and c.fk_table_id = fkt.mc_table_id
+  and t.mc_table_id <> fkt.mc_table_id
+  and (
+    (what.a = 1 and e.mc_table_id is not null)
+    or
+    (what.a in (1, 2) and e.mc_table_id is null and (c.fk_pojo_collection_container_ev_id is not null or c.fk_orm_lazy_flag is not null))
+  )
+UNION
+-------------------------
+--Section 30 - open class declaration, and constructor if indicated (use string_agg to make constructor)
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select
+  t.mc_table_id as id, 30.000 as sequence, '0.000' as sequence2, t.suppress_pojo_changes_flag as suppress_changes_flag,
+  max(t.src_folder_tag) as folder_tag, max(replace(t.java_package, '.', '/')) as java_package, 
+  max(t.name_camel_case || '.groovy') as fileName, null::varchar as fileName2,
+  null::varchar as fragment2, '
+import groovy.transform.EqualsAndHashCode
+import groovy.transform.ToString
+
+@EqualsAndHashCode
+@ToString
+public class ' || max(t.name_camel_case) || case 
+  when max(t.java_fq_superclass) is null then '' 
+  else ' extends ' || reverse_string(substring(reverse_string(max(t.java_fq_superclass)), 0, strpos(reverse_string(max(t.java_fq_superclass)), '.'))) end
+  || ' {
+' || case when t.constructor_from_field_flag = false then '' else '
+    ' || max(t.name_camel_case) || ' (' 
+        || coalesce(string_agg(case 
+            when c.fk_flag then fkt.name_camel_case 
+            else d.java_class end 
+            || ' ' || case 
+                when c.fk_table_id is not null and c.fk_pojo_collection_container_ev_id is null and e.mc_table_id is null 
+                then c.name || 'Id' 
+                else c.name end, 
+            ',' order by c.sequence), '') || '){' ||
+        coalesce(string_agg('
+        this.' || c.name || ' = ' || c.name || '', '' order by c.sequence), '') || '
+    }
+'    end
+  || case 
+        when exists (
+            select count(pk.mc_column_id) 
+            from -=[schema_name]=-.mc_column as pk 
+            where t.mc_table_id = pk.mc_table_id and pk.pk_flag = true and pk.datatype_ev_id <> 45
+            having count(pk.mc_column_id) > 1
+        ) 
+        then '
+    Serializable getPK(){
+      this
+    }
+'       else '' 
+    end as fragment
+from
+  -=[schema_name]=-.mc_table as t 
+    left outer join 
+  -=[schema_name]=-.mc_column as c on t.mc_table_id = c.mc_table_id and c.pojo_constructor_field_flag = true
+    left outer join
+  -=[schema_name]=-.mc_table as fkt on c.fk_table_id = fkt.mc_table_id
+    left outer join
+  -=[schema_name]=-.datatype_ev as d on c.datatype_ev_id = d.datatype_ev_id
+    left outer join
+  -=[schema_name]=-.enumeration as e on fkt.mc_table_id = e.mc_table_id
+where
+  t.create_pojo_flag = true
+group by
+  t.mc_table_id, t.suppress_pojo_changes_flag, t.constructor_from_field_flag
+
+UNION
+-------------------------
+--Section 40 - list column definitions
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select
+  t.mc_table_id as id, 40.000 as sequence, 
+  case 
+    when what.a = 1
+    then fkt.name_camel_case
+    else 'ZZZZ'
+  end || '|' ||
+  case
+    when what.a <> 1 and c.sequence < 10 
+    then '0' || c.sequence::varchar 
+    when what.a <> 1
+    then c.sequence::varchar 
+    else '0.000'
+  end as sequence2, 
+  t.suppress_pojo_changes_flag as suppress_changes_flag,
+  t.src_folder_tag as folder_tag, replace(t.java_package, '.', '/') as java_package, 
+  t.name_camel_case || '.groovy' as fileName, null::varchar as fileName2,
+  null::varchar as fragment2, 
+  case
+  when what.a = 2 then '
+    ' || 
+    coalesce(
+      case when c.fk_table_id is not null and c.fk_orm_lazy_flag is not null then fkt.name_camel_case end, 
+      e.tablename_camel_case, 
+      d.java_class) || ' ' 
+    || case 
+        when e.enumeration_id is null and c.fk_table_id is not null and c.fk_orm_lazy_flag is null
+        then c.name_camel_case || 'Id'
+        else c.name_camel_case end
+  when what.a = 1 then '
+
+    @Resource (name="' || lower(substring(fkt.name_camel_case, 1, 1)) || substring(fkt.name_camel_case, 2, length(fkt.name_camel_case)) || 'Dao")
+    private DaoDomain<' || fkt.name_camel_case || '> ' || lower(substring(fkt.name_camel_case, 1, 1)) || substring(fkt.name_camel_case, 2, length(fkt.name_camel_case)) || 'Dao
+' end as fragment
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_column as c
+    left outer join
+  -=[schema_name]=-.mc_table as fkt on c.fk_table_id = fkt.mc_table_id
+    left outer join
+  -=[schema_name]=-.enumeration as e on c.fk_table_id = e.mc_table_id,
+  -=[schema_name]=-.datatype_ev as d,
+  generate_series(1,2) as what(a) -- 1 = fk that needs dao, 2 = everything gets a variable
+where
+  t.create_pojo_flag = true
+  and t.mc_table_id = c.mc_table_id
+  and c.datatype_ev_id = d.datatype_ev_id
+  and c.name_camel_case <> 'id' and c.name <> 'add_date'
+  and ((what.a = 1 and c.fk_pojo_collection_container_ev_id is not null and e.enumeration_id is null) or what.a = 2)
+  and what.a = 2 -- WE ARE SKIPPING THE DAO FOR NOW FOR GROOVY FILES
+
+UNION
+-------------------------
+--Section 50 - add collections
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select
+  t.mc_table_id as id, 50.000 as sequence, '0.000' as sequence2, t.suppress_pojo_changes_flag as suppress_changes_flag,
+  max(t.src_folder_tag) as folder_tag, max(replace(t.java_package, '.', '/')) as java_package, 
+  max(t.name_camel_case || '.groovy') as fileName, null::varchar as fileName2,
+  null::varchar as fragment2, string_agg('
+    ' || d.java_class || '<' 
+      || case 
+        when d.container_ev_id = 11 and key_datatype.datatype_ev_id is null 
+        then 'KEY_COLUMN_NOT_DEFINED_WITH_A_RAW_DATATYPE_FOR_KEY' 
+        when d.container_ev_id = 11
+        then key_datatype.java_class || ', ' 
+        else '' end 
+      || collected_table.name_camel_case || '> ' || c_with_fk.fk_pojo_collection_name_camel_case, '' order by c_with_fk.sequence, c_with_fk.fk_pojo_collection_name_camel_case) as fragment
+from
+  -=[schema_name]=-.mc_table as t join
+  -=[schema_name]=-.mc_column as c_with_fk on t.mc_table_id = c_with_fk.fk_table_id join
+  -=[schema_name]=-.mc_column as collected_column on c_with_fk.fk_collected_table_pk_column_id = collected_column.mc_column_id join
+  -=[schema_name]=-.mc_table as collected_table 
+    on (collected_column.pk_flag = true and collected_column.mc_table_id = collected_table.mc_table_id)
+    or (collected_column.fk_flag = true and collected_column.fk_table_id = collected_table.mc_table_id) join
+  -=[schema_name]=-.container_ev d on c_with_fk.fk_pojo_collection_container_ev_id = d.container_ev_id
+    left outer join
+  -=[schema_name]=-.mc_column as key_column on (c_with_fk.fk_pojo_collection_local_key_column_id = key_column.mc_column_id)
+    left outer join
+  -=[schema_name]=-.datatype_ev as key_datatype on (key_column.datatype_ev_id = key_datatype.datatype_ev_id)
+where
+  t.create_pojo_flag = true
+group by
+  t.mc_table_id, t.suppress_pojo_changes_flag
+
+UNION
+-------------------------
+--Section 60 - add post pojo code, and close the class
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select
+  t.mc_table_id as id, 60.000 as sequence, '0.000' as sequence2, t.suppress_pojo_changes_flag as suppress_changes_flag,
+  t.src_folder_tag as folder_tag, replace(t.java_package, '.', '/') as java_package, t.name_camel_case || '.groovy' as fileName, null::varchar as fileName2,
+  null::varchar as fragment2, '
+' || case when t.extra_java_code is not null then '
+' || t.extra_java_code || '
+' else '' end || '
+}' as fragment
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.create_pojo_flag = true
+order by id, sequence, sequence2
+]]></value>
+        </property> 
+    </bean>
+    
+</beans>

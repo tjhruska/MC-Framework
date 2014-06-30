@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <bean id="getEnumCodeFragments" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="template">
+            <value><![CDATA[
+--java_enumeration_generation_sql
+select
+    e.enumeration_id as id,
+    e.tablename_camel_case || '.java' as filename,
+    1 as sequence, 0 as sequence2,
+    e.tablename_camel_case || 'Helper.java' as filename2, false as suppress_changes_flag,
+    e.auto_creation_method_ev_id, e.folder_tag, replace(e.java_package, '.', '/') as java_package,
+
+------------------------------------------------------------------------------------------
+--first section of enum file
+------------------------------------------------------------------------------------------
+'/**
+ *   Copyright (c) ' || date_part('year', e.add_date) 
+  || case when date_part('year', e.add_date) = date_part('year', now()) then '' else '-' || date_part('year', now()) end 
+  || ' Timothy James Hruska (tjhruska@yahoo.com)
+ *
+ *   ' || e.java_package || '
+ *   ' || e.tablename_camel_case || '.java' || '
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the LGNU Lesser General Public License as 
+ *   published by the Free Software Foundation, either version 3 of the 
+ *   License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   LGNU Lesser General Public License for more details.
+ *
+ *   You should have received a copy of the LGNU Lesser General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package ' || e.java_package || ';
+
+import java.util.HashSet;
+import java.util.Set;
+
+import com.tjhruska.mc.enums.EnumerationNotUnique;
+
+
+/**
+ * @author tjhruska
+ *
+ */
+public enum ' || e.tablename_camel_case || ' {' as fragment,
+
+------------------------------------------------------------------------------------------
+--first section of helper file
+------------------------------------------------------------------------------------------
+'/**
+ *   Copyright © ' || date_part('year', e.add_date) || ' Timothy James Hruska (tjhruska@yahoo.com)
+ *
+ *   ' || e.java_package || '
+ *   ' || e.tablename_camel_case || 'Helper.java' || '
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the LGNU Lesser General Public License as 
+ *   published by the Free Software Foundation, either version 3 of the 
+ *   License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   LGNU Lesser General Public License for more details.
+ *
+ *   You should have received a copy of the LGNU Lesser General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package ' || e.java_package || ';
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * @author tjhruska
+ *
+ */
+public class ' || e.tablename_camel_case || 'Helper implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private static final ' || e.tablename_camel_case || 'Helper ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper = new ' || e.tablename_camel_case || 'Helper();
+    
+    protected Map<Integer,Set<' || e.tablename_camel_case || '>> idTo' || e.tablename_camel_case || ';
+    protected Map<String,Set<' || e.tablename_camel_case || '>> nameTo' || e.tablename_camel_case || ';
+    protected Map<String,Set<' || e.tablename_camel_case || '>> descriptionTo' || e.tablename_camel_case || ';
+    protected Map<Integer,Set<' || e.tablename_camel_case || '>> sequenceTo' || e.tablename_camel_case || ';' || 
+    
+    case when e.column1_name is not null then '
+    protected Map<' || datatype_ev1.column1_value || ',Set<' || e.tablename_camel_case || '>> ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || 'To' || e.tablename_camel_case || ';'
+    else '' end ||
+    case when e.column2_name is not null then '
+    protected Map<' || datatype_ev2.column1_value || ',Set<' || e.tablename_camel_case || '>> ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || 'To' || e.tablename_camel_case || ';'
+    else '' end ||
+    case when e.column3_name is not null then '
+    protected Map<' || datatype_ev3.column1_value || ',Set<' || e.tablename_camel_case || '>> ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || 'To' || e.tablename_camel_case || ';'
+    else '' end ||
+    case when e.column4_name is not null then '
+    protected Map<' || datatype_ev4.column1_value || ',Set<' || e.tablename_camel_case || '>> ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || 'To' || e.tablename_camel_case || ';'
+    else '' end ||
+    case when e.column5_name is not null then '
+    protected Map<' || datatype_ev5.column1_value || ',Set<' || e.tablename_camel_case || '>> ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || 'To' || e.tablename_camel_case || ';'
+    else '' end ||
+'
+    /**
+     * @return helper class used for doing lookups of ' || e.tablename_camel_case || '
+     */
+    protected static ' || e.tablename_camel_case || 'Helper get' || e.tablename_camel_case || 'Helper(){
+        return ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper;
+    }
+    
+    private ' || e.tablename_camel_case || 'Helper(){
+        idTo' || e.tablename_camel_case || ' = new HashMap<Integer,Set<' || e.tablename_camel_case || '>>();
+        nameTo' || e.tablename_camel_case || ' = new HashMap<String,Set<' || e.tablename_camel_case || '>>();
+        descriptionTo' || e.tablename_camel_case || ' = new HashMap<String,Set<' || e.tablename_camel_case || '>>();
+        sequenceTo' || e.tablename_camel_case || ' = new HashMap<Integer,Set<' || e.tablename_camel_case || '>>();' ||
+
+    case when e.column1_name is not null then '
+        ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || 'To' || e.tablename_camel_case || ' = new HashMap<' || datatype_ev1.column1_value ||',Set<' || e.tablename_camel_case || '>>();'
+    else '' end ||
+    case when e.column2_name is not null then '
+        ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || 'To' || e.tablename_camel_case || ' = new HashMap<' || datatype_ev2.column1_value ||',Set<' || e.tablename_camel_case || '>>();'
+    else '' end ||
+    case when e.column3_name is not null then '
+        ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || 'To' || e.tablename_camel_case || ' = new HashMap<' || datatype_ev3.column1_value ||',Set<' || e.tablename_camel_case || '>>();'
+    else '' end ||
+    case when e.column4_name is not null then '
+        ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || 'To' || e.tablename_camel_case || ' = new HashMap<' || datatype_ev4.column1_value ||',Set<' || e.tablename_camel_case || '>>();'
+    else '' end ||
+    case when e.column5_name is not null then '
+        ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || 'To' || e.tablename_camel_case || ' = new HashMap<' || datatype_ev5.column1_value ||',Set<' || e.tablename_camel_case || '>>();'
+    else '' end || '
+    }
+    
+    protected void load' || e.tablename_camel_case || '(' || e.tablename_camel_case || ' ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ', 
+        int ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'EvId, String name, String description,
+        Integer sequence' ||
+    case when e.column1_name is not null then
+        ', ' || datatype_ev1.column1_value || ' ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2)
+    else '' end ||
+    case when e.column2_name is not null then
+        ', ' || datatype_ev2.column1_value || ' ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2)
+    else '' end ||
+    case when e.column3_name is not null then
+        ', ' || datatype_ev3.column1_value || ' ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2)
+    else '' end ||
+    case when e.column4_name is not null then
+        ', ' || datatype_ev4.column1_value || ' ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2)
+    else '' end ||
+    case when e.column5_name is not null then
+        ', ' || datatype_ev5.column1_value || ' ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2)
+    else '' end || ')
+    {
+        if (!idTo' || e.tablename_camel_case || '.containsKey(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'EvId))
+            idTo' || e.tablename_camel_case || '.put(
+                ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'EvId, 
+                new HashSet<' || e.tablename_camel_case || '>(Arrays.asList(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ')));
+        else
+            idTo' || e.tablename_camel_case || '.get(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'EvId).add(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ');
+        
+        if (!nameTo' || e.tablename_camel_case || '.containsKey(name))
+            nameTo' || e.tablename_camel_case || '.put(
+                name, 
+                new HashSet<' || e.tablename_camel_case || '>(Arrays.asList(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ')));
+        else
+            nameTo' || e.tablename_camel_case || '.get(name).add(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ');
+        
+        if (!descriptionTo' || e.tablename_camel_case || '.containsKey(description))
+            descriptionTo' || e.tablename_camel_case || '.put(
+                description, 
+                new HashSet<' || e.tablename_camel_case || '>(Arrays.asList(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ')));
+        else
+            descriptionTo' || e.tablename_camel_case || '.get(description).add(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ');
+        
+        if (!sequenceTo' || e.tablename_camel_case || '.containsKey(sequence))
+            sequenceTo' || e.tablename_camel_case || '.put(
+                sequence, 
+                new HashSet<' || e.tablename_camel_case || '>(Arrays.asList(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ')));
+        else
+            sequenceTo' || e.tablename_camel_case || '.get(sequence).add(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ');
+
+' ||
+    case when e.column1_name is not null then
+'       if (!' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || 'To' || e.tablename_camel_case || '.containsKey(' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || '))
+            ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || 'To' || e.tablename_camel_case || '.put(
+                ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || ', 
+                new HashSet<' || e.tablename_camel_case || '>(Arrays.asList(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ')));
+        else
+            ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || 'To' || e.tablename_camel_case || '.get(' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || ').add(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ');'
+    else '' end ||
+
+    case when e.column2_name is not null then
+'       if (!' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || 'To' || e.tablename_camel_case || '.containsKey(' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || '))
+            ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || 'To' || e.tablename_camel_case || '.put(
+                ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || ', 
+                new HashSet<' || e.tablename_camel_case || '>(Arrays.asList(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ')));
+        else
+            ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || 'To' || e.tablename_camel_case || '.get(' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || ').add(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ');'
+    else '' end ||
+
+    case when e.column3_name is not null then
+'       if (!' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || 'To' || e.tablename_camel_case || '.containsKey(' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || '))
+            ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || 'To' || e.tablename_camel_case || '.put(
+                ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || ', 
+                new HashSet<' || e.tablename_camel_case || '>(Arrays.asList(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ')));
+        else
+            ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || 'To' || e.tablename_camel_case || '.get(' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || ').add(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ');'
+    else '' end ||
+
+    case when e.column4_name is not null then
+'       if (!' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || 'To' || e.tablename_camel_case || '.containsKey(' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || '))
+            ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || 'To' || e.tablename_camel_case || '.put(
+                ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || ', 
+                new HashSet<' || e.tablename_camel_case || '>(Arrays.asList(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ')));
+        else
+            ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || 'To' || e.tablename_camel_case || '.get(' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || ').add(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ');'
+    else '' end ||
+
+    case when e.column5_name is not null then
+'       if (!' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || 'To' || e.tablename_camel_case || '.containsKey(' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || '))
+            ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || 'To' || e.tablename_camel_case || '.put(
+                ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || ', 
+                new HashSet<' || e.tablename_camel_case || '>(Arrays.asList(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ')));
+        else
+            ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || 'To' || e.tablename_camel_case || '.get(' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || ').add(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || ');'
+    else '' end || '
+    }
+}' as fragment2 --, datatype_ev1.*
+
+from -=[schema_name]=-.enumeration e
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev1 on e.column1_datatype_ev_id = datatype_ev1.enumeration_value_id and datatype_ev1.enumeration_id = 2
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev2 on e.column2_datatype_ev_id = datatype_ev2.enumeration_value_id and datatype_ev2.enumeration_id = 2
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev3 on e.column3_datatype_ev_id = datatype_ev3.enumeration_value_id and datatype_ev3.enumeration_id = 2
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev4 on e.column4_datatype_ev_id = datatype_ev4.enumeration_value_id and datatype_ev4.enumeration_id = 2
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev5 on e.column5_datatype_ev_id = datatype_ev5.enumeration_value_id and datatype_ev5.enumeration_id = 2
+where e.auto_creation_method_ev_id = 19 --CREATE_ENUMERATION
+union
+select
+    e.enumeration_id as id,
+    e.tablename_camel_case || '.java' as filename,
+    2 as sequence, v.enumeration_value_id as sequence2,
+    e.tablename_camel_case || 'Helper.java' as filename2, false as suppress_changes_flag,
+    e.auto_creation_method_ev_id, e.folder_tag, replace(e.java_package, '.', '/') as java_package,
+
+------------------------------------------------------------------------------------------
+--second portions of enum file
+--REPEATS PER VALUE
+------------------------------------------------------------------------------------------
+'
+    ' || v.name || '(' || v.enumeration_value_id || ', "' || v.name || '", "' || v.description
+    || '", ' || case when v.sequence is null then 'null' else v.sequence::varchar end
+    || case 
+        when e.column1_name is not null and v.column1_value is not null and e.column1_datatype_ev_id = 3
+        then ', "' || v.column1_value || '"' 
+        when e.column1_name is not null and v.column1_value is not null and e.column1_datatype_ev_id = 1 and v.column1_value in ('true', 't', 'y', 'yes', '1')
+        then ', true'
+        when e.column1_name is not null and v.column1_value is not null and e.column1_datatype_ev_id = 1
+        then ', false'
+        when e.column1_name is not null and v.column1_value is not null
+        then ', ' || v.column1_value
+        when e.column1_name is not null then ', null' 
+        else '' end
+    || case 
+        when e.column2_name is not null and v.column2_value is not null and e.column2_datatype_ev_id = 3
+        then ', "' || v.column2_value || '"' 
+        when e.column2_name is not null and v.column2_value is not null and e.column2_datatype_ev_id = 1 and v.column2_value in ('true', 't', 'y', 'yes', '1')
+        then ', true'
+        when e.column2_name is not null and v.column2_value is not null and e.column2_datatype_ev_id = 1
+        then ', false'
+        when e.column2_name is not null and v.column2_value is not null 
+        then ', ' || v.column2_value
+        when e.column2_name is not null 
+        then ', null' 
+        else '' end
+    || case 
+        when e.column3_name is not null and v.column3_value is not null and e.column3_datatype_ev_id = 3
+        then ', "' || v.column3_value || '"' 
+        when e.column3_name is not null and v.column3_value is not null and e.column3_datatype_ev_id = 1 and v.column3_value in ('true', 't', 'y', 'yes', '1')
+        then ', true'
+        when e.column3_name is not null and v.column3_value is not null and e.column3_datatype_ev_id = 1
+        then ', false'
+        when e.column3_name is not null and v.column3_value is not null 
+        then ', ' || v.column3_value
+        when e.column3_name is not null 
+        then ', null' 
+        else '' end
+    || case 
+        when e.column4_name is not null and v.column4_value is not null and e.column4_datatype_ev_id = 3
+        then ', "' || v.column4_value || '"' 
+        when e.column4_name is not null and v.column4_value is not null and e.column4_datatype_ev_id = 1 and v.column4_value in ('true', 't', 'y', 'yes', '1')
+        then ', true'
+        when e.column4_name is not null and v.column4_value is not null and e.column4_datatype_ev_id = 1
+        then ', false'
+        when e.column4_name is not null and v.column4_value is not null 
+        then ', ' || v.column4_value
+        when e.column4_name is not null 
+        then ', null' 
+        else '' end
+    || case 
+        when e.column5_name is not null and v.column5_value is not null and e.column5_datatype_ev_id = 3
+        then ', "' || v.column5_value || '"' 
+        when e.column5_name is not null and v.column5_value is not null and e.column5_datatype_ev_id = 1 and v.column5_value in ('true', 't', 'y', 'yes', '1')
+        then ', true'
+        when e.column5_name is not null and v.column5_value is not null and e.column5_datatype_ev_id = 1
+        then ', false'
+        when e.column5_name is not null and v.column5_value is not null 
+        then ', ' || v.column5_value
+        when e.column5_name is not null 
+        then ', null' 
+        else '' end
+    || ')'
+    || case when v.enumeration_value_id = (select max(iv.enumeration_value_id) from -=[schema_name]=-.enumeration_value iv where e.enumeration_id = iv.enumeration_id)
+        then ';
+' else ',' end as fragment,
+
+------------------------------------------------------------------------------------------
+--second portions of enum helper file
+--REPEATS PER VALUE
+------------------------------------------------------------------------------------------
+    null as fragment2
+
+from -=[schema_name]=-.enumeration e, -=[schema_name]=-.enumeration_value v
+where e.enumeration_id = v.enumeration_id
+    and e.auto_creation_method_ev_id = 19 --CREATE_ENUMERATION
+
+union
+select
+    e.enumeration_id as id,
+    e.tablename_camel_case || '.java' as filename,
+    3 as sequence, 0 as sequence2,
+    e.tablename_camel_case || 'Helper.java' as filename2, false as suppress_changes_flag,
+    e.auto_creation_method_ev_id, e.folder_tag, replace(e.java_package, '.', '/') as java_package,
+
+------------------------------------------------------------------------------------------
+--third section of enum file
+------------------------------------------------------------------------------------------
+
+'
+    public final static int enumerationId = ' || e.enumeration_id || ';
+    public final static String idColumnName = "' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || '_ev_id";
+    private final static ' || e.tablename_camel_case || 'Helper ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper 
+        = ' || e.tablename_camel_case || 'Helper.get' || e.tablename_camel_case || 'Helper();
+    
+    private int ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'EvId;
+    private String name;
+    private String description;
+    private Integer sequence;' ||
+
+    case when e.column1_name is not null then '
+    private ' || datatype_ev1.column1_value || ' ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || ';'
+    else '' end ||
+    case when e.column2_name is not null then '
+    private ' || datatype_ev2.column1_value || ' ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || ';'
+    else '' end ||
+    case when e.column3_name is not null then '
+    private ' || datatype_ev3.column1_value || ' ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || ';'
+    else '' end ||
+    case when e.column4_name is not null then '
+    private ' || datatype_ev4.column1_value || ' ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || ';'
+    else '' end ||
+    case when e.column5_name is not null then '
+    private ' || datatype_ev5.column1_value || ' ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || ';'
+    else '' end || '
+    
+    private ' || e.tablename_camel_case || '(
+        int ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'EvId, String name, String description, Integer sequence
+        ' ||
+    case when e.column1_name is not null then
+        ', ' || datatype_ev1.column1_value || ' ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2)
+    else '' end ||
+    case when e.column2_name is not null then
+        ', ' || datatype_ev2.column1_value || ' ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2)
+    else '' end ||
+    case when e.column3_name is not null then
+        ', ' || datatype_ev3.column1_value || ' ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2)
+    else '' end ||
+    case when e.column4_name is not null then
+        ', ' || datatype_ev4.column1_value || ' ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2)
+    else '' end ||
+    case when e.column5_name is not null then
+        ', ' || datatype_ev5.column1_value || ' ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2)
+    else '' end || ')
+    {
+        this.' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'EvId = ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'EvId;
+        this.name = name;
+        this.description = description;
+        this.sequence = sequence;' ||
+
+    case when e.column1_name is not null then '
+        this.' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || ' = ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || ';'
+    else '' end ||
+    case when e.column2_name is not null then '
+        this.' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || ' = ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || ';'
+    else '' end ||
+    case when e.column3_name is not null then '
+        this.' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || ' = ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || ';'
+    else '' end ||
+    case when e.column4_name is not null then '
+        this.' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || ' = ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || ';'
+    else '' end ||
+    case when e.column5_name is not null then '
+        this.' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || ' = ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || ';'
+    else '' end || '
+        ' || e.tablename_camel_case || 'Helper.get' || e.tablename_camel_case || 'Helper().load' || e.tablename_camel_case || '(
+            this, ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2) || 'EvId, name, description, sequence
+            ' ||
+
+    case when e.column1_name is not null then
+        ', ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2)
+    else '' end ||
+    case when e.column2_name is not null then
+        ', ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2)
+    else '' end ||
+    case when e.column3_name is not null then
+        ', ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2)
+    else '' end ||
+    case when e.column4_name is not null then
+        ', ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2)
+    else '' end ||
+    case when e.column5_name is not null then
+        ', ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2)
+    else '' end || ');
+    }
+    public int get' || e.tablename_camel_case || 'EvId(){return ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'EvId;};
+    public String getName(){return name;};
+    public String getDescription(){return description;};
+    public Integer getSequence(){return sequence;};' ||
+
+    case when e.column1_name is not null then '
+    public ' || datatype_ev1.column1_value || ' get' || e.column1_name_camel_case || '(){return ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || ';}'
+    else '' end ||
+    case when e.column2_name is not null then '
+    public ' || datatype_ev2.column1_value || ' get' || e.column2_name_camel_case || '(){return ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || ';}'
+    else '' end ||
+    case when e.column3_name is not null then '
+    public ' || datatype_ev3.column1_value || ' get' || e.column3_name_camel_case || '(){return ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || ';}'
+    else '' end ||
+    case when e.column4_name is not null then '
+    public ' || datatype_ev4.column1_value || ' get' || e.column4_name_camel_case || '(){return ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || ';}'
+    else '' end ||
+    case when e.column5_name is not null then '
+    public ' || datatype_ev5.column1_value || ' get' || e.column5_name_camel_case || '(){return ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || ';}'
+    else '' end || '
+    
+    /**
+     * @param id
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     * @throws EnumerationNotUnique if the input parameter mapps to multiple values
+     */
+    public static ' || e.tablename_camel_case || ' get' || e.tablename_camel_case || 'ById(int id){
+        Set<' || e.tablename_camel_case || '> ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's = ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.idTo' || e.tablename_camel_case || '.get(id);
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's == null) return null;
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() > 1)
+            throw new EnumerationNotUnique("id " + id 
+                + " has " + ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() + " elements");
+        return ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.iterator().next();
+    }
+    
+    /**
+     * @param id
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     */
+    public static Set<' || e.tablename_camel_case || '> get' || e.tablename_camel_case || 'SetById(int id){
+        return new HashSet<' || e.tablename_camel_case || '>(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.idTo' || e.tablename_camel_case || '.get(id));
+    }
+    
+    /**
+     * @param name
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     * @throws EnumerationNotUnique if the input parameter mapps to multiple values
+     */
+    public static ' || e.tablename_camel_case || ' get' || e.tablename_camel_case || 'ByName(String name){
+        Set<' || e.tablename_camel_case || '> ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's 
+            = ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.nameTo' || e.tablename_camel_case || '.get(name);
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's == null) return null;
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() > 1)
+            throw new EnumerationNotUnique("name " + name 
+                + " has " + ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() + " elements");
+        return ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.iterator().next();
+    }
+    
+    /**
+     * @param name
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     */
+    public static Set<' || e.tablename_camel_case || '> get' || e.tablename_camel_case || 'SetByName(String name){
+        return new HashSet<' || e.tablename_camel_case || '>(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.nameTo' || e.tablename_camel_case || '.get(name));
+    }
+    
+    /**
+     * @param description
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     * @throws EnumerationNotUnique if the input parameter mapps to multiple values
+     */
+    public static ' || e.tablename_camel_case || ' get' || e.tablename_camel_case || 'ByDescription(String description){
+        Set<' || e.tablename_camel_case || '> ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's 
+            = ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.descriptionTo' || e.tablename_camel_case || '.get(description);
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's == null) return null;
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() > 1)
+            throw new EnumerationNotUnique("description " + description 
+                + " has " + ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() + " elements");
+        return ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.iterator().next();
+    }
+    
+    /**
+     * @param description
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     */
+    public static Set<' || e.tablename_camel_case || '> get' || e.tablename_camel_case || 'SetByDescription(String description){
+        return new HashSet<' || e.tablename_camel_case || '>(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.descriptionTo' || e.tablename_camel_case || '.get(description));
+    }
+    
+    /**
+     * @param sequence
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     * @throws EnumerationNotUnique if the input parameter mapps to multiple values
+     */
+    public static ' || e.tablename_camel_case || ' get' || e.tablename_camel_case || 'BySequence(Integer sequence){
+        Set<' || e.tablename_camel_case || '> ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's 
+            = ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.sequenceTo' || e.tablename_camel_case || '.get(sequence);
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's == null) return null;
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() > 1)
+            throw new EnumerationNotUnique("sequence " + sequence 
+                + " has " + ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() + " elements");
+        return ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.iterator().next();
+    }
+    
+    /**
+     * @param sequence
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     */
+    public static Set<' || e.tablename_camel_case || '> get' || e.tablename_camel_case || 'SetBySequence(Integer sequence){
+        return new HashSet<' || e.tablename_camel_case || '>(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.sequenceTo' || e.tablename_camel_case || '.get(sequence));
+    }' ||
+
+case when e.column1_name is not null then '
+    /**
+     * @param ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || '
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     * @throws EnumerationNotUnique if the input parameter mapps to multiple values
+     */
+    public static ' || e.tablename_camel_case || ' get' || e.tablename_camel_case || 'By' || e.column1_name_camel_case || '(' || datatype_ev1.column1_value || ' ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || '){
+        Set<' || e.tablename_camel_case || '> ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's 
+            = ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || 'To' || e.tablename_camel_case || '.get(' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || ');
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's == null) return null;
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() > 1)
+            throw new EnumerationNotUnique("' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || ' " + ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || ' 
+                + " has " + ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() + " elements");
+        return ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.iterator().next();
+    }
+    
+    /**
+     * @param ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || '
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     */
+    public static Set<' || e.tablename_camel_case || '> get' || e.tablename_camel_case || 'SetBy' || e.column1_name_camel_case || '(' || datatype_ev1.column1_value || ' ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || '){
+        return new HashSet<' || e.tablename_camel_case || '>(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || 'To' || e.tablename_camel_case || '.get(' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || '));
+    }'
+else '' end ||
+
+case when e.column2_name is not null then '
+    /**
+     * @param ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || '
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     * @throws EnumerationNotUnique if the input parameter mapps to multiple values
+     */
+    public static ' || e.tablename_camel_case || ' get' || e.tablename_camel_case || 'By' || e.column2_name_camel_case || '(' || datatype_ev2.column1_value || ' ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || '){
+        Set<' || e.tablename_camel_case || '> ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's 
+            = ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || 'To' || e.tablename_camel_case || '.get(' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || ');
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's == null) return null;
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() > 1)
+            throw new EnumerationNotUnique("' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || ' " + ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || ' 
+                + " has " + ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() + " elements");
+        return ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.iterator().next();
+    }
+    
+    /**
+     * @param ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || '
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     */
+    public static Set<' || e.tablename_camel_case || '> get' || e.tablename_camel_case || 'SetBy' || e.column2_name_camel_case || '(' || datatype_ev2.column1_value || ' ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || '){
+        return new HashSet<' || e.tablename_camel_case || '>(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || 'To' || e.tablename_camel_case || '.get(' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || '));
+    }'
+else '' end ||
+
+case when e.column3_name is not null then '
+    /**
+     * @param ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || '
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     * @throws EnumerationNotUnique if the input parameter mapps to multiple values
+     */
+    public static ' || e.tablename_camel_case || ' get' || e.tablename_camel_case || 'By' || e.column3_name_camel_case || '(' || datatype_ev3.column1_value || ' ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || '){
+        Set<' || e.tablename_camel_case || '> ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's 
+            = ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || 'To' || e.tablename_camel_case || '.get(' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || ');
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's == null) return null;
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() > 1)
+            throw new EnumerationNotUnique("' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || ' " + ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || ' 
+                + " has " + ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() + " elements");
+        return ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.iterator().next();
+    }
+    
+    /**
+     * @param ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || '
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     */
+    public static Set<' || e.tablename_camel_case || '> get' || e.tablename_camel_case || 'SetBy' || e.column3_name_camel_case || '(' || datatype_ev3.column1_value || ' ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || '){
+        return new HashSet<' || e.tablename_camel_case || '>(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || 'To' || e.tablename_camel_case || '.get(' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || '));
+    }'
+else '' end ||
+
+case when e.column4_name is not null then '
+    /**
+     * @param ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || '
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     * @throws EnumerationNotUnique if the input parameter mapps to multiple values
+     */
+    public static ' || e.tablename_camel_case || ' get' || e.tablename_camel_case || 'By' || e.column4_name_camel_case || '(' || datatype_ev4.column1_value || ' ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || '){
+        Set<' || e.tablename_camel_case || '> ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's 
+            = ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || 'To' || e.tablename_camel_case || '.get(' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || ');
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's == null) return null;
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() > 1)
+            throw new EnumerationNotUnique("' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || ' " + ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || ' 
+                + " has " + ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() + " elements");
+        return ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.iterator().next();
+    }
+    
+    /**
+     * @param ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || '
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     */
+    public static Set<' || e.tablename_camel_case || '> get' || e.tablename_camel_case || 'SetBy' || e.column4_name_camel_case || '(' || datatype_ev4.column1_value || ' ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || '){
+        return new HashSet<' || e.tablename_camel_case || '>(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || 'To' || e.tablename_camel_case || '.get(' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || '));
+    }'
+else '' end ||
+
+case when e.column5_name is not null then '
+    /**
+     * @param ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || '
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     * @throws EnumerationNotUnique if the input parameter mapps to multiple values
+     */
+    public static ' || e.tablename_camel_case || ' get' || e.tablename_camel_case || 'By' || e.column5_name_camel_case || '(' || datatype_ev5.column1_value || ' ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || '){
+        Set<' || e.tablename_camel_case || '> ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's 
+            = ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || 'To' || e.tablename_camel_case || '.get(' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || ');
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's == null) return null;
+        if (' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() > 1)
+            throw new EnumerationNotUnique("' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || ' " + ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || ' 
+                + " has " + ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.size() + " elements");
+        return ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 's.iterator().next();
+    }
+    
+    /**
+     * @param ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || '
+     * @return ' || e.tablename_camel_case || ' that is mapped to by the input parameter
+     */
+    public static Set<' || e.tablename_camel_case || '> get' || e.tablename_camel_case || 'SetBy' || e.column5_name_camel_case || '(' || datatype_ev5.column1_value || ' ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || '){
+        return new HashSet<' || e.tablename_camel_case || '>(' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper.' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || 'To' || e.tablename_camel_case || '.get(' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || '));
+    }'
+else '' end || '
+
+    /* (non-Javadoc)
+     * @see java.lang.Enum#toString()
+     */
+    public String toString(){
+        String toString = "' || e.tablename_camel_case || ' " + name + " (" + description + ")";
+        toString += "\\n\\t' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'EvId: " + ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'EvId;
+        toString += "\\n\\tsequence: " + sequence;' ||
+    case when e.column1_name is not null then '
+        toString += "\\n\\t' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || ': " + ' || lower(substring(e.column1_name_camel_case,1,1)) || substring(e.column1_name_camel_case,2) || ';'
+    else '' end ||
+    case when e.column2_name is not null then '
+        toString += "\\n\\t' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || ': " + ' || lower(substring(e.column2_name_camel_case,1,1)) || substring(e.column2_name_camel_case,2) || ';'
+    else '' end ||
+    case when e.column3_name is not null then '
+        toString += "\\n\\t' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || ': " + ' || lower(substring(e.column3_name_camel_case,1,1)) || substring(e.column3_name_camel_case,2) || ';'
+    else '' end ||
+    case when e.column4_name is not null then '
+        toString += "\\n\\t' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || ': " + ' || lower(substring(e.column4_name_camel_case,1,1)) || substring(e.column4_name_camel_case,2) || ';'
+    else '' end ||
+    case when e.column5_name is not null then '
+        toString += "\\n\\t' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || ': " + ' || lower(substring(e.column5_name_camel_case,1,1)) || substring(e.column5_name_camel_case,2) || ';'
+    else '' end || '
+        return toString;
+    }
+}' as fragment,
+------------------------------------------------------------------------------------------
+--second portions of enum helper file
+------------------------------------------------------------------------------------------
+    null as fragment2
+
+from -=[schema_name]=-.enumeration e
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev1 on e.column1_datatype_ev_id = datatype_ev1.enumeration_value_id and datatype_ev1.enumeration_id = 2
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev2 on e.column2_datatype_ev_id = datatype_ev2.enumeration_value_id and datatype_ev2.enumeration_id = 2
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev3 on e.column3_datatype_ev_id = datatype_ev3.enumeration_value_id and datatype_ev3.enumeration_id = 2
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev4 on e.column4_datatype_ev_id = datatype_ev4.enumeration_value_id and datatype_ev4.enumeration_id = 2
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev5 on e.column5_datatype_ev_id = datatype_ev5.enumeration_value_id and datatype_ev5.enumeration_id = 2
+where e.auto_creation_method_ev_id = 19 --CREATE_ENUMERATION
+order by id, sequence, sequence2;
+]]></value>
+        </property> 
+    </bean>
+    
+</beans>

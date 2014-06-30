@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <bean id="install_02.00_mc_model" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="template">
+            <value><![CDATA[
+begin transaction;
+set constraints all deferred;
+--alter table -=[schema_name]=-.mc_table drop CONSTRAINT mc_table_discriminator_column_fk;
+--alter table -=[schema_name]=-.mc_table disable trigger all;
+--alter table -=[schema_name]=-.mc_column disable trigger all;
+--alter table -=[schema_name]=-.mc_child disable trigger all;
+--alter table -=[schema_name]=-.mc_child_add_column disable trigger all;
+--alter table -=[schema_name]=-.mc_index disable trigger all;
+--alter table -=[schema_name]=-.mc_index_column disable trigger all;
+
+--drop table -=[schema_name]=-.mc_index_column;
+--drop table -=[schema_name]=-.mc_index;
+--drop table -=[schema_name]=-.mc_child_add_column;
+--drop table -=[schema_name]=-.mc_child;
+--drop table -=[schema_name]=-.mc_column;
+--drop table -=[schema_name]=-.mc_table;
+
+---------------------------------------------
+--MC_TABLE - represents a table in our model,
+--  and the corresponding pojo, orm, and gui requirements.
+---------------------------------------------
+CREATE TABLE -=[schema_name]=-.mc_table
+(
+  mc_table_id serial NOT NULL,
+  add_date timestamp with time zone NOT NULL DEFAULT now(),
+  system_no_modify_flag boolean default false,
+  "name" character varying NOT NULL,
+  description character varying NOT NULL,
+  name_camel_case character varying NOT NULL,
+  table_creation_rule_ev_id integer NOT NULL default 32,
+  suppress_table_changes_flag boolean default false,
+  create_iud_table_flag boolean default true,
+  schema_name character varying,
+  within_create_sql character varying,
+  post_create_sql character varying,
+  create_pojo_flag boolean NOT NULL default true,
+  src_folder_tag character varying,
+  suppress_pojo_changes_flag boolean default false,
+  java_package character varying,
+  java_fq_superclass character varying,
+  constructor_from_field_flag boolean default true,
+  extra_java_code character varying,
+  create_orm_flag boolean default true,
+  suppress_orm_changes_flag boolean default false,
+  extra_orm_code character varying,
+  orm_discriminator_column_id integer,
+  create_gui_data_service_flag boolean default true,
+  suppress_gui_data_service_changes_flag boolean default false,
+  gui_pagify_flag boolean default true,
+  gui_records_per_page smallint default 25,
+  gui_picker_description_column_id integer,
+  CONSTRAINT mc_table_pk PRIMARY KEY (mc_table_id),
+  CONSTRAINT mc_table_name UNIQUE (name),
+  CONSTRAINT mc_table_name_camel_case UNIQUE (name_camel_case),
+  CONSTRAINT mc_table_table_creation_rule_ev_fk FOREIGN KEY (table_creation_rule_ev_id)
+      REFERENCES -=[schema_name]=-.table_creation_rule_ev (table_creation_rule_ev_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY DEFERRED,
+  CONSTRAINT mc_table_create_gui_data_service_field_requirements CHECK (
+CASE
+    WHEN create_gui_data_service_flag IS NULL THEN true
+    WHEN create_gui_data_service_flag = true AND suppress_gui_data_service_changes_flag IS NOT NULL AND gui_pagify_flag IS NOT NULL THEN true
+    WHEN create_gui_data_service_flag = false AND suppress_gui_data_service_changes_flag IS NULL AND gui_pagify_flag IS NULL AND gui_records_per_page IS NULL THEN true
+    ELSE false
+END),
+  CONSTRAINT mc_table_create_orm_field_requirements CHECK (
+CASE
+    WHEN create_orm_flag IS NULL THEN true
+    WHEN create_orm_flag = true AND suppress_orm_changes_flag IS NOT NULL THEN true
+    WHEN create_orm_flag = false AND suppress_orm_changes_flag IS NULL AND extra_orm_code IS NULL AND orm_discriminator_column_id IS NULL THEN true
+    ELSE false
+END),
+  CONSTRAINT mc_table_create_pojo_field_requirements CHECK (
+CASE
+    WHEN create_pojo_flag = true AND java_fq_superclass IS NOT NULL AND src_folder_tag IS NOT NULL AND suppress_pojo_changes_flag IS NOT NULL AND java_package IS NOT NULL AND constructor_from_field_flag IS NOT NULL THEN true
+    WHEN create_pojo_flag = false AND java_fq_superclass IS NULL AND src_folder_tag IS NULL AND suppress_pojo_changes_flag IS NULL AND constructor_from_field_flag IS NULL AND extra_java_code IS NULL THEN true
+    ELSE false
+END),
+  CONSTRAINT mc_table_create_table_field_requirements CHECK (
+CASE
+    WHEN table_creation_rule_ev_id <> 35 AND suppress_table_changes_flag IS NOT NULL AND create_iud_table_flag IS NOT NULL AND schema_name IS NOT NULL THEN true
+    WHEN table_creation_rule_ev_id = 35 AND suppress_table_changes_flag IS NULL AND create_iud_table_flag IS NULL AND schema_name IS NULL AND within_create_sql IS NULL AND create_orm_flag IS NULL AND create_gui_data_service_flag IS NULL THEN true
+    ELSE false
+END),
+  CONSTRAINT mc_table_gui_pagify_field_requirements CHECK (
+CASE
+    WHEN gui_pagify_flag IS NULL OR gui_pagify_flag = true THEN true
+    WHEN gui_pagify_flag = false AND gui_records_per_page IS NULL THEN true
+    ELSE false
+END),
+  CONSTRAINT mc_table_java_package_format CHECK (
+CASE
+    WHEN java_package IS NULL THEN true
+    WHEN "substring"(java_package::text, '[A-Za-z0-9]{1}[#.A-Za-z0-9]*[A-Za-z0-9]{1}'::text) = java_package::text THEN true
+    ELSE false
+END),
+  CONSTRAINT mc_table_java_fq_superclass_format CHECK (
+CASE
+    WHEN java_fq_superclass IS NULL THEN true
+    WHEN "substring"(java_fq_superclass::text, '[A-Za-z0-9]{1}[#.A-Za-z0-9]*[A-Za-z0-9]{1}'::text) = java_fq_superclass::text THEN true
+    ELSE false
+END),
+  CONSTRAINT mc_table_name_camel_case_format CHECK (
+CASE
+    WHEN "substring"(name_camel_case::text, '[A-Z]{1}[A-Za-z0-9]*'::text) = name_camel_case::text THEN true
+    ELSE false
+END),
+  CONSTRAINT mc_table_name_lower_format CHECK (
+CASE
+    WHEN "substring"(name::text, '[a-z_]{1}[a-z_0-9]*'::text) = name::text THEN true
+    ELSE false
+END),
+  CONSTRAINT mc_table_schema_name_lower_format CHECK (
+CASE
+    WHEN schema_name IS NULL THEN true
+    WHEN "substring"(schema_name::text, '[a-z_]{1}[a-z_0-9]*'::text) = schema_name::text THEN true
+    ELSE false
+END),
+  CONSTRAINT mc_table_src_folder_tag_format CHECK (
+CASE
+    WHEN src_folder_tag IS NULL THEN true
+    WHEN "substring"(src_folder_tag::text, '[a-zA-Z_0-9]*'::text) = src_folder_tag::text THEN true
+    ELSE false
+END)
+)
+WITH (OIDS=FALSE);
+ALTER TABLE -=[schema_name]=-.mc_table OWNER TO -=[owner]=-;
+
+
+---------------------------------------------
+--MC_COLUMN - Columns and fields that are properties of a Table, 
+--  and their meta data that describe how to maintain them.
+---------------------------------------------
+CREATE TABLE -=[schema_name]=-.mc_column
+(
+  mc_column_id serial NOT NULL,
+  add_date timestamp with time zone NOT NULL DEFAULT now(),
+  mc_table_id integer NOT NULL,
+  "sequence" smallint NOT NULL,
+  "name" character varying NOT NULL,
+  description character varying NOT NULL,
+  name_camel_case character varying NOT NULL,
+  datatype_ev_id integer NOT NULL,
+  index_ev_id integer,
+  pk_flag boolean NOT NULL,
+  
+  fk_flag boolean NOT NULL,
+  fk_table_id integer,                                   --table to which we are linking
+  fk_collected_table_pk_column_id integer,                         --table to which we are bridging a link
+  fk_pojo_collection_container_ev_id integer,             --type of collection on foreign table 
+  fk_pojo_collection_name_camel_case character varying,  --name of collection on foreign table
+  fk_pojo_collection_local_key_column_id integer,        --if map/list the column on current table is the key/index
+  fk_orm_lazy_flag boolean,                              --should collection on foreign table be lazy loaded
+  fk_orm_link_thru_to_table_id integer,                  --is current table linking table only? if so point to referenced table
+  fk_orm_inverse_flag boolean,                           --true on side of link that iis responsible for persistance; true = local, false = foreign
+  fk_gui_column_filter_local character varying,
+  fk_gui_column_filter_foreign character varying,
+
+  not_null_flag boolean NOT NULL,
+  default_value character varying,
+  constraint_sql character varying,
+  pojo_constructor_field_flag boolean,
+  gui_header character varying,
+  gui_tool_tip character varying,
+  gui_sortable_flag boolean,
+  gui_field_group_name character varying,
+  gui_field_group_sequence smallint,
+  gui_field_group_guard_column_id integer,
+  gui_field_group_field_required_flag boolean,
+  CONSTRAINT mc_column_pk PRIMARY KEY (mc_column_id),
+  CONSTRAINT mc_column_mc_table_id FOREIGN KEY (mc_table_id)
+      REFERENCES -=[schema_name]=-.mc_table (mc_table_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  CONSTRAINT mc_column_datatype_ev_fk FOREIGN KEY (datatype_ev_id)
+      REFERENCES -=[schema_name]=-.datatype_ev (datatype_ev_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY DEFERRED,
+  CONSTRAINT mc_column_name_camel_case UNIQUE (mc_table_id, name_camel_case),
+  CONSTRAINT mc_column_name_unique UNIQUE (mc_table_id, name),
+  CONSTRAINT mc_column_sequence_unique UNIQUE (mc_table_id, sequence) DEFERRABLE INITIALLY DEFERRED,
+  CONSTRAINT mc_column_fk_pojo_collection CHECK (
+CASE
+    WHEN fk_pojo_collection_container_ev_id IS NULL THEN true
+    WHEN fk_orm_lazy_flag is null or fk_orm_inverse_flag is null THEN false
+    ELSE true
+END), 
+  CONSTRAINT mc_column_gui_field_group_field_requirements CHECK (
+CASE
+    WHEN gui_field_group_name IS NOT NULL AND gui_field_group_sequence IS NOT NULL AND gui_field_group_guard_column_id IS NOT NULL AND gui_field_group_field_required_flag IS NOT NULL THEN true
+    WHEN gui_field_group_name IS NULL AND gui_field_group_sequence IS NULL AND gui_field_group_guard_column_id IS NULL AND gui_field_group_field_required_flag IS NULL THEN true
+    ELSE false
+END),
+  CONSTRAINT mc_column_name_camel_case_format CHECK (
+CASE
+    WHEN "substring"(name_camel_case::text, '[a-z]{1}[A-Za-z0-9]*'::text) = name_camel_case::text THEN true
+    ELSE false
+END),
+  CONSTRAINT mc_column_name_lower_format CHECK (
+CASE
+    WHEN "substring"(name::text, '[a-z_]{1}[a-z_0-9]*'::text) = name::text THEN true
+    ELSE false
+END)
+)
+WITH (OIDS=FALSE);
+ALTER TABLE -=[schema_name]=-.mc_column OWNER TO -=[owner]=-;
+
+alter table -=[schema_name]=-.mc_table add   CONSTRAINT mc_table_discriminator_column_fk FOREIGN KEY (orm_discriminator_column_id)
+      REFERENCES -=[schema_name]=-.mc_column (mc_column_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY DEFERRED;
+
+alter table -=[schema_name]=-.mc_table add   CONSTRAINT mc_table_gui_picker_description_column_fk FOREIGN KEY (gui_picker_description_column_id)
+      REFERENCES -=[schema_name]=-.mc_column (mc_column_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY DEFERRED;
+
+---------------------------------------------
+--MC_CHILD - Define descriminators, subclasses, etc
+---------------------------------------------
+CREATE TABLE -=[schema_name]=-.mc_child
+(
+  mc_child_id serial NOT NULL,
+  add_date timestamp with time zone NOT NULL DEFAULT now(),
+  mc_table_id integer NOT NULL,
+  mc_parent_id integer, --self reference only, blank on first gen kids
+  description character varying NOT NULL,
+  name_camel_case character varying NOT NULL,
+  orm_discriminator_value character varying NOT NULL,
+  create_constraint_using_discriminator_flag boolean NOT NULL, -- constraints on table???
+  extra_java_code character varying,
+  extra_orm_code character varying,
+  CONSTRAINT mc_child_pk PRIMARY KEY (mc_child_id),
+  CONSTRAINT mc_child_name_camel_case UNIQUE (name_camel_case),
+  CONSTRAINT mc_child_mc_table_id FOREIGN KEY (mc_table_id)
+      REFERENCES -=[schema_name]=-.mc_table (mc_table_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  CONSTRAINT mc_child_mc_parent_id FOREIGN KEY (mc_parent_id)
+      REFERENCES -=[schema_name]=-.mc_child (mc_child_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+)
+WITH (OIDS=FALSE);
+ALTER TABLE -=[schema_name]=-.mc_child OWNER TO -=[owner]=-;
+
+---------------------------------------------
+--MC_CHILD_ADD_COLUMN - define new column on child, 
+--    if the column has a link in this table,
+--    then it only appears on children who are linked to it,
+--      and not on the original class
+---------------------------------------------
+CREATE TABLE -=[schema_name]=-.mc_child_add_column
+(
+  mc_child_add_column_id serial NOT NULL,
+  add_date timestamp with time zone NOT NULL DEFAULT now(),
+  mc_child_id integer NOT NULL,
+  mc_column_id integer NOT NULL,
+  CONSTRAINT mc_child_add_column_pk PRIMARY KEY (mc_child_add_column_id),
+  CONSTRAINT mc_child_add_column_mc_child_id FOREIGN KEY (mc_child_id)
+      REFERENCES -=[schema_name]=-.mc_child (mc_child_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  CONSTRAINT mc_child_add_column_mc_column_id FOREIGN KEY (mc_column_id)
+      REFERENCES -=[schema_name]=-.mc_column (mc_column_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+)
+WITH (OIDS=FALSE);
+ALTER TABLE -=[schema_name]=-.mc_child_add_column OWNER TO -=[owner]=-;
+
+---------------------------------------------
+--MC_INDEX - typically multi column index, 
+--  as simple single column indexes can be defined on column table
+---------------------------------------------
+CREATE TABLE -=[schema_name]=-.mc_index
+(
+  mc_index_id serial NOT NULL,
+  add_date timestamp with time zone NOT NULL DEFAULT now(),
+  mc_table_id integer NOT NULL,
+  index_ev_id integer NOT NULL,
+  index_name character varying,
+  CONSTRAINT mc_index_pk PRIMARY KEY (mc_index_id),
+  CONSTRAINT mc_index_mc_table_id FOREIGN KEY (mc_table_id)
+      REFERENCES -=[schema_name]=-.mc_table (mc_table_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  CONSTRAINT mc_index_index_name_lower_format CHECK (CASE
+    WHEN index_name IS NULL THEN true
+    WHEN "substring"(index_name::text, '[a-z_]{1}[a-z_0-9]*'::text) = index_name::text THEN true
+    ELSE false
+END)
+)
+WITH (OIDS=FALSE);
+ALTER TABLE -=[schema_name]=-.mc_index OWNER TO -=[owner]=-;
+
+---------------------------------------------
+--MC_INDEX_COLUMN - column for mc_index
+---------------------------------------------
+CREATE TABLE -=[schema_name]=-.mc_index_column
+(
+  mc_index_column_id serial NOT NULL,
+  add_date timestamp with time zone NOT NULL DEFAULT now(),
+  mc_index_id integer NOT NULL,
+  mc_column_id integer NOT NULL,
+  "sequence" smallint,
+  CONSTRAINT mc_index_column_pk PRIMARY KEY (mc_index_column_id),
+  CONSTRAINT mc_index_column_mc_index_id FOREIGN KEY (mc_index_id)
+      REFERENCES -=[schema_name]=-.mc_index (mc_index_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  CONSTRAINT mc_index_column_mc_column_id FOREIGN KEY (mc_column_id)
+      REFERENCES -=[schema_name]=-.mc_column (mc_column_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+)
+WITH (OIDS=FALSE);
+ALTER TABLE -=[schema_name]=-.mc_index_column OWNER TO -=[owner]=-;
+
+---------------------------------------------
+--join the two models together
+
+alter table -=[schema_name]=-.enumeration add column mc_table_id bigint;
+ALTER TABLE -=[schema_name]=-.enumeration ALTER COLUMN mc_table_id SET DEFAULT nextval('-=[schema_name]=-.mc_table_mc_table_id_seq'::regclass);
+
+commit transaction;
+         ]]></value>
+        </property> 
+    </bean>
+
+</beans>

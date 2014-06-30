@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <bean id="install_02.03_update_enum_model" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="template">
+            <value><![CDATA[
+begin transaction;
+
+alter table -=[schema_name]=-.enumeration_iud add column mc_table_id bigint;
+
+-------------------------------------------------------------
+--create insert trigger for enumeration table
+-------------------------------------------------------------
+CREATE OR REPLACE FUNCTION -=[schema_name]=-.insert_enumeration()
+    RETURNS "trigger" AS
+$BODY$
+begin
+
+--check limited fk to enumeration_value table
+if not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.auto_creation_method_ev_id and enumeration_id = 4)
+then RAISE EXCEPTION 'Key (auto_creation_method_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 4', new.auto_creation_method_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for child_table_synch_method_ev_id
+if not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.child_table_synch_method_ev_id and enumeration_id = 5)
+then RAISE EXCEPTION 'Key (child_table_synch_method_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 5', new.child_table_synch_method_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for column#_datatype_ev_id
+if new.column1_datatype_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column1_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column1_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column1_datatype_ev_id;
+end if;
+
+if new.column2_datatype_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column2_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column2_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column2_datatype_ev_id;
+end if;
+
+if new.column3_datatype_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column3_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column3_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column3_datatype_ev_id;
+end if;
+
+if new.column4_datatype_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column4_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column4_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column4_datatype_ev_id;
+end if;
+
+if new.column5_datatype_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column5_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column5_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column5_datatype_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for column#_index_ev_id
+if new.column1_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column1_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column1_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column1_index_ev_id;
+end if;
+
+if new.column2_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column2_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column2_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column2_index_ev_id;
+end if;
+
+if new.column3_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column3_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column3_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column3_index_ev_id;
+end if;
+
+if new.column4_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column4_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column4_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column4_index_ev_id;
+end if;
+
+if new.column5_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column5_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column5_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column5_index_ev_id;
+end if;
+
+insert into -=[schema_name]=-.enumeration_iud(operation, change_date, applied_flag,
+    enumeration_id, add_date, name, tablename, tablename_camel_case, mc_table_id
+) 
+values (substr( TG_OP, 1, 1 ), now(), false,
+    new.enumeration_id, new.add_date, new.name, new.tablename, 
+    new.tablename_camel_case, new.mc_table_id
+);
+RETURN NULL;
+end;
+$BODY$
+    LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION -=[schema_name]=-.insert_enumeration() OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create delete trigger for enumeration table
+-------------------------------------------------------------
+CREATE OR REPLACE FUNCTION -=[schema_name]=-.delete_enumeration()
+    RETURNS "trigger" AS
+$BODY$
+begin
+insert into -=[schema_name]=-.enumeration_iud(operation, change_date, applied_flag,
+    enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql,
+    child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package,
+    column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column1_default,
+    column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column2_default, 
+    column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column3_default,
+    column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column4_default,
+    column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column5_default,
+    mc_table_id
+    
+) 
+values (substr( TG_OP, 1, 1 ), now(),
+    case --applied_flag
+        when exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = old.enumeration_id and iud.operation in ('I') and iud.applied_flag = false)
+        then true
+        else false
+    end,
+    old.enumeration_id, old.add_date,   old.name,   old.tablename, old.tablename_camel_case, 
+    case --schema_name
+        when exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = old.enumeration_id and iud.operation in ('U') and iud.applied_flag = false)
+        then (
+            select max(iud.schema_name)
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = old.enumeration_id and iud.operation in ('U') and iud.applied_flag = false)
+        else old.schema_name
+    end,
+    old.post_create_sql, old.child_table_synch_method_ev_id, old.auto_creation_method_ev_id, old.folder_tag, old.java_package,
+    old.column1_name, old.column1_name_camel_case, old.column1_datatype_ev_id, old.column1_index_ev_id, old.column1_not_null_flag, old.column1_default,
+    old.column2_name, old.column2_name_camel_case, old.column2_datatype_ev_id, old.column2_index_ev_id, old.column2_not_null_flag, old.column1_default,
+    old.column3_name, old.column3_name_camel_case, old.column3_datatype_ev_id, old.column3_index_ev_id, old.column3_not_null_flag, old.column1_default,
+    old.column4_name, old.column4_name_camel_case, old.column4_datatype_ev_id, old.column4_index_ev_id, old.column4_not_null_flag, old.column1_default,
+    old.column5_name, old.column5_name_camel_case, old.column5_datatype_ev_id, old.column5_index_ev_id, old.column5_not_null_flag, old.column1_default,
+    old.mc_table_id);
+
+update -=[schema_name]=-.enumeration_iud set applied_flag = true
+where enumeration_id = old.enumeration_id 
+    and operation <> 'D' and applied_flag = false;
+
+update -=[schema_name]=-.enumeration_value_iud set applied_flag = true
+where enumeration_id = old.enumeration_id
+    and applied_flag = false;
+
+RETURN NULL;
+end;
+$BODY$
+    LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION -=[schema_name]=-.delete_enumeration() OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create update trigger for enumeration table
+-------------------------------------------------------------
+CREATE OR REPLACE FUNCTION -=[schema_name]=-.update_enumeration()
+    RETURNS "trigger" AS
+$BODY$
+begin
+
+--no change enumeration_id,
+IF new.enumeration_id <> old.enumeration_id THEN
+     RAISE EXCEPTION 'no updates allowed on enumeration_id';
+END IF;
+
+--no change mc_table_id,
+IF new.mc_table_id <> old.mc_table_id THEN
+     RAISE EXCEPTION 'no updates allowed on mc_table_id';
+END IF;
+
+--check limited fk to enumeration_value table for auto_method_ev_id
+if new.auto_creation_method_ev_id is not null and (old.auto_creation_method_ev_id is null or old.auto_creation_method_ev_id <> new.auto_creation_method_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.auto_creation_method_ev_id and enumeration_id = 4)
+then RAISE EXCEPTION 'Key (auto_creation_method_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 4', new.auto_creation_method_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for child_table_synch_method_ev_id
+if new.child_table_synch_method_ev_id is not null and (old.child_table_synch_method_ev_id is null or old.child_table_synch_method_ev_id <> new.child_table_synch_method_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.child_table_synch_method_ev_id and enumeration_id = 5)
+then RAISE EXCEPTION 'Key (child_table_synch_method_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 5', new.child_table_synch_method_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for column#_datatype_ev_id
+if new.column1_datatype_ev_id is not null and (old.column1_datatype_ev_id is null or old.column1_datatype_ev_id <> new.column1_datatype_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column1_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column1_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column1_datatype_ev_id;
+end if;
+
+if new.column2_datatype_ev_id is not null and (old.column2_datatype_ev_id is null or old.column2_datatype_ev_id <> new.column2_datatype_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column2_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column2_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column2_datatype_ev_id;
+end if;
+
+if new.column3_datatype_ev_id is not null and (old.column3_datatype_ev_id is null or old.column3_datatype_ev_id <> new.column3_datatype_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column3_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column3_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column3_datatype_ev_id;
+end if;
+
+if new.column4_datatype_ev_id is not null and (old.column4_datatype_ev_id is null or old.column4_datatype_ev_id <> new.column4_datatype_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column4_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column4_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column4_datatype_ev_id;
+end if;
+
+if new.column5_datatype_ev_id is not null and (old.column5_datatype_ev_id is null or old.column5_datatype_ev_id <> new.column5_datatype_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column5_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column5_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column5_datatype_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for column#_index_ev_id
+if new.column1_index_ev_id is not null and (old.column1_index_ev_id is null or old.column1_index_ev_id <> new.column1_index_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column1_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column1_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column1_index_ev_id;
+end if;
+
+if new.column2_index_ev_id is not null and (old.column2_index_ev_id is null or old.column2_index_ev_id <> new.column2_index_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column2_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column2_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column2_index_ev_id;
+end if;
+
+if new.column3_index_ev_id is not null and (old.column3_index_ev_id is null or old.column3_index_ev_id <> new.column3_index_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column3_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column3_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column3_index_ev_id;
+end if;
+
+if new.column4_index_ev_id is not null and (old.column4_index_ev_id is null or old.column4_index_ev_id <> new.column4_index_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column4_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column4_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column4_index_ev_id;
+end if;
+
+if new.column5_index_ev_id is not null and (old.column5_index_ev_id is null or old.column5_index_ev_id <> new.column5_index_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column5_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column5_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column5_index_ev_id;
+end if;
+
+--column1 nullness change
+if ((old.column1_not_null_flag is null or old.column1_not_null_flag = false) and new.column1_not_null_flag = true) then
+    if (new.column1_default is not null) then
+        update -=[schema_name]=-.enumeration_value set column1_value = new.column1_default
+        where column1_value is null and enumeration_id = new.enumeration_id;
+    end if;
+    if (new.column1_default is null and exists (select 1 from -=[schema_name]=-.enumeration_value where column1_value is null and enumeration_id = new.enumeration_id)) then
+        RAISE EXCEPTION 'null values exists on -=[schema_name]=-.enumeration_value.column1_value, repair before setting -=[schema_name]=-.-=[schema_name]=-.column1_not_null_flag = true';
+    end if;
+end if;
+
+--column2 nullness change
+if ((old.column2_not_null_flag is null or old.column2_not_null_flag = false) and new.column2_not_null_flag = true) then
+    if (new.column2_default is not null) then
+        update -=[schema_name]=-.enumeration_value set column2_value = new.column2_default
+        where column2_value is null and enumeration_id = new.enumeration_id;
+    end if;
+    if (new.column2_default is null and exists (select 1 from -=[schema_name]=-.enumeration_value where column2_value is null and enumeration_id = new.enumeration_id)) then
+        RAISE EXCEPTION 'null values exists on -=[schema_name]=-.enumeration_value.column2_value, repair before setting -=[schema_name]=-.-=[schema_name]=-.column2_not_null_flag = true';
+    end if;
+end if;
+
+--column3 nullness change
+if ((old.column3_not_null_flag is null or old.column3_not_null_flag = false) and new.column3_not_null_flag = true) then
+    if (new.column3_default is not null) then
+        update -=[schema_name]=-.enumeration_value set column3_value = new.column3_default
+        where column3_value is null and enumeration_id = new.enumeration_id;
+    end if;
+    if (new.column3_default is null and exists (select 1 from -=[schema_name]=-.enumeration_value where column3_value is null and enumeration_id = new.enumeration_id)) then
+        RAISE EXCEPTION 'null values exists on -=[schema_name]=-.enumeration_value.column3_value, repair before setting -=[schema_name]=-.-=[schema_name]=-.column3_not_null_flag = true';
+    end if;
+end if;
+
+--column4 nullness change
+if ((old.column4_not_null_flag is null or old.column4_not_null_flag = false) and new.column4_not_null_flag = true) then
+    if (new.column4_default is not null) then
+        update -=[schema_name]=-.enumeration_value set column4_value = new.column4_default
+        where column4_value is null and enumeration_id = new.enumeration_id;
+    end if;
+    if (new.column4_default is null and exists (select 1 from -=[schema_name]=-.enumeration_value where column4_value is null and enumeration_id = new.enumeration_id)) then
+        RAISE EXCEPTION 'null values exists on -=[schema_name]=-.enumeration_value.column4_value, repair before setting -=[schema_name]=-.-=[schema_name]=-.column4_not_null_flag = true';
+    end if;
+end if;
+
+--column5 nullness change
+if ((old.column5_not_null_flag is null or old.column5_not_null_flag = false) and new.column5_not_null_flag = true) then
+    if (new.column5_default is not null) then
+        update -=[schema_name]=-.enumeration_value set column5_value = new.column5_default
+        where column5_value is null and enumeration_id = new.enumeration_id;
+    end if;
+    if (new.column5_default is null and exists (select 1 from -=[schema_name]=-.enumeration_value where column5_value is null and enumeration_id = new.enumeration_id)) then
+        RAISE EXCEPTION 'null values exists on -=[schema_name]=-.enumeration_value.column5_value, repair before setting -=[schema_name]=-.-=[schema_name]=-.column5_not_null_flag = true';
+    end if;
+end if;
+
+insert into -=[schema_name]=-.enumeration_iud(operation, change_date, applied_flag,
+    enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name,
+    post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package,
+    column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column1_default,
+    column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column2_default, 
+    column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column3_default,
+    column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column4_default,
+    column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column5_default,
+    mc_table_id
+) 
+values (substr( TG_OP, 1, 1 ), now(),
+    case 
+        when exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = old.enumeration_id and iud.operation in ('I', 'U') and iud.applied_flag = false)
+        then true
+        else false
+    end,
+    old.enumeration_id, old.add_date,   old.name,   old.tablename, old.tablename_camel_case, old.schema_name,
+    case when old.post_create_sql = new.post_create_sql then null else old.post_create_sql end,
+    case when old.child_table_synch_method_ev_id = new.child_table_synch_method_ev_id then null else old.child_table_synch_method_ev_id end,
+    case when old.auto_creation_method_ev_id = new.auto_creation_method_ev_id then null else old.auto_creation_method_ev_id end,
+    case when old.folder_tag = new.folder_tag then null else old.folder_tag end,
+    case when old.java_package = new.java_package then null else old.java_package end,
+    case when old.column1_name = new.column1_name then null else old.column1_name end,
+    case when old.column1_name_camel_case = new.column1_name_camel_case then null else old.column1_name_camel_case end,
+    case when old.column1_datatype_ev_id = new.column1_datatype_ev_id then null else old.column1_datatype_ev_id end,
+    case when old.column1_index_ev_id = new.column1_index_ev_id then null else old.column1_index_ev_id end,
+    case when old.column1_not_null_flag = new.column1_not_null_flag then null else old.column1_not_null_flag end,
+    case when old.column1_default = new.column1_default then null else old.column1_default end,
+    case when old.column2_name = new.column2_name then null else old.column2_name end,
+    case when old.column2_name_camel_case = new.column2_name_camel_case then null else old.column2_name_camel_case end,
+    case when old.column2_datatype_ev_id = new.column2_datatype_ev_id then null else old.column2_datatype_ev_id end,
+    case when old.column2_index_ev_id = new.column2_index_ev_id then null else old.column2_index_ev_id end,
+    case when old.column2_not_null_flag = new.column2_not_null_flag then null else old.column2_not_null_flag end,
+    case when old.column2_default = new.column2_default then null else old.column2_default end,
+    case when old.column3_name = new.column3_name then null else old.column3_name end,
+    case when old.column3_name_camel_case = new.column3_name_camel_case then null else old.column3_name_camel_case end,
+    case when old.column3_datatype_ev_id = new.column3_datatype_ev_id then null else old.column3_datatype_ev_id end,
+    case when old.column3_index_ev_id = new.column3_index_ev_id then null else old.column3_index_ev_id end,
+    case when old.column3_not_null_flag = new.column3_not_null_flag then null else old.column3_not_null_flag end,
+    case when old.column3_default = new.column3_default then null else old.column3_default end,
+    case when old.column4_name = new.column4_name then null else old.column4_name end,
+    case when old.column4_name_camel_case = new.column4_name_camel_case then null else old.column4_name_camel_case end,
+    case when old.column4_datatype_ev_id = new.column4_datatype_ev_id then null else old.column4_datatype_ev_id end,
+    case when old.column4_index_ev_id = new.column4_index_ev_id then null else old.column4_index_ev_id end,
+    case when old.column4_not_null_flag = new.column4_not_null_flag then null else old.column4_not_null_flag end,
+    case when old.column4_default = new.column4_default then null else old.column4_default end,
+    case when old.column5_name = new.column5_name then null else old.column5_name end,
+    case when old.column5_name_camel_case = new.column5_name_camel_case then null else old.column5_name_camel_case end,
+    case when old.column5_datatype_ev_id = new.column5_datatype_ev_id then null else old.column5_datatype_ev_id end,
+    case when old.column5_index_ev_id = new.column5_index_ev_id then null else old.column5_index_ev_id end,
+    case when old.column5_not_null_flag = new.column5_not_null_flag then null else old.column5_not_null_flag end,
+    case when old.column5_default = new.column5_default then null else old.column5_default end,
+    old.mc_table_id
+);
+update -=[schema_name]=-.enumeration_value_iud set applied_flag = true
+        where enumeration_id = old.enumeration_id
+        and applied_flag = false;
+RETURN NULL;
+end;
+$BODY$
+    LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION -=[schema_name]=-.update_enumeration() OWNER TO -=[owner]=-;
+
+
+commit transaction;
+            ]]></value>
+        </property> 
+    </bean>
+
+</beans>
+      

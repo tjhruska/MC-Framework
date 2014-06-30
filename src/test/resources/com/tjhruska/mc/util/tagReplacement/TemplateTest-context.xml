@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <util:map id="replacementValues" key-type="java.lang.String" value-type="java.lang.String">
+        <entry key="LNAME" value="Lee"/>
+        <entry key="YYY" value="*-=[YYY]=-"/>
+        <entry key="FNAME" value="Robert"/>
+        <entry key="SUFFIX" value="Jr."/>
+        <entry key="GOODBYE" value="Goodbye, -=[GOODBYE]=-"/>
+    </util:map>
+
+    <util:map id="replacementValuesFinalizer" key-type="java.lang.String" value-type="java.lang.String">
+        <entry key="GOODBYE" value="Goodbye!"/>
+    </util:map>
+
+	<bean id="templateConstructorInjected1"
+		class="com.tjhruska.mc.util.tagReplacement.Template">
+		<constructor-arg
+			value="Hello there Mr. -=[LNAME]=-.  Pleasure to meet you.">
+		</constructor-arg>
+	</bean>
+	<bean id="templateConstructorInjected2"
+		class="com.tjhruska.mc.util.tagReplacement.Template">
+		<constructor-arg value="-=[YYY]=-" />
+		<constructor-arg value="true" />
+		<constructor-arg value="50" />
+	</bean>
+	<bean id="templatePropertyInjected1"
+		class="com.tjhruska.mc.util.tagReplacement.Template">
+		<property name="template">
+			<value>-={SUFFIX: -=[LNAME]=- -=[SUFFIX]=-, -=[FNAME]=- :?: -=[FNAME]=- }=-(-=[LNAME]=-) </value>
+		</property>
+	</bean>
+	<bean id="templatePropertyInjected2"
+		class="com.tjhruska.mc.util.tagReplacement.Template">
+		<property name="template"
+			value="Goodbye -=[FNAME]=-, thanks for playing.  -=[GOODBYE]=-">
+		</property>
+		<property name="keepUnusedTags"
+			value="false">
+		</property>
+		<property name="maxIterations"
+			value="100">
+		</property>
+	</bean>
+</beans>

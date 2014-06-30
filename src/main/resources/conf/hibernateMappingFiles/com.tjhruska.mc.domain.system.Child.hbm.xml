@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+        
+<hibernate-mapping auto-import="false" package="com.tjhruska.mc.domain.system">
+
+
+    <class name="Child" table="mc_child" schema="mc" dynamic-update="true">
+        
+        <id name="id" type="int" column="mc_child_id">
+            <meta attribute="scope-set">protected</meta>
+            <generator class="sequence">
+                <param name="sequence">mc_child_mc_child_id_seq</param>
+            </generator>
+        </id>
+
+        <property name="addDate" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime" not-null="true" column="add_date" insert="false" update="false" />
+
+        <property name="tableId" type="integer" column="mc_table_id" not-null="true"/>
+        <property name="parentId" type="integer" column="mc_parent_id" not-null="false"/>
+        <property name="description" type="string" column="description" not-null="true"/>
+        <property name="nameCamelCase" type="string" column="name_camel_case" not-null="true"/>
+        <property name="ormDiscriminatorValue" type="string" column="orm_discriminator_value" not-null="true"/>
+        <property name="createConstraintUsingDiscriminatorFlag" type="boolean" column="create_constraint_using_discriminator_flag" not-null="true"/>
+        <property name="extraJavaCode" type="string" column="extra_java_code" not-null="false"/>
+        <property name="extraORMCode" type="string" column="extra_orm_code" not-null="false"/>
+    </class>    
+</hibernate-mapping>

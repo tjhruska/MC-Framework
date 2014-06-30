@@ -1,0 +1,12 @@
+mc.schemaName=mc
+mc.typeOfPlainOldObject=PlainOldGroovyObject
+mc.logDirectory       =/Volumes/Crypt/code_repo/mc_framework/logs
+mc.rootDirectory      =/Volumes/Crypt/code_repo/mc_framework/src/main/groovy
+mc.rootDirectory2     =/Volumes/Crypt/code_repo/mc_framework/src/main/groovy
+mc.testDirectory      =/Volumes/Crypt/code_repo/mc_framework/src/test/groovy
+mc.ormDirectory       =/Volumes/Crypt/code_repo/mc_framework/src/main/resources/conf/hibernateMappingFiles
+mc.webSpringDirectory =/Volumes/Crypt/code_repo/mc_framework/src/main/webapp/WEB-INF/spring
+mc.extJsDirectory     =/Volumes/Crypt/code_repo/mc_framework/src/main/webapp/resources/widgets
+mc.backupDirectory    =/Volumes/Crypt/code_repo/mc_framework/backup
+mc.packageBase        =com.tjhruska
+mc.adminUser=admin

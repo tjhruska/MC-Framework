@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <bean id="getExtJsWindowGridCodeFragments" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="template">
+            <value><![CDATA[
+-------------------------
+--Section 10.000 - begin window definition
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select t.mc_table_id as id, 10.000 as sequence, '0.000' as sequence2, false as suppress_changes_flag, 
+  'extJsDirectory' as folder_tag, 
+  null as java_package, 
+  'windowGrid' || t.name_camel_case || '.js' as fileName, 
+  null as fileName2, null as fragment2,
+E'var windowGrid' || t.name_camel_case || ';
+
+function onWindowGrid' || t.name_camel_case || 'Toggle(){
+    if (!windowGrid' || t.name_camel_case || ') {' as fragment
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.create_gui_data_service_flag = true
+UNION
+--Section 20.000 - define window body - grid
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select c.mc_table_id as id, 20.000 as sequence, '0.000' as sequence2, false as suppress_changes_flag, 
+  'extJsDirectory' as folder_tag, 
+  null as java_package, 
+  'windowGrid' || max(t.name_camel_case) || '.js' as fileName, 
+  null as fileName2, null as fragment2,
+E'
+        var ' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || E'Store = Ext.create(\'Ext.data.Store\', {
+            id : \'id\',
+            model : \'' || max(t.name_camel_case) || E'\'
+        });
+
+        var grid = Ext.create(\'Ext.grid.Panel\', {
+            store: ' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || E'Store,
+            selType: \'cellmodel\',
+            columnLines: true,
+            columns: [{
+                xtype: \'actioncolumn\',
+                width: 50,
+                items: [{
+                    icon   : \'resources/images/window_go.png\',
+                    tooltip: \'Open ' || max(t.name_camel_case) || E' Editor\',
+                    handler: function(grid, rowIndex, colIndex) {
+                        var rec = ' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || E'Store.getAt(rowIndex);
+                        onWindowForm' || max(t.name_camel_case) || E'Toggle(\'u\', rec.get(\'id\'));
+                    }
+                }, {
+                    icon   : \'resources/images/add.gif\',
+                    tooltip: \'Copy current row to new ' || max(t.name_camel_case) || E' Editor\',
+                    handler: function(grid, rowIndex, colIndex) {
+                        var rec = ' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || E'Store.getAt(rowIndex);
+                        onWindowForm' || max(t.name_camel_case) || E'Toggle(\'c\', rec.get(\'id\'));
+                    }
+                }, {
+                    tooltip: \'Delete ' || max(t.name_camel_case) || E' Record\',
+                    getClass: function(v, meta, rec) {
+                        if (rec.get(\'guiAction\') == \'deleting\') {
+                            this.items[1].tooltip = \'Deleting\';
+                            return \'loading-col\';
+                        } else if (rec.get(\'guiAction\') == \'failed\') {
+                            this.items[1].tooltip = \'Delete Failed - Click to try again!\';
+                            return \'no-col\';
+                        } else {
+                            this.items[1].tooltip = \'Delete ' || max(t.name_camel_case) || E' Record\';
+                            return \'delete-col\';
+                        }
+                    },
+                    handler: function(grid, rowIndex, colIndex) {
+                        var rec = ' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || E'Store.getAt(rowIndex);
+                        ' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || E'Id = rec.get(\'id\');
+                        Ext.MessageBox.confirm(\'Confirm\', \'Delete ' || max(t.name_camel_case) || E' with id \' + ' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || E'Id, function(button){
+                            if (button != \'yes\')
+                                return;
+                            rec.set(\'guiAction\', \'deleting\');
+                            Ext.Ajax.request({
+                                url: \'crud/' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || E'/\' + ' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || E'Id,
+                                method: \'DELETE\',
+                                success: function(response){
+                                    if (windowForm' || max(t.name_camel_case) || E'Map != null && windowForm' || max(t.name_camel_case) || E'Map.containsKey(' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || E'Id.toString())) {
+                                        windowForm' || max(t.name_camel_case) || E' = windowForm' || max(t.name_camel_case) || E'Map.get(' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || E'Id.toString());
+                                        windowForm' || max(t.name_camel_case) || E'Map.removeAtKey(' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || E'Id.toString());
+                                        windowForm' || max(t.name_camel_case) || E'.destroy();
+                                    }
+                                    ' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || E'Store.remove(rec);
+                                },
+                                failure: function(response){
+                                    rec.set(\'guiAction\', \'failed\');
+                                }
+                            });
+                        });
+                    }
+                }]
+            }, {'
+            || string_agg(case 
+when group_range.min_sequence = c.gui_field_group_sequence then E'
+                text: \'' || c.gui_field_group_name || E'\',
+                columns: [{' else '' end
+            || E'
+' || case when group_range.min_sequence is null then '' else '  ' end || E'              text     : \'' || c.gui_header || E'\',
+' || case when group_range.min_sequence is null then '' else '  ' end || E'              dataIndex: \'' || case when e.enumeration_id is null and c.fk_table_id is not null
+        then c.name_camel_case || 'Id'
+        else c.name_camel_case end || E'\','
+                     || case when d.datatype_ev_id <> 46 then '' else '
+' || case when group_range.min_sequence is null then '' else '  ' end || E'              xtype: \'datecolumn\',
+' || case when group_range.min_sequence is null then '' else '  ' end || E'              format: \'Y-m-d h:i a\',
+' || case when group_range.min_sequence is null then '' else '  ' end || E'              altFormats: \'c\',
+' end || '
+' || case when group_range.min_sequence is null then '' else '  ' end || '              //flex     : 1,
+' || case when group_range.min_sequence is null then '' else '  ' end || '              sortable : ' || case 
+                    when c.gui_sortable_flag = true 
+                    then 'true' else 'false'
+                end 
+                || case when c.gui_tool_tip is null then '' else ',
+' || case when group_range.min_sequence is null then '' else '  ' end || E'             tool_tip : \'' || c.gui_tool_tip || E'\'' end
+            || case 
+when group_range.max_sequence = c.gui_field_group_sequence then '
+                }]' else '' end, '
+            }, {' order by 
+case 
+  when group_range.min_sequence is not null
+  then 1
+  else 0
+end,
+case 
+  when group_range.min_sequence is not null 
+  then group_range.min_column_sequence 
+  else c.sequence 
+end, 
+c.gui_field_group_sequence)
+            || '
+            }],
+            viewConfig: {
+                //forceFit: true,
+                stripeRows: true
+            }
+        });'
+from
+    -=[schema_name]=-.mc_table t
+        join
+    -=[schema_name]=-.mc_column c on t.mc_table_id = c.mc_table_id
+        join
+    -=[schema_name]=-.datatype_ev d on c.datatype_ev_id = d.datatype_ev_id
+        left outer join
+    (
+    select
+        mc_table_id,
+        gui_field_group_name, 
+        min(sequence) as min_column_sequence,
+        max(sequence) as max_column_sequence,
+        min(gui_field_group_sequence) as min_sequence,
+        max(gui_field_group_sequence) as max_sequence
+    from -=[schema_name]=-.mc_column
+    where gui_field_group_name is not null
+    group by mc_table_id, gui_field_group_name
+    ) as group_range on c.mc_table_id = group_range.mc_table_id and c.gui_field_group_name = group_range.gui_field_group_name
+      left outer join
+    -=[schema_name]=-.enumeration as e on c.fk_table_id = e.mc_table_id
+where
+  t.create_gui_data_service_flag = true
+group by c.mc_table_id
+UNION
+-------------------------
+--Section 30.000 - close out window definition
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select t.mc_table_id as id, 30.000 as sequence, '0.000' as sequence2, false as suppress_changes_flag, 
+  'extJsDirectory' as folder_tag, 
+  null as java_package, 
+  'windowGrid' || t.name_camel_case || '.js' as fileName, 
+  null as fileName2, null as fragment2, '
+        ' || lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || E'Store.load();
+
+        windowGrid' || t.name_camel_case || E' = Ext.create(\'widget.window\', {
+            title: \'' || t.name_camel_case || E's\',
+            constrain: true,
+            renderTo: mainPanel.getComponent(\'mainPanelCenter\').body,
+            width: 800,
+            height: 350,
+            layout: \'fit\',
+            bodyStyle: \'padding: 1px;\',
+            maximizable: true,
+            minimizable: true,
+            items: grid,
+            tools: [{
+                type:\'refresh\',
+                qtip: \'Refresh Data\',
+                // hidden:true,
+                handler: function(event, toolEl, panel){
+                    Ext.Msg.alert("test", "hi");
+                    // refresh logic
+                }
+            }]
+            
+        });
+        windowGrid' || t.name_camel_case || E'.on(\'minimize\', function() {
+            windowGrid' || t.name_camel_case || '.hide(this, function() {});
+        });
+        windowGrid' || t.name_camel_case || E'.on(\'close\', function() {
+            windowGrid' || t.name_camel_case || '.destroy();
+            windowGrid' || t.name_camel_case || ' = null;
+        });
+    }
+    if (windowGrid' || t.name_camel_case || '.isVisible()) {
+        windowGrid' || t.name_camel_case || '.hide(this, function() {
+            //button.dom.disabled = false;
+        });
+    } else {
+        windowGrid' || t.name_camel_case || '.show(this, function() {
+            //button.dom.disabled = false;
+        });
+    }
+}' as fragment
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.create_gui_data_service_flag = true
+order by id, sequence, sequence2
+]]></value>
+        </property> 
+    </bean>
+    
+</beans>

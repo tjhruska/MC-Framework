@@ -1,0 +1,77 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+
+    <!-- put the following line in your application config to point to your properties
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"> 
+        <property name="locations" value="classpath:com/foo/database_local.properties"/>
+    </bean>
+    -->	
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>	
+
+    <bean id="simpleJdbcTemplate"
+        class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate">
+        <constructor-arg index="0" name="dataSource" type="javax.sql.DataSource">
+            <ref bean="dataSource" />
+        </constructor-arg>
+    </bean>
+    
+    <bean id="parentSQLTemplate" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate" abstract="true">
+        <property name="simpleJdbcTemplate" ref="simpleJdbcTemplate" />
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+	
+	<bean id="sessionFactory"
+			class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mappingLocations" value="${hibernate.mappingLocations}" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+			</props>
+		</property>
+	</bean>	
+    <!-- <property type="org.jadira.usertype.dateandtime.joda.PersistentDateTime" name="dateTime"/>-->
+
+	<tx:annotation-driven />
+	
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+	   <tx:attributes>
+	       <tx:method name="find*" read-only="true"/>
+	       <tx:method name="*"/>
+	   </tx:attributes>
+	</tx:advice>
+	
+    <!--
+	<aop:config>
+	   <aop:pointcut expression="" id="*Dao"/>
+	</aop:config>
+    -->
+	  
+	<bean id="restrictionHelper" class="com.tjhruska.mc.database.restrictions.RestrictionHelperHibernate"/>
+	
+	<bean id="daoLoader" class="com.tjhruska.mc.util.spring.DaoLoader">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>	
+	
+</beans>

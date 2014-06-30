@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <bean id="buildTableCreatorCommands" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="template">
+            <value><![CDATA[
+--0. create schema if needed...
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 0.000 as section, 0 as sequence, '' as post_create_sql, E'
+create or replace function create_schema() returns void as $$
+begin
+  create schema ' || t.schema_name || E';
+exception
+  when duplicate_schema then raise notice \'Schema exists skipping command.\';
+end;
+$$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION create_schema() OWNER TO admin;
+select create_schema();
+drop function create_schema();
+' sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  
+--1. open create table
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 1.000 as section, 0 as sequence, '' as post_create_sql, '
+
+-={DROP_TABLE:DROP TABLE ' || t.schema_name || '.' || t.name || ';}=-
+-={RENAME_TABLE:ALTER TABLE ' || t.schema_name || '.' || t.name || ' RENAME TO ' || t.schema_name || '.' || t.name || '_old ;}=-
+CREATE TABLE ' || t.schema_name || '.' || t.name ||'
+(' sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+
+--2. column definitions
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select c.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 2.000 as section, c.sequence, '' as post_create_sql, 
+  case when c.sequence = (select min(ic.sequence) from -=[schema_name]=-.mc_column as ic where t.mc_table_id = ic.mc_table_id) then '' else ',' end || '
+  ' || c.name || ' ' || datatype.database || case when c.not_null_flag = true then ' NOT NULL' else '' end 
+  || case when c.default_value is not null then ' DEFAULT ' || c.default_value else '' end as sql
+from
+  -=[schema_name]=-.mc_table t, 
+  -=[schema_name]=-.mc_column as c, 
+  -=[schema_name]=-.datatype_ev as datatype
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.mc_table_id = c.mc_table_id
+  and c.datatype_ev_id = datatype.datatype_ev_id
+
+--3.1. open pk constraint definitions
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select distinct c.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 3.100 as section, 0 as sequence, '' as post_create_sql, ',
+  CONSTRAINT ' || t.name || '_pk PRIMARY KEY (' as sql
+from
+  -=[schema_name]=-.mc_column as c, 
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  and c.mc_table_id = t.mc_table_id
+  and c.pk_flag = true
+
+--3.200. list columns for constraint definitions
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select c.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 3.200 as section, c.sequence, '' as post_create_sql,  
+  case when exists (select 1 from -=[schema_name]=-.mc_column as ic where c.mc_table_id = ic.mc_table_id and ic.pk_flag = true and ic.sequence < c.sequence)
+  then ', ' else '' end || c.name as sql
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_column as c
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.mc_table_id = c.mc_table_id
+  and c.pk_flag = true
+
+--3.3. close pk constraint definitions
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select distinct c.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 3.300 as section, 0 as sequence, '' as post_create_sql, ')' as sql
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_column as c
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.mc_table_id = c.mc_table_id
+  and c.pk_flag = true
+
+--5. user defined constraint definitions
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select c.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 5.000 as section, c.sequence, '' as post_create_sql, ',
+  ' || c.constraint_sql as sql
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_column as c
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.mc_table_id = c.mc_table_id
+  and c.constraint_sql is not null
+
+--6. user defined within create block sql
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 6.000 as section, 0 as sequence, '' as post_create_sql, '
+  ' || t.within_create_sql as sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.within_create_sql is not null
+
+--7. close create block sql
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 7.000 as section, 0 as sequence, '' as post_create_sql, '
+  )
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE ' || t.schema_name || '.' || t.name || ' OWNER TO -=[owner]=-;' as sql
+from
+  -=[schema_name]=-.mc_table as t
+where 
+  t.table_creation_rule_ev_id <> 35
+
+--8. create single column indexes
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select c.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 8.000 as section, c.sequence, '' as post_create_sql, '
+
+-={DROP_TABLE:DROP INDEX ' || t.name || '_' || c.name || '_index;}=-
+-={RENAME_TABLE:ALTER INDEX ' || t.name || '_' || c.name || '_index RENAME TO ' || t.name || '_' || c.name || '_index_old ;}=-
+CREATE' || case when i.unique_string is not null then ' ' || i.unique_string else '' end || ' INDEX ' || t.name || '_' || c.name || '_index
+  ON ' || t.schema_name || '.' || t.name || '
+  USING ' || i.database || '
+  (' || c.name || ');' as sql
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_column as c,
+  -=[schema_name]=-.index_ev as i
+where
+  t.table_creation_rule_ev_id <> 35
+  and c.index_ev_id = i.index_ev_id
+  and c.index_ev_id <> 25
+  and c.mc_table_id = t.mc_table_id
+
+--21. open create iud table
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 21.000 as section, 0 as sequence, '' as post_create_sql, '
+
+-={DROP_TABLE:DROP TABLE ' || t.schema_name || '.' || t.name || '_iud;}=-
+-={RENAME_TABLE:ALTER TABLE ' || t.schema_name || '.' || t.name || '_iud RENAME TO ' || t.schema_name || '.' || t.name || '_iud_old ;}=-
+CREATE TABLE ' || t.schema_name || '.' || t.name ||'_iud
+(
+  operation character(1) NOT NULL,
+  change_date timestamp with time zone NOT NULL' sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+
+--22. column definitions to iud
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select c.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 22.000 as section, c.sequence, '' as post_create_sql, ',
+  ' || c.name || ' ' || 
+  case when datatype.datatype_ev_id = 45 then 'integer' else datatype.database end  || 
+  case when c.pk_flag = true then ' NOT NULL' else '' end as sql
+from
+  -=[schema_name]=-.mc_table as t, 
+  -=[schema_name]=-.mc_column as c, 
+  -=[schema_name]=-.datatype_ev as datatype
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+  and t.mc_table_id = c.mc_table_id
+  and c.datatype_ev_id = datatype.datatype_ev_id
+
+--23. close iud table create block sql
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 23.000 as section, 0 as sequence, '' as post_create_sql, '
+  )
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE ' || t.schema_name || '.' || t.name || '_iud OWNER TO -=[owner]=-;' as sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+
+--24.1. create insert trigger - open
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 24.100 as section, 0 as sequence, '' as post_create_sql, '
+
+CREATE OR REPLACE FUNCTION ' || t.schema_name || '.' || t.name || '_insert()
+  RETURNS trigger AS
+$BODY$
+begin
+insert into ' || t.schema_name || '.' || t.name || '_iud' || '(operation, change_date' as sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+
+--24.2. create insert trigger - add column list
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 24.200 as section, c.sequence, '' as post_create_sql, ',
+  ' || c.name as sql
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_column as c
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+  and t.mc_table_id = c.mc_table_id
+--  and (c.pk_flag = true or c.fk_flag = true or c.name = 'add_date')
+
+--24.3. create insert trigger - transition from name list to value list
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 24.300 as section, 0 as sequence, '' as post_create_sql, '
+) values (substr( TG_OP, 1, 1 ), now()' as sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+
+--24.4. create insert trigger - add columns to value list
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 24.400 as section, c.sequence, '' as post_create_sql, ',
+  new.' || c.name as sql
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_column as c
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+  and t.mc_table_id = c.mc_table_id
+--  and (c.pk_flag = true or c.fk_flag = true or c.name = 'add_date')
+
+--24.5. create insert trigger - close statement
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 24.500 as section, 0 as sequence, '' as post_create_sql, '
+);
+
+RETURN NULL;
+end;
+$BODY$
+  LANGUAGE plpgsql VOLATILE SECURITY DEFINER
+  COST 100;
+ALTER FUNCTION ' || t.schema_name || '.' || t.name || '_insert() OWNER TO -=[owner]=-;' as sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+  
+--25.1. create update trigger - open statement
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 25.100 as section, 0 as sequence, '' as post_create_sql, '
+
+CREATE OR REPLACE FUNCTION ' || t.schema_name || '.' || t.name || '_update()
+  RETURNS trigger AS
+$BODY$
+begin
+insert into ' || t.schema_name || '.' || t.name || '_iud' || '(operation, change_date' as sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+
+--25.2. create update trigger - add column list
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 25.200 as section, c.sequence, '' as post_create_sql, ',
+  ' || c.name as sql
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_column as c
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+  and t.mc_table_id = c.mc_table_id
+
+--25.3. create update trigger - transition to value list
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 25.300 as section, 0 as sequence, '' as post_create_sql, '
+) values (substr( TG_OP, 1, 1 ), now()' as sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+
+--25.4. create update trigger - add value column list
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 25.400 as section, c.sequence, '' as post_create_sql, ',
+  old.' || c.name as sql 
+--  case 
+--    when (c.pk_flag = true or c.fk_flag = true or c.name = 'add_date') then ',
+--  old.' || c.name
+--    else ',
+--  case when new.' || c.name || ' is null then old. ' || c.name || ' when old.' || c.name || ' = new.' || c.name || ' then null else old.' || c.name || ' end'
+--  end as sql
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_column as c
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+  and t.mc_table_id = c.mc_table_id
+
+--25.5. create update trigger - close statement
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 25.500 as section, 0 as sequence, '' as post_create_sql, '
+);
+
+RETURN NULL;
+end;
+$BODY$
+  LANGUAGE plpgsql VOLATILE SECURITY DEFINER
+  COST 100;
+ALTER FUNCTION ' || t.schema_name || '.' || t.name || '_update() OWNER TO -=[owner]=-;' as sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+
+--26.1. create delete trigger - open
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 26.100 as section, 0 as sequence, '' as post_create_sql, '
+
+CREATE OR REPLACE FUNCTION ' || t.schema_name || '.' || t.name || '_delete()
+  RETURNS trigger AS
+$BODY$
+begin
+insert into ' || t.schema_name || '.' || t.name || '_iud' || '(operation, change_date' as sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+
+--26.2. create delete trigger - add column list
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 26.200 as section, c.sequence, '' as post_create_sql, ',
+  ' || c.name as sql
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_column as c
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+  and t.mc_table_id = c.mc_table_id
+
+--26.3. create delete trigger - transition from name list to value list
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 26.300 as section, 0 as sequence, '' as post_create_sql, '
+) values (substr( TG_OP, 1, 1 ), now()' as sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+
+--26.4. create delete trigger - add columns to value list
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 26.400 as section, c.sequence, '' as post_create_sql, ',
+  old.' || c.name as sql
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_column as c
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+  and t.mc_table_id = c.mc_table_id
+
+--26.5. create delete trigger - close statement
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 26.500 as section, 0 as sequence, '' as post_create_sql, '
+);
+
+RETURN NULL;
+end;
+$BODY$
+  LANGUAGE plpgsql VOLATILE SECURITY DEFINER
+  COST 100;
+ALTER FUNCTION ' || t.schema_name || '.' || t.name || '_delete() OWNER TO -=[owner]=-;' as sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+
+--27. attach triggers
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 27.000 as section, 0 as sequence, '' as post_create_sql, '
+
+-={DROP_TABLE||RENAME_TABLE:DROP TRIGGER ' || t.name || '_delete;}=-
+CREATE TRIGGER ' || t.name || '_delete
+  AFTER DELETE
+  ON ' || t.schema_name || '.' || t.name || '
+  FOR EACH ROW
+  EXECUTE PROCEDURE ' || t.schema_name || '.' || t.name || '_delete();
+
+-={DROP_TABLE||RENAME_TABLE:DROP TRIGGER ' || t.name || '_insert;}=-
+CREATE TRIGGER ' || t.name || '_insert
+  AFTER INSERT
+  ON ' || t.schema_name || '.' || t.name || '
+  FOR EACH ROW
+  EXECUTE PROCEDURE ' || t.schema_name || '.' || t.name || '_insert();
+
+-={DROP_TABLE||RENAME_TABLE:DROP TRIGGER ' || t.name || '_update;}=-
+CREATE TRIGGER ' || t.name || '_update
+  AFTER UPDATE
+  ON ' || t.schema_name || '.' || t.name || '
+  FOR EACH ROW
+  EXECUTE PROCEDURE ' || t.schema_name || '.' || t.name || '_update();' as sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.create_iud_table_flag = true
+
+--28.1. create multi column indexes - open statement
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 28.1000 as section, 0 as sequence, '' as post_create_sql, '
+
+-={DROP_TABLE:DROP INDEX ' || mi.index_name || ';}=-
+-={RENAME_TABLE:ALTER INDEX ' || mi.index_name || ' RENAME TO ' || mi.index_name || '_old ;}=-
+CREATE' || case when i.unique_string is not null then ' ' || i.unique_string else '' end || ' INDEX ' || mi.index_name || '
+  ON ' || t.schema_name || '.' || t.name || '
+  USING ' || i.database || '
+  (' as sql
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_index as mi,
+  -=[schema_name]=-.index_ev as i
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.mc_table_id = mi.mc_table_id
+  and mi.index_ev_id = i.index_ev_id
+  and mi.index_ev_id <> 25
+
+--28.2. create multi column indexes - list columns
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select c.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 28.2000 as section, mic.sequence, '' as post_create_sql,
+  case when mic.sequence = 1 then '' else ', ' end || c.name as sql
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_index as mi,
+  -=[schema_name]=-.mc_index_column as mic,
+  -=[schema_name]=-.mc_column as c
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.mc_table_id = mi.mc_table_id
+  and mi.mc_index_id = mic.mc_index_id
+  and mi.index_ev_id <> 25
+  and mic.mc_column_id = c.mc_column_id
+  and t.mc_table_id = c.mc_table_id
+
+--28.3. create multi column indexes - close statement
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 28.3000 as section, 0 as sequence, '' as post_create_sql, ');' as sql
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_index as mi
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.mc_table_id = mi.mc_table_id
+  and mi.index_ev_id <> 25
+
+--29. user defined post create sql
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select t.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 29.000 as section, 0 as sequence, '
+  ' || t.post_create_sql as post_create_sql, '
+
+  --POST_CREATE_SQL exists for table ' || t.name || ' it will be applied in the post_create_sql_command' as sql
+from
+  -=[schema_name]=-.mc_table as t
+where
+  t.table_creation_rule_ev_id <> 35
+  and t.post_create_sql is not null
+
+--34.0. fk constraint definitions
+--mc_table_id, schema_name, table_name, suppress_table_changes_flag, section, sequence, post_create_sql, sql
+union
+select c.mc_table_id, t.schema_name, t.name as table_name, t.suppress_table_changes_flag, 34.000 as section, c.sequence, '
+
+  --fk for mc_table_id=' || t.mc_table_id || '
+  ALTER TABLE ' || t.schema_name || '.' || t.name || ' ADD CONSTRAINT ' || t.name || '_' || c.name || '_fk FOREIGN KEY (' || c.name || ')
+      REFERENCES ' || f.schema_name || '.' || f.name || '(' || fpk.name || ') MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION DEFERRABLE INITIALLY DEFERRED;' as post_create_sql, '
+
+--FK Creation deferred until post create sql - for column ' || c.name as sql
+from
+  -=[schema_name]=-.mc_column as c,
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_table as f,
+  -=[schema_name]=-.mc_column as fpk
+where
+  t.table_creation_rule_ev_id <> 35
+  and c.mc_table_id = t.mc_table_id
+  and c.fk_flag = true
+  and c.fk_table_id = f.mc_table_id
+  and f.mc_table_id = fpk.mc_table_id
+  and fpk.pk_flag = true
+
+--over arching order required for correct command structure
+order by mc_table_id, suppress_table_changes_flag, section, sequence
+
+]]></value>
+        </property> 
+    </bean>
+    
+</beans>

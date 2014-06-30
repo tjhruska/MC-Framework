@@ -1,0 +1,2154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <bean id="install_01.00_enum_model" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="template">
+            <value><![CDATA[
+CREATE OR REPLACE FUNCTION reverse_string(text)
+  RETURNS text AS
+$BODY$
+DECLARE 
+reversed_string text;
+incoming alias for $1;
+BEGIN
+reversed_string = '';
+for i in reverse char_length(incoming)..1 loop
+reversed_string = reversed_string || substring(incoming from i for 1);
+end loop;
+return reversed_string;
+END$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION reverse_string(text) OWNER TO admin;
+
+create schema -=[schema_name]=-;
+        
+-------------------------------------------------------------
+-------------------------------------------------------------
+--------------------ENUMERATION------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+        
+-------------------------------------------------------------
+--create insert trigger for enumeration table
+-------------------------------------------------------------
+CREATE OR REPLACE FUNCTION -=[schema_name]=-.insert_enumeration()
+    RETURNS "trigger" AS
+$BODY$
+begin
+
+--check limited fk to enumeration_value table
+if not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.auto_creation_method_ev_id and enumeration_id = 4)
+then RAISE EXCEPTION 'Key (auto_creation_method_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 4', new.auto_creation_method_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for child_table_synch_method_ev_id
+if not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.child_table_synch_method_ev_id and enumeration_id = 5)
+then RAISE EXCEPTION 'Key (child_table_synch_method_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 5', new.child_table_synch_method_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for column#_datatype_ev_id
+if new.column1_datatype_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column1_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column1_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column1_datatype_ev_id;
+end if;
+
+if new.column2_datatype_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column2_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column2_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column2_datatype_ev_id;
+end if;
+
+if new.column3_datatype_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column3_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column3_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column3_datatype_ev_id;
+end if;
+
+if new.column4_datatype_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column4_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column4_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column4_datatype_ev_id;
+end if;
+
+if new.column5_datatype_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column5_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column5_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column5_datatype_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for column#_index_ev_id
+if new.column1_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column1_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column1_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column1_index_ev_id;
+end if;
+
+if new.column2_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column2_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column2_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column2_index_ev_id;
+end if;
+
+if new.column3_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column3_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column3_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column3_index_ev_id;
+end if;
+
+if new.column4_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column4_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column4_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column4_index_ev_id;
+end if;
+
+if new.column5_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column5_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column5_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column5_index_ev_id;
+end if;
+
+insert into -=[schema_name]=-.enumeration_iud(operation, change_date, applied_flag,
+    enumeration_id, add_date, name, tablename, tablename_camel_case
+) 
+values (substr( TG_OP, 1, 1 ), now(), false,
+    new.enumeration_id, new.add_date, new.name, new.tablename, new.tablename_camel_case
+);
+RETURN NULL;
+end;
+$BODY$
+    LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION -=[schema_name]=-.insert_enumeration() OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create delete trigger for enumeration table
+-------------------------------------------------------------
+CREATE OR REPLACE FUNCTION -=[schema_name]=-.delete_enumeration()
+    RETURNS "trigger" AS
+$BODY$
+begin
+insert into -=[schema_name]=-.enumeration_iud(operation, change_date, applied_flag,
+    enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql,
+    child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package,
+    column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column1_default,
+    column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column2_default, 
+    column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column3_default,
+    column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column4_default,
+    column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column5_default
+) 
+values (substr( TG_OP, 1, 1 ), now(),
+    case --applied_flag
+        when exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = old.enumeration_id and iud.operation in ('I') and iud.applied_flag = false)
+        then true
+        else false
+    end,
+    old.enumeration_id, old.add_date,   old.name,   old.tablename, old.tablename_camel_case, 
+    case --schema_name
+        when exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = old.enumeration_id and iud.operation in ('U') and iud.applied_flag = false)
+        then (
+            select max(iud.schema_name)
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = old.enumeration_id and iud.operation in ('U') and iud.applied_flag = false)
+        else old.schema_name
+    end,
+    old.post_create_sql, old.child_table_synch_method_ev_id, old.auto_creation_method_ev_id, old.folder_tag, old.java_package,
+    old.column1_name, old.column1_name_camel_case, old.column1_datatype_ev_id, old.column1_index_ev_id, old.column1_not_null_flag, old.column1_default,
+    old.column2_name, old.column2_name_camel_case, old.column2_datatype_ev_id, old.column2_index_ev_id, old.column2_not_null_flag, old.column1_default,
+    old.column3_name, old.column3_name_camel_case, old.column3_datatype_ev_id, old.column3_index_ev_id, old.column3_not_null_flag, old.column1_default,
+    old.column4_name, old.column4_name_camel_case, old.column4_datatype_ev_id, old.column4_index_ev_id, old.column4_not_null_flag, old.column1_default,
+    old.column5_name, old.column5_name_camel_case, old.column5_datatype_ev_id, old.column5_index_ev_id, old.column5_not_null_flag, old.column1_default);
+
+update -=[schema_name]=-.enumeration_iud set applied_flag = true
+where enumeration_id = old.enumeration_id 
+    and operation <> 'D' and applied_flag = false;
+
+update -=[schema_name]=-.enumeration_value_iud set applied_flag = true
+where enumeration_id = old.enumeration_id
+    and applied_flag = false;
+
+RETURN NULL;
+end;
+$BODY$
+    LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION -=[schema_name]=-.delete_enumeration() OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create update trigger for enumeration table
+-------------------------------------------------------------
+CREATE OR REPLACE FUNCTION -=[schema_name]=-.update_enumeration()
+    RETURNS "trigger" AS
+$BODY$
+begin
+
+--no change enumeration_id,
+IF new.enumeration_id <> old.enumeration_id THEN
+     RAISE EXCEPTION 'no updates allowed on enumeration_id';
+END IF;
+
+--check limited fk to enumeration_value table for auto_method_ev_id
+if new.auto_creation_method_ev_id is not null and (old.auto_creation_method_ev_id is null or old.auto_creation_method_ev_id <> new.auto_creation_method_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.auto_creation_method_ev_id and enumeration_id = 4)
+then RAISE EXCEPTION 'Key (auto_creation_method_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 4', new.auto_creation_method_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for child_table_synch_method_ev_id
+if new.child_table_synch_method_ev_id is not null and (old.child_table_synch_method_ev_id is null or old.child_table_synch_method_ev_id <> new.child_table_synch_method_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.child_table_synch_method_ev_id and enumeration_id = 5)
+then RAISE EXCEPTION 'Key (child_table_synch_method_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 5', new.child_table_synch_method_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for column#_datatype_ev_id
+if new.column1_datatype_ev_id is not null and (old.column1_datatype_ev_id is null or old.column1_datatype_ev_id <> new.column1_datatype_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column1_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column1_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column1_datatype_ev_id;
+end if;
+
+if new.column2_datatype_ev_id is not null and (old.column2_datatype_ev_id is null or old.column2_datatype_ev_id <> new.column2_datatype_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column2_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column2_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column2_datatype_ev_id;
+end if;
+
+if new.column3_datatype_ev_id is not null and (old.column3_datatype_ev_id is null or old.column3_datatype_ev_id <> new.column3_datatype_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column3_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column3_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column3_datatype_ev_id;
+end if;
+
+if new.column4_datatype_ev_id is not null and (old.column4_datatype_ev_id is null or old.column4_datatype_ev_id <> new.column4_datatype_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column4_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column4_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column4_datatype_ev_id;
+end if;
+
+if new.column5_datatype_ev_id is not null and (old.column5_datatype_ev_id is null or old.column5_datatype_ev_id <> new.column5_datatype_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column5_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column5_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column5_datatype_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for column#_index_ev_id
+if new.column1_index_ev_id is not null and (old.column1_index_ev_id is null or old.column1_index_ev_id <> new.column1_index_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column1_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column1_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column1_index_ev_id;
+end if;
+
+if new.column2_index_ev_id is not null and (old.column2_index_ev_id is null or old.column2_index_ev_id <> new.column2_index_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column2_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column2_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column2_index_ev_id;
+end if;
+
+if new.column3_index_ev_id is not null and (old.column3_index_ev_id is null or old.column3_index_ev_id <> new.column3_index_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column3_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column3_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column3_index_ev_id;
+end if;
+
+if new.column4_index_ev_id is not null and (old.column4_index_ev_id is null or old.column4_index_ev_id <> new.column4_index_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column4_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column4_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column4_index_ev_id;
+end if;
+
+if new.column5_index_ev_id is not null and (old.column5_index_ev_id is null or old.column5_index_ev_id <> new.column5_index_ev_id)
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column5_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column5_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column5_index_ev_id;
+end if;
+
+--column1 nullness change
+if ((old.column1_not_null_flag is null or old.column1_not_null_flag = false) and new.column1_not_null_flag = true) then
+    if (new.column1_default is not null) then
+        update -=[schema_name]=-.enumeration_value set column1_value = new.column1_default
+        where column1_value is null and enumeration_id = new.enumeration_id;
+    end if;
+    if (new.column1_default is null and exists (select 1 from -=[schema_name]=-.enumeration_value where column1_value is null and enumeration_id = new.enumeration_id)) then
+        RAISE EXCEPTION 'null values exists on -=[schema_name]=-.enumeration_value.column1_value, repair before setting -=[schema_name]=-.-=[schema_name]=-.column1_not_null_flag = true';
+    end if;
+end if;
+
+--column2 nullness change
+if ((old.column2_not_null_flag is null or old.column2_not_null_flag = false) and new.column2_not_null_flag = true) then
+    if (new.column2_default is not null) then
+        update -=[schema_name]=-.enumeration_value set column2_value = new.column2_default
+        where column2_value is null and enumeration_id = new.enumeration_id;
+    end if;
+    if (new.column2_default is null and exists (select 1 from -=[schema_name]=-.enumeration_value where column2_value is null and enumeration_id = new.enumeration_id)) then
+        RAISE EXCEPTION 'null values exists on -=[schema_name]=-.enumeration_value.column2_value, repair before setting -=[schema_name]=-.-=[schema_name]=-.column2_not_null_flag = true';
+    end if;
+end if;
+
+--column3 nullness change
+if ((old.column3_not_null_flag is null or old.column3_not_null_flag = false) and new.column3_not_null_flag = true) then
+    if (new.column3_default is not null) then
+        update -=[schema_name]=-.enumeration_value set column3_value = new.column3_default
+        where column3_value is null and enumeration_id = new.enumeration_id;
+    end if;
+    if (new.column3_default is null and exists (select 1 from -=[schema_name]=-.enumeration_value where column3_value is null and enumeration_id = new.enumeration_id)) then
+        RAISE EXCEPTION 'null values exists on -=[schema_name]=-.enumeration_value.column3_value, repair before setting -=[schema_name]=-.-=[schema_name]=-.column3_not_null_flag = true';
+    end if;
+end if;
+
+--column4 nullness change
+if ((old.column4_not_null_flag is null or old.column4_not_null_flag = false) and new.column4_not_null_flag = true) then
+    if (new.column4_default is not null) then
+        update -=[schema_name]=-.enumeration_value set column4_value = new.column4_default
+        where column4_value is null and enumeration_id = new.enumeration_id;
+    end if;
+    if (new.column4_default is null and exists (select 1 from -=[schema_name]=-.enumeration_value where column4_value is null and enumeration_id = new.enumeration_id)) then
+        RAISE EXCEPTION 'null values exists on -=[schema_name]=-.enumeration_value.column4_value, repair before setting -=[schema_name]=-.-=[schema_name]=-.column4_not_null_flag = true';
+    end if;
+end if;
+
+--column5 nullness change
+if ((old.column5_not_null_flag is null or old.column5_not_null_flag = false) and new.column5_not_null_flag = true) then
+    if (new.column5_default is not null) then
+        update -=[schema_name]=-.enumeration_value set column5_value = new.column5_default
+        where column5_value is null and enumeration_id = new.enumeration_id;
+    end if;
+    if (new.column5_default is null and exists (select 1 from -=[schema_name]=-.enumeration_value where column5_value is null and enumeration_id = new.enumeration_id)) then
+        RAISE EXCEPTION 'null values exists on -=[schema_name]=-.enumeration_value.column5_value, repair before setting -=[schema_name]=-.-=[schema_name]=-.column5_not_null_flag = true';
+    end if;
+end if;
+
+insert into -=[schema_name]=-.enumeration_iud(operation, change_date, applied_flag,
+    enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name,
+    post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package,
+    column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column1_default,
+    column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column2_default, 
+    column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column3_default,
+    column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column4_default,
+    column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column5_default
+) 
+values (substr( TG_OP, 1, 1 ), now(),
+    case 
+        when exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = old.enumeration_id and iud.operation in ('I', 'U') and iud.applied_flag = false)
+        then true
+        else false
+    end,
+    old.enumeration_id, old.add_date,   old.name,   old.tablename, old.tablename_camel_case, old.schema_name,
+    case when old.post_create_sql = new.post_create_sql then null else old.post_create_sql end,
+    case when old.child_table_synch_method_ev_id = new.child_table_synch_method_ev_id then null else old.child_table_synch_method_ev_id end,
+    case when old.auto_creation_method_ev_id = new.auto_creation_method_ev_id then null else old.auto_creation_method_ev_id end,
+    case when old.folder_tag = new.folder_tag then null else old.folder_tag end,
+    case when old.java_package = new.java_package then null else old.java_package end,
+    case when old.column1_name = new.column1_name then null else old.column1_name end,
+    case when old.column1_name_camel_case = new.column1_name_camel_case then null else old.column1_name_camel_case end,
+    case when old.column1_datatype_ev_id = new.column1_datatype_ev_id then null else old.column1_datatype_ev_id end,
+    case when old.column1_index_ev_id = new.column1_index_ev_id then null else old.column1_index_ev_id end,
+    case when old.column1_not_null_flag = new.column1_not_null_flag then null else old.column1_not_null_flag end,
+    case when old.column1_default = new.column1_default then null else old.column1_default end,
+    case when old.column2_name = new.column2_name then null else old.column2_name end,
+    case when old.column2_name_camel_case = new.column2_name_camel_case then null else old.column2_name_camel_case end,
+    case when old.column2_datatype_ev_id = new.column2_datatype_ev_id then null else old.column2_datatype_ev_id end,
+    case when old.column2_index_ev_id = new.column2_index_ev_id then null else old.column2_index_ev_id end,
+    case when old.column2_not_null_flag = new.column2_not_null_flag then null else old.column2_not_null_flag end,
+    case when old.column2_default = new.column2_default then null else old.column2_default end,
+    case when old.column3_name = new.column3_name then null else old.column3_name end,
+    case when old.column3_name_camel_case = new.column3_name_camel_case then null else old.column3_name_camel_case end,
+    case when old.column3_datatype_ev_id = new.column3_datatype_ev_id then null else old.column3_datatype_ev_id end,
+    case when old.column3_index_ev_id = new.column3_index_ev_id then null else old.column3_index_ev_id end,
+    case when old.column3_not_null_flag = new.column3_not_null_flag then null else old.column3_not_null_flag end,
+    case when old.column3_default = new.column3_default then null else old.column3_default end,
+    case when old.column4_name = new.column4_name then null else old.column4_name end,
+    case when old.column4_name_camel_case = new.column4_name_camel_case then null else old.column4_name_camel_case end,
+    case when old.column4_datatype_ev_id = new.column4_datatype_ev_id then null else old.column4_datatype_ev_id end,
+    case when old.column4_index_ev_id = new.column4_index_ev_id then null else old.column4_index_ev_id end,
+    case when old.column4_not_null_flag = new.column4_not_null_flag then null else old.column4_not_null_flag end,
+    case when old.column4_default = new.column4_default then null else old.column4_default end,
+    case when old.column5_name = new.column5_name then null else old.column5_name end,
+    case when old.column5_name_camel_case = new.column5_name_camel_case then null else old.column5_name_camel_case end,
+    case when old.column5_datatype_ev_id = new.column5_datatype_ev_id then null else old.column5_datatype_ev_id end,
+    case when old.column5_index_ev_id = new.column5_index_ev_id then null else old.column5_index_ev_id end,
+    case when old.column5_not_null_flag = new.column5_not_null_flag then null else old.column5_not_null_flag end,
+    case when old.column5_default = new.column5_default then null else old.column5_default end
+);
+update -=[schema_name]=-.enumeration_value_iud set applied_flag = true
+        where enumeration_id = old.enumeration_id
+        and applied_flag = false;
+RETURN NULL;
+end;
+$BODY$
+    LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION -=[schema_name]=-.update_enumeration() OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create main enumeration table
+-------------------------------------------------------------
+CREATE TABLE -=[schema_name]=-.enumeration
+(
+    enumeration_id bigserial NOT NULL,
+    add_date timestamp with time zone NOT NULL DEFAULT now(),
+    name character varying NOT NULL,
+    tablename character varying NOT NULL,
+    tablename_camel_case character varying NOT NULL,
+    schema_name character varying,
+    post_create_sql character varying,
+    child_table_synch_method_ev_id integer NOT NULL,
+    auto_creation_method_ev_id integer NOT NULL,
+    folder_tag character varying,
+    java_package character varying,
+    column1_name character varying,
+    column1_name_camel_case character varying,
+    column1_datatype_ev_id integer,
+    column1_index_ev_id integer,
+    column1_not_null_flag boolean,
+    column1_default character varying,
+    column2_name character varying,
+    column2_name_camel_case character varying,
+    column2_datatype_ev_id integer,
+    column2_index_ev_id integer,
+    column2_not_null_flag boolean,
+    column2_default character varying,
+    column3_name character varying,
+    column3_name_camel_case character varying,
+    column3_datatype_ev_id integer,
+    column3_index_ev_id integer,
+    column3_not_null_flag boolean,
+    column3_default character varying,
+    column4_name character varying,
+    column4_name_camel_case character varying,
+    column4_datatype_ev_id integer,
+    column4_index_ev_id integer,
+    column4_not_null_flag boolean,
+    column4_default character varying,
+    column5_name character varying,
+    column5_name_camel_case character varying,
+    column5_datatype_ev_id integer,
+    column5_index_ev_id integer,
+    column5_not_null_flag boolean,
+    column5_default character varying,
+    CONSTRAINT enumeration_enumeration_id_pk PRIMARY KEY (enumeration_id),
+    CONSTRAINT enumeration_enumeration_name_unique UNIQUE (name),
+    CONSTRAINT enumeration_enumeration_name_upper_format CHECK ( case when name is null then true when "substring"(name::text, '[A-Z_]{1}[A-Z_0-9]*'::text) = name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_tablename_unique UNIQUE (tablename),
+    CONSTRAINT enumeration_enumeration_tablename_lower_format CHECK ( case when tablename is null then true when "substring"(tablename::text, '[a-z_]{1}[a-z_0-9]*'::text) = tablename::text then true else false end),
+    CONSTRAINT enumeration_enumeration_tablename_camel_case_unique UNIQUE (tablename_camel_case),
+    CONSTRAINT enumeration_enumeration_tablename_camel_case_format CHECK ( case when tablename_camel_case is null then true when "substring"(tablename_camel_case::text, '[A-Z]{1}[A-Za-z0-9]*'::text) = tablename_camel_case::text then true else false end),
+    CONSTRAINT enumeration_enumeration_schema_name_lower_format CHECK ( case when schema_name is null then true when "substring"(schema_name::text, '[a-z_]{1}[a-z_0-9]*'::text) = schema_name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_schema_name_completeness_check CHECK ((child_table_synch_method_ev_id = 22 and schema_name is not null) or child_table_synch_method_ev_id <> 22),
+    CONSTRAINT enumeration_enumeration_auto_creation_completeness_check CHECK ((auto_creation_method_ev_id = 21 and folder_tag IS NULL and java_package IS NULL) OR (auto_creation_method_ev_id <> 21 and folder_tag IS NOT NULL and java_package IS NOT NULL)),
+    CONSTRAINT enumeration_enumeration_folder_tag_format CHECK ( case when folder_tag is null then true when "substring"(folder_tag::text, '[a-zA-Z_0-9]*'::text) = folder_tag::text then true else false end),
+    CONSTRAINT enumeration_enumeration_java_package_format CHECK ( case when java_package is null then true when "substring"(java_package::text, '[A-Za-z0-9]{1}[#.A-Za-z0-9]*[A-Za-z0-9]{1}'::text) = java_package::text then true else false end),
+    CONSTRAINT enumeration_enumeration_column_names_unique CHECK(case when column1_name = column2_name then false when column1_name = column3_name then false when column1_name = column4_name then false when column1_name = column5_name then false when column2_name = column3_name then false when column2_name = column4_name then false when column2_name = column5_name then false when column3_name = column4_name then false when column3_name = column5_name then false when column4_name = column5_name then false else true end),
+    CONSTRAINT enumeration_enumeration_column_names_camel_case_unique CHECK(case when column1_name_camel_case = column2_name_camel_case then false when column1_name_camel_case = column3_name_camel_case then false when column1_name_camel_case = column4_name_camel_case then false when column1_name_camel_case = column5_name_camel_case then false when column2_name_camel_case = column3_name_camel_case then false when column2_name_camel_case = column4_name_camel_case then false when column2_name_camel_case = column5_name_camel_case then false when column3_name_camel_case = column4_name_camel_case then false when column3_name_camel_case = column5_name_camel_case then false when column4_name_camel_case = column5_name_camel_case then false else true end),
+    CONSTRAINT enumeration_enumeration_column1_completeness_check CHECK ((column1_name IS NULL AND column1_name_camel_case IS NULL AND column1_datatype_ev_id IS NULL AND column1_index_ev_id is NULL AND column1_not_null_flag IS NULL) OR (column1_name IS NOT NULL AND column1_name_camel_case IS NOT NULL AND column1_datatype_ev_id IS NOT NULL AND column1_index_ev_id IS NOT NULL AND column1_not_null_flag IS NOT NULL)),
+    CONSTRAINT enumeration_enumeration_column1_upper_format CHECK ( case when column1_name is null then true when "substring"(column1_name::text, '[A-Z_]{1}[A-Z_0-9]*'::text) = column1_name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_column1_camel_case_format CHECK ( case when column1_name_camel_case is null then true when "substring"(column1_name_camel_case::text, '[A-Z]{1}[A-Za-z0-9]*'::text) = column1_name_camel_case::text then true else false end),
+    CONSTRAINT enumeration_enumeration_column2_completeness_check CHECK ((column2_name IS NULL AND column2_name_camel_case IS NULL AND column2_datatype_ev_id IS NULL AND column2_index_ev_id is NULL AND column2_not_null_flag IS NULL) OR (column2_name IS NOT NULL AND column2_name_camel_case IS NOT NULL AND column2_datatype_ev_id IS NOT NULL AND column2_index_ev_id IS NOT NULL AND column2_not_null_flag IS NOT NULL)),
+    CONSTRAINT enumeration_enumeration_column2_upper_format CHECK ( case when column2_name is null then true when "substring"(column2_name::text, '[A-Z_]{1}[A-Z_0-9]*'::text) = column2_name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_column2_camel_case_format CHECK ( case when column2_name_camel_case is null then true when "substring"(column2_name_camel_case::text, '[A-Z]{1}[A-Za-z0-9]*'::text) = column2_name_camel_case::text then true else false end),
+    CONSTRAINT enumeration_enumeration_column3_completeness_check CHECK ((column3_name IS NULL AND column3_name_camel_case IS NULL AND column3_datatype_ev_id IS NULL AND column3_index_ev_id is NULL AND column3_not_null_flag IS NULL) OR (column3_name IS NOT NULL AND column3_name_camel_case IS NOT NULL AND column3_datatype_ev_id IS NOT NULL AND column3_index_ev_id IS NOT NULL AND column3_not_null_flag IS NOT NULL)),
+    CONSTRAINT enumeration_enumeration_column3_upper_format CHECK ( case when column3_name is null then true when "substring"(column3_name::text, '[A-Z_]{1}[A-Z_0-9]*'::text) = column3_name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_column3_camel_case_format CHECK ( case when column3_name_camel_case is null then true when "substring"(column3_name_camel_case::text, '[A-Z]{1}[A-Za-z0-9]*'::text) = column3_name_camel_case::text then true else false end),
+    CONSTRAINT enumeration_enumeration_column4_completeness_check CHECK ((column4_name IS NULL AND column4_name_camel_case IS NULL AND column4_datatype_ev_id IS NULL AND column4_index_ev_id is NULL AND column4_not_null_flag IS NULL) OR (column4_name IS NOT NULL AND column4_name_camel_case IS NOT NULL AND column4_datatype_ev_id IS NOT NULL AND column4_index_ev_id IS NOT NULL AND column4_not_null_flag IS NOT NULL)),
+    CONSTRAINT enumeration_enumeration_column4_upper_format CHECK ( case when column4_name is null then true when "substring"(column4_name::text, '[A-Z_]{1}[A-Z_0-9]*'::text) = column4_name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_column4_camel_case_format CHECK ( case when column4_name_camel_case is null then true when "substring"(column4_name_camel_case::text, '[A-Z]{1}[A-Za-z0-9]*'::text) = column4_name_camel_case::text then true else false end),
+    CONSTRAINT enumeration_enumeration_column5_completeness_check CHECK ((column5_name IS NULL AND column5_name_camel_case IS NULL AND column5_datatype_ev_id IS NULL AND column5_index_ev_id is NULL AND column5_not_null_flag IS NULL) OR (column5_name IS NOT NULL AND column5_name_camel_case IS NOT NULL AND column5_datatype_ev_id IS NOT NULL AND column5_index_ev_id IS NOT NULL AND column5_not_null_flag IS NOT NULL)),
+    CONSTRAINT enumeration_enumeration_column5_upper_format CHECK ( case when column5_name is null then true when "substring"(column5_name::text, '[A-Z_]{1}[A-Z_0-9]*'::text) = column5_name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_column5_camel_case_format CHECK ( case when column5_name_camel_case is null then true when "substring"(column5_name_camel_case::text, '[A-Z]{1}[A-Za-z0-9]*'::text) = column5_name_camel_case::text then true else false end)
+) 
+WITHOUT OIDS;
+ALTER TABLE -=[schema_name]=-.enumeration OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create enumeration history table
+-------------------------------------------------------------
+CREATE TABLE -=[schema_name]=-.enumeration_iud
+(
+    operation character(1) NOT NULL,
+    change_date timestamp with time zone NOT NULL,
+    applied_flag boolean default false NOT NULL,
+    enumeration_id bigint NOT NULL,
+    add_date timestamp with time zone,
+    name character varying,
+    tablename character varying,
+    tablename_camel_case character varying,
+    schema_name character varying,
+    post_create_sql character varying,
+    child_table_synch_method_ev_id integer,
+    auto_creation_method_ev_id integer,
+    folder_tag character varying,
+    java_package character varying,
+    column1_name character varying,
+    column1_name_camel_case character varying,
+    column1_datatype_ev_id integer,
+    column1_index_ev_id integer,
+    column1_not_null_flag boolean,
+    column1_default character varying,
+    column2_name character varying,
+    column2_name_camel_case character varying,
+    column2_datatype_ev_id integer,
+    column2_index_ev_id integer,
+    column2_not_null_flag boolean,
+    column2_default character varying,
+    column3_name character varying,
+    column3_name_camel_case character varying,
+    column3_datatype_ev_id integer,
+    column3_index_ev_id integer,
+    column3_not_null_flag boolean,
+    column3_default character varying,
+    column4_name character varying,
+    column4_name_camel_case character varying,
+    column4_datatype_ev_id integer,
+    column4_index_ev_id integer,
+    column4_not_null_flag boolean,
+    column4_default character varying,
+    column5_name character varying,
+    column5_name_camel_case character varying,
+    column5_datatype_ev_id integer,
+    column5_index_ev_id integer,
+    column5_not_null_flag boolean,
+    column5_default character varying
+) 
+WITHOUT OIDS;
+ALTER TABLE -=[schema_name]=-.enumeration_iud OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--register insert trigger on table
+-------------------------------------------------------------
+CREATE TRIGGER insert_enumeration
+    AFTER INSERT
+    ON -=[schema_name]=-.enumeration
+    FOR EACH ROW
+    EXECUTE PROCEDURE -=[schema_name]=-.insert_enumeration();
+
+-------------------------------------------------------------
+--register update trigger on table
+-------------------------------------------------------------
+CREATE TRIGGER update_enumeration
+    AFTER UPDATE
+    ON -=[schema_name]=-.enumeration
+    FOR EACH ROW
+    EXECUTE PROCEDURE -=[schema_name]=-.update_enumeration();
+
+-------------------------------------------------------------
+--register delete trigger on table
+-------------------------------------------------------------
+CREATE TRIGGER delete_enumeration
+    AFTER DELETE
+    ON -=[schema_name]=-.enumeration
+    FOR EACH ROW
+    EXECUTE PROCEDURE -=[schema_name]=-.delete_enumeration();
+    
+-------------------------------------------------------------
+--create primary index
+-------------------------------------------------------------
+CREATE UNIQUE INDEX enumeration_pk_index
+    ON -=[schema_name]=-.enumeration
+    USING btree
+    (enumeration_id);
+ALTER TABLE -=[schema_name]=-.enumeration CLUSTER ON enumeration_pk_index;
+
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------ENUMERATION VALUE-------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+
+-------------------------------------------------------------
+--create insert/update trigger for enumeration_value
+-------------------------------------------------------------
+CREATE OR REPLACE FUNCTION -=[schema_name]=-.before_insert_update_enumeration_value()
+    RETURNS "trigger" AS
+$BODY$
+begin
+
+IF substr( TG_OP, 1, 1 ) = 'U' THEN
+    --no change enumeration_value_id
+    IF new.enumeration_value_id <> old.enumeration_value_id THEN
+        RAISE EXCEPTION 'no updates allowed on enumeration_value_id';
+    END IF;
+    --no change enumeration_id,
+    IF new.enumeration_id <> old.enumeration_id THEN
+        RAISE EXCEPTION 'no updates allowed on enumeration_id';
+    END IF;
+END IF;
+
+--column1
+IF new.column1_value is null THEN
+    new.column1_value = (
+        select (column1_default) 
+        from -=[schema_name]=-.enumeration enum 
+        where enum.enumeration_id = new.enumeration_id);
+    IF new.column1_value is null and true = (
+        select (column1_not_null_flag) 
+        from -=[schema_name]=-.enumeration enum 
+        where enum.enumeration_id = new.enumeration_id)
+    THEN
+        RAISE EXCEPTION 'null value violates column1_non_null_flag';
+        --RETURN NULL;
+    END IF;
+END IF;
+--column2
+IF new.column2_value is null THEN
+    new.column2_value = (
+        select (column2_default) 
+        from -=[schema_name]=-.enumeration enum 
+        where enum.enumeration_id = new.enumeration_id);
+    IF new.column2_value is null and true = (
+        select (column2_not_null_flag) 
+        from -=[schema_name]=-.enumeration enum 
+        where enum.enumeration_id = new.enumeration_id)
+    THEN
+        RAISE EXCEPTION 'null value violates column2_non_null_flag';
+        --RETURN NULL;
+    END IF;
+END IF;
+--column3
+IF new.column3_value is null THEN
+    new.column3_value = (
+        select (column3_default) 
+        from -=[schema_name]=-.enumeration enum 
+        where enum.enumeration_id = new.enumeration_id);
+    IF new.column3_value is null and true = (
+        select (column3_not_null_flag) 
+        from -=[schema_name]=-.enumeration enum 
+        where enum.enumeration_id = new.enumeration_id)
+    THEN
+        RAISE EXCEPTION 'null value violates column3_non_null_flag';
+        --RETURN NULL;
+    END IF;
+END IF;
+--column4
+IF new.column4_value is null THEN
+    new.column4_value = (
+        select (column4_default) 
+        from -=[schema_name]=-.enumeration enum 
+        where enum.enumeration_id = new.enumeration_id);
+    IF new.column4_value is null and true = (
+        select (column4_not_null_flag) 
+        from -=[schema_name]=-.enumeration enum 
+        where enum.enumeration_id = new.enumeration_id)
+    THEN
+        RAISE EXCEPTION 'null value violates column4_non_null_flag';
+        --RETURN NULL;
+    END IF;
+END IF;
+--column5
+IF new.column5_value is null THEN
+    new.column5_value = (
+        select (column5_default) 
+        from -=[schema_name]=-.enumeration enum 
+        where enum.enumeration_id = new.enumeration_id);
+    IF new.column5_value is null and true = (
+        select (column5_not_null_flag) 
+        from -=[schema_name]=-.enumeration enum 
+        where enum.enumeration_id = new.enumeration_id)
+    THEN
+        RAISE EXCEPTION 'null value violates column5_non_null_flag';
+        --RETURN NULL;
+    END IF;
+END IF;
+
+--here is where a nullness check of enumeration_link_value would go
+--if it wouldn't make inserting into this table a major pain
+--  (it would force you to use insert statements into both tables in a single transaction)
+--instead make sure an have any editors check and warn when missing link_values
+--any created child table will create the nullness constraint for the linking table,
+--  won't help with 'N to N', but this is probably the best balance we can make
+
+--record history for inserts
+IF substr( TG_OP, 1, 1 ) = 'I' THEN
+    insert into -=[schema_name]=-.enumeration_value_iud(
+        operation, change_date, applied_flag,
+        enumeration_value_id, enumeration_id, add_date, name
+    ) 
+    values ('I', now(),
+        --we need to request an insert into child table value
+        --we don't do this if the enumeration_iud has a 'U' or 'I' unprocessed for this enumeration_id
+        case 
+            when exists (
+                select 1
+                from -=[schema_name]=-.enumeration_iud iud
+                where iud.enumeration_id = new.enumeration_id and iud.operation in ('I', 'U') and iud.applied_flag = false)
+            then true
+            else false
+        end,
+        new.enumeration_value_id, new.enumeration_id, new.add_date, new.name
+    );
+END IF;
+
+--record history for updates
+IF substr( TG_OP, 1, 1 ) = 'U' THEN
+    insert into -=[schema_name]=-.enumeration_value_iud(
+        operation, change_date, applied_flag,
+        enumeration_value_id, enumeration_id, add_date, name,
+        description, "sequence", column1_value, column2_value,
+        column3_value, column4_value, column5_value
+    ) 
+    values ('U', now(),
+        --we need to update the child table to match exactly the enumeration_value table
+        --we don't do this if the enumeration_iud has a 'U' or 'I' unprocessed for this enumeration_id
+        case 
+            when exists (
+                select 1
+                from -=[schema_name]=-.enumeration_iud iud
+                where iud.enumeration_id = new.enumeration_id and iud.operation in ('I', 'U') and iud.applied_flag = false)
+            then true
+            when exists (
+                select 1
+                from -=[schema_name]=-.enumeration_value_iud iud
+                where iud.enumeration_value_id = new.enumeration_value_id and iud.operation in ('I', 'U') and iud.applied_flag = false)
+            then true
+            else false
+        end,
+        old.enumeration_value_id, old.enumeration_id, old.add_date, old.name,
+        case when old.description = new.description then null else old.description end,
+        case when old."sequence" = new."sequence" then null else old."sequence" end,
+        case when old.column1_value = new.column1_value then null else old.column1_value end,
+        case when old.column2_value = new.column2_value then null else old.column2_value end,
+        case when old.column3_value = new.column3_value then null else old.column3_value end,
+        case when old.column4_value = new.column4_value then null else old.column4_value end,
+        case when old.column5_value = new.column5_value then null else old.column5_value end
+    );
+END IF;
+
+RETURN new;
+end;
+$BODY$
+    LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION -=[schema_name]=-.before_insert_update_enumeration_value() OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create delete trigger for enumeration_value table
+-------------------------------------------------------------
+CREATE OR REPLACE FUNCTION -=[schema_name]=-.delete_enumeration_value()
+    RETURNS "trigger" AS
+$BODY$
+begin
+insert into -=[schema_name]=-.enumeration_value_iud(operation, change_date, applied_flag,
+    enumeration_value_id, enumeration_id, add_date, name, description, "sequence", 
+    column1_value, column2_value, column3_value, column4_value, column5_value) 
+values ('D', now(), true, old.enumeration_value_id, old.enumeration_id, 
+    old.add_date,   old.name,   old.description, old."sequence", old.column1_value, 
+    old.column2_value, old.column3_value, old.column4_value, old.column5_value);
+update -=[schema_name]=-.enumeration_value_iud set applied_flag = true
+where enumeration_value_id = old.enumeration_value_id and operation in ('I', 'U');
+
+RETURN NULL;
+end;
+$BODY$
+    LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION -=[schema_name]=-.delete_enumeration_value() OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create enumeration_value table
+-------------------------------------------------------------
+CREATE TABLE -=[schema_name]=-.enumeration_value
+(
+    enumeration_value_id bigserial NOT NULL,
+    enumeration_id integer NOT NULL,
+    add_date timestamp with time zone DEFAULT now(),
+    name character varying NOT NULL,
+    description character varying NOT NULL,
+    "sequence" smallint NOT NULL,
+    column1_value character varying,
+    column2_value character varying,
+    column3_value character varying,
+    column4_value character varying,
+    column5_value character varying,
+    CONSTRAINT enumeration_enumeration_value_id_pk PRIMARY KEY (enumeration_value_id),
+    CONSTRAINT name_upper_format CHECK (case when name is null then true when "substring"(name::text, '[A-Z_]{1}[A-Z_0-9]*'::text) = name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_value_unq_sequence UNIQUE (enumeration_id, "sequence"),
+    CONSTRAINT enumeration_enumeration_value_unq_name UNIQUE (enumeration_id, name)
+) 
+WITHOUT OIDS;
+ALTER TABLE -=[schema_name]=-.enumeration_value OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create enumeration value history table
+-------------------------------------------------------------
+CREATE TABLE -=[schema_name]=-.enumeration_value_iud
+(
+    operation character(1) NOT NULL,
+    change_date timestamp with time zone NOT NULL,
+    applied_flag boolean default false NOT NULL,
+    enumeration_value_id bigint NOT NULL,
+    enumeration_id integer,
+    add_date timestamp with time zone,
+    name character varying,
+    description character varying,
+    "sequence" smallint,
+    column1_value character varying,
+    column2_value character varying,
+    column3_value character varying,
+    column4_value character varying,
+    column5_value character varying
+) 
+WITHOUT OIDS;
+ALTER TABLE -=[schema_name]=-.enumeration_value_iud OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--register insert/update trigger on table enumeration_value
+-------------------------------------------------------------
+CREATE TRIGGER before_insert_update_enumeration_value
+    BEFORE INSERT OR UPDATE
+    ON -=[schema_name]=-.enumeration_value
+    FOR EACH ROW
+    EXECUTE PROCEDURE -=[schema_name]=-.before_insert_update_enumeration_value();
+
+-------------------------------------------------------------
+--register delete trigger on table enumeration_value
+-------------------------------------------------------------
+CREATE TRIGGER delete_enumeration_value
+    AFTER DELETE
+    ON -=[schema_name]=-.enumeration_value
+    FOR EACH ROW
+    EXECUTE PROCEDURE -=[schema_name]=-.delete_enumeration_value();
+
+-------------------------------------------------------------
+--create primary index
+-------------------------------------------------------------
+CREATE UNIQUE INDEX enumeration_value_pk_index
+    ON -=[schema_name]=-.enumeration_value
+    USING btree
+    (enumeration_value_id);
+ALTER TABLE -=[schema_name]=-.enumeration_value CLUSTER ON enumeration_value_pk_index;
+
+-------------------------------------------------------------
+-------------------------------------------------------------
+--------------------ENUMERATION LINK-------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+
+-------------------------------------------------------------
+--create insert trigger for enumeration_link table
+-------------------------------------------------------------
+CREATE OR REPLACE FUNCTION -=[schema_name]=-.insert_enumeration_link()
+    RETURNS "trigger" AS
+$BODY$
+begin
+
+--check limited fk to enumeration_value table for link_creation_rule_ev_id
+if not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.link_creation_rule_ev_id and enumeration_id = 7)
+then RAISE EXCEPTION 'Key (link_creation_rule_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 7', new.link_creation_rule_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for child_table_synch_method_ev_id
+if not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.child_table_synch_method_ev_id and enumeration_id = 5)
+then RAISE EXCEPTION 'Key (child_table_synch_method_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 5', new.child_table_synch_method_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for enumeration_a_index_ev_id
+if new.enumeration_a_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.enumeration_a_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (enumeration_a_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.enumeration_a_index_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for enumeration_b_index_ev_id
+if new.enumeration_b_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.enumeration_b_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (enumeration_b_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.enumeration_b_index_ev_id;
+end if;
+    
+--check for invalid index settings
+if new.link_creation_rule_ev_id = 30 and new.enumeration_a_index_ev_id is not null --table a has fk column to b
+then RAISE EXCEPTION 'indexes on enumeration_a are not allowed when building an fk to column b';
+end if;     
+if new.link_creation_rule_ev_id = 31 and new.enumeration_b_index_ev_id is not null --table b has fk column to a
+then RAISE EXCEPTION 'indexes on enumeration_b are not allowed when building an fk to column a';
+end if;
+
+--check limited fk to enumeration_value table for column#_datatype_ev_id
+if new.column1_datatype_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column1_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column1_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column1_datatype_ev_id;
+end if;
+
+if new.column2_datatype_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column2_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column2_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column2_datatype_ev_id;
+end if;
+
+if new.column3_datatype_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column3_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column3_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column3_datatype_ev_id;
+end if;
+
+if new.column4_datatype_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column4_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column4_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column4_datatype_ev_id;
+end if;
+
+if new.column5_datatype_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column5_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column5_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column5_datatype_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for column#_index_ev_id
+if new.column1_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column1_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column1_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column1_index_ev_id;
+end if;
+
+if new.column2_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column2_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column2_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column2_index_ev_id;
+end if;
+
+if new.column3_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column3_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column3_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column3_index_ev_id;
+end if;
+
+if new.column4_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column4_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column4_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column4_index_ev_id;
+end if;
+    
+if new.column5_index_ev_id is not null and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column5_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column5_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column5_index_ev_id;
+end if;
+
+--validate the unique_flag and
+--validate the link_creation_rule_ev_id for 'N to 1' or '1 to N'
+if (new.link_creation_rule_ev_id = 30 or new.unique_flag) and
+    exists (
+        select 1 
+        from -=[schema_name]=-.enumeration_value v 
+        where new.enumeration_a_id = v.enumeration_id
+            and 1 < (
+                select count(1)
+                from -=[schema_name]=-.enumeration_link_value lv 
+                where new.enumeration_link_id = lv.enumeration_link_id
+                    and v.enumeration_value_id = lv.enumeration_value_a_id))
+then
+    if new.link_creation_rule_ev_id = 30 then
+        RAISE EXCEPTION 'a > 1 enumeration_link_value for an enumeration_value with enumeration_id (%), correct before setting link_creation_rule_ev_id to 30', new.enumeration_a_id;
+    else
+        RAISE EXCEPTION 'a > 1 enumeration_link_value for an enumeration_value with enumeration_id (%), correct before setting unique_flag = true', new.enumeration_a_id;
+    end if;
+end if;
+
+if (new.link_creation_rule_ev_id = 31 or new.unique_flag) and
+    exists (
+        select 1 
+        from -=[schema_name]=-.enumeration_value v 
+        where new.enumeration_b_id = v.enumeration_id
+            and 1 < (
+                select count(1)
+                from -=[schema_name]=-.enumeration_link_value lv 
+                where new.enumeration_link_id = lv.enumeration_link_id
+                    and v.enumeration_value_id = lv.enumeration_value_b_id))
+then
+    if new.link_creation_rule_ev_id = 31 then
+        RAISE EXCEPTION 'b > 1 enumeration_link_value for an enumeration_value with enumeration_id (%), correct before setting link_creation_rule_ev_id to 31', new.enumeration_b_id;
+    else
+        RAISE EXCEPTION 'b > 1 enumeration_link_value for an enumeration_value with enumeration_id (%), correct before setting unique_flag = true', new.enumeration_b_id;
+    end if;
+end if;
+
+--validate the not_null_flag
+    --this means the N to 1 or 1 to N must have an entry in the enumeration_link_value table
+if new.link_creation_rule_ev_id = 29 and new.not_null_flag is not null
+then RAISE EXCEPTION 'not_null_flag is not supported for N to N links';
+end if;
+
+if new.link_creation_rule_ev_id <> 29 and new.not_null_flag is null
+then RAISE EXCEPTION 'not_null_flag is required for N to 1 or 1 to N links';
+end if;
+
+--If we checked nullness the editor would be a real pain
+--so just have your editor check for issues, and warn the user
+--until they have assigned a link_value for each value
+
+--set defaults if needed
+if new.name = 'trigger will fill if null' then
+    if new.link_creation_rule_ev_id = 29 then --linking table
+        new.name = (select max(a.name) || '_' || max(b.name) || '_LINK' from -=[schema_name]=-.enumeration a, -=[schema_name]=-.enumeration b where new.enumeration_a_id = a.enumeration_id and new.enumeration_b_id = b.enumeration_id);
+    end if;
+    if new.link_creation_rule_ev_id = 30 then --table a has fk column to b
+        new.name = (select max(b.name) from -=[schema_name]=-.enumeration b where new.enumeration_b_id = b.enumeration_id);
+    end if;
+    if new.link_creation_rule_ev_id = 31 then --table b has fk column to a
+        new.name = (select max(a.name) from -=[schema_name]=-.enumeration a where new.enumeration_a_id = a.enumeration_id);
+    end if;
+end if;
+    
+if new.tablename = 'trigger will fill if null' then
+    if new.link_creation_rule_ev_id = 29 then --linking table
+        new.tablename = (select max(a.tablename) || '_' || max(b.tablename) || '_link' from -=[schema_name]=-.enumeration a, -=[schema_name]=-.enumeration b where new.enumeration_a_id = a.enumeration_id and new.enumeration_b_id = b.enumeration_id);
+    end if;
+    if new.link_creation_rule_ev_id = 30 then --table a has fk column to b
+        new.tablename = (select max(b.tablename) from -=[schema_name]=-.enumeration b where new.enumeration_b_id = b.enumeration_id);
+    end if;
+    if new.link_creation_rule_ev_id = 31 then --table b has fk column to a
+        new.tablename = (select max(a.tablename) from -=[schema_name]=-.enumeration a where new.enumeration_a_id = a.enumeration_id);
+    end if;
+end if;
+
+if new.tablename_camel_case = 'trigger will fill if null' then
+    if new.link_creation_rule_ev_id = 29 then --linking table
+        new.tablename_camel_case = (select max(a.tablename_camel_case) || max(b.tablename_camel_case) || 'Link' from -=[schema_name]=-.enumeration a, -=[schema_name]=-.enumeration b where new.enumeration_a_id = a.enumeration_id and new.enumeration_b_id = b.enumeration_id);
+    end if;
+    if new.link_creation_rule_ev_id = 30 then --table a has fk column to b
+        new.tablename_camel_case = (select max(b.tablename_camel_case) from -=[schema_name]=-.enumeration b where new.enumeration_b_id = b.enumeration_id);
+    end if;
+    if new.link_creation_rule_ev_id = 31 then --table b has fk column to a
+        new.tablename_camel_case = (select max(a.tablename_camel_case) from -=[schema_name]=-.enumeration a where new.enumeration_a_id = a.enumeration_id);
+    end if;
+end if;
+
+insert into -=[schema_name]=-.enumeration_link_iud(operation, change_date, applied_flag,
+    enumeration_link_id, add_date, link_creation_rule_ev_id, enumeration_a_id, enumeration_b_id,
+    name, tablename, tablename_camel_case
+) 
+values (substr( TG_OP, 1, 1 ), now(), false,
+    new.enumeration_link_id, new.add_date, new.link_creation_rule_ev_id, new.enumeration_a_id, new.enumeration_b_id,
+    new.name, new.tablename, new.tablename_camel_case
+);
+RETURN new;
+end;
+$BODY$
+    LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION -=[schema_name]=-.insert_enumeration_link() OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create delete trigger for enumeration_link table
+-------------------------------------------------------------
+CREATE OR REPLACE FUNCTION -=[schema_name]=-.delete_enumeration_link()
+    RETURNS "trigger" AS
+$BODY$
+begin
+insert into -=[schema_name]=-.enumeration_link_iud(operation, change_date, applied_flag,
+    enumeration_link_id, add_date, link_creation_rule_ev_id, enumeration_a_id, enumeration_b_id, 
+    enumeration_a_index_ev_id, enumeration_b_index_ev_id, unique_flag, not_null_flag,
+    name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id,
+    column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column1_default,
+    column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column2_default, 
+    column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column3_default,
+    column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column4_default,
+    column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column5_default
+) 
+values (substr( TG_OP, 1, 1 ), now(),
+    case --applied_flag
+        when exists (
+            select 1
+            from -=[schema_name]=-.enumeration_link_iud iud
+            where iud.enumeration_link_id = old.enumeration_link_id and iud.operation in ('I') and iud.applied_flag = false)
+        then true
+        else false
+                end,
+    old.enumeration_link_id, old.add_date, old.link_creation_rule_ev_id, 
+    old.enumeration_a_id, old.enumeration_b_id,
+    old.enumeration_a_index_ev_id, old.enumeration_b_index_ev_id,
+    old.unique_flag, old.not_null_flag, old.name, old.tablename, old.tablename_camel_case, 
+    case --schema_name
+        when exists (
+            select 1
+            from -=[schema_name]=-.enumeration_link_iud iud
+            where iud.enumeration_link_id = old.enumeration_link_id and iud.operation in ('U') and iud.applied_flag = false)
+        then (
+            select max(iud.schema_name)
+            from -=[schema_name]=-.enumeration_link_iud iud
+            where iud.enumeration_link_id = old.enumeration_link_id and iud.operation in ('U') and iud.applied_flag = false)
+        else old.schema_name
+    end,
+    old.post_create_sql, old.child_table_synch_method_ev_id,
+    old.column1_name, old.column1_name_camel_case, old.column1_datatype_ev_id, old.column1_index_ev_id, old.column1_not_null_flag, old.column1_default,
+    old.column2_name, old.column2_name_camel_case, old.column2_datatype_ev_id, old.column2_index_ev_id, old.column2_not_null_flag, old.column1_default,
+    old.column3_name, old.column3_name_camel_case, old.column3_datatype_ev_id, old.column3_index_ev_id, old.column3_not_null_flag, old.column1_default,
+    old.column4_name, old.column4_name_camel_case, old.column4_datatype_ev_id, old.column4_index_ev_id, old.column4_not_null_flag, old.column1_default,
+    old.column5_name, old.column5_name_camel_case, old.column5_datatype_ev_id, old.column5_index_ev_id, old.column5_not_null_flag, old.column1_default);
+
+update -=[schema_name]=-.enumeration_link_iud set applied_flag = true
+        where enumeration_link_id = old.enumeration_link_id 
+        and operation <> 'D' and applied_flag = false;
+
+update -=[schema_name]=-.enumeration_link_value_iud set applied_flag = true
+        where enumeration_link_id = old.enumeration_link_id
+        and applied_flag = false;
+        
+RETURN NULL;
+end;
+$BODY$
+    LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION -=[schema_name]=-.delete_enumeration_link() OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create update trigger for enumeration_link table
+-------------------------------------------------------------
+CREATE OR REPLACE FUNCTION -=[schema_name]=-.update_enumeration_link()
+    RETURNS "trigger" AS
+$BODY$
+begin
+
+--no change enumeration_link_id,
+IF new.enumeration_link_id <> old.enumeration_link_id THEN
+     RAISE EXCEPTION 'no updates allowed on enumeration_link_id';
+END IF;
+
+--no change enumeration_a_id,
+IF new.enumeration_a_id <> old.enumeration_a_id THEN
+     RAISE EXCEPTION 'no updates allowed on enumeration_a_id';
+END IF;
+
+--no change enumeration_b_id,
+IF new.enumeration_b_id <> old.enumeration_b_id THEN
+     RAISE EXCEPTION 'no updates allowed on enumeration_b_id';
+END IF;
+
+--check limited fk to enumeration_value table for enumeration_a_index_ev_id
+if new.enumeration_a_index_ev_id is not null and (old.enumeration_a_index_ev_id is null or old.enumeration_a_index_ev_id <> new.enumeration_a_index_ev_id)
+        and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.enumeration_a_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (enumeration_a_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.enumeration_a_index_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for enumeration_b_index_ev_id
+if new.enumeration_b_index_ev_id is not null and (old.enumeration_b_index_ev_id is null or old.enumeration_b_index_ev_id <> new.enumeration_b_index_ev_id)
+        and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.enumeration_b_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (enumeration_b_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.enumeration_b_index_ev_id;
+end if;
+
+--check for invalid index settings
+if new.link_creation_rule_ev_id = 30 and new.enumeration_a_index_ev_id is not null --table a has fk column to b
+then RAISE EXCEPTION 'indexes on enumeration_a are not allowed when building an fk to column b';
+end if;
+if new.link_creation_rule_ev_id = 31 and new.enumeration_b_index_ev_id is not null --table b has fk column to a
+then RAISE EXCEPTION 'indexes on enumeration_b are not allowed when building an fk to column a';
+end if;
+
+--check limited fk to enumeration_value table for link_creation_rule_ev_id
+if not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.link_creation_rule_ev_id and enumeration_id = 7)
+then RAISE EXCEPTION 'Key (link_creation_rule_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 7', new.link_creation_rule_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for child_table_synch_method_ev_id
+if new.child_table_synch_method_ev_id is not null and (old.child_table_synch_method_ev_id is null or old.child_table_synch_method_ev_id <> new.child_table_synch_method_ev_id)
+        and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.child_table_synch_method_ev_id and enumeration_id = 5)
+then RAISE EXCEPTION 'Key (child_table_synch_method_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 5', new.child_table_synch_method_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for column#_datatype_ev_id
+if new.column1_datatype_ev_id is not null and (old.column1_datatype_ev_id is null or old.column1_datatype_ev_id <> new.column1_datatype_ev_id)
+        and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column1_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column1_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column1_datatype_ev_id;
+end if;
+
+if new.column2_datatype_ev_id is not null and (old.column2_datatype_ev_id is null or old.column2_datatype_ev_id <> new.column2_datatype_ev_id)
+        and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column2_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column2_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column2_datatype_ev_id;
+end if;
+
+if new.column3_datatype_ev_id is not null and (old.column3_datatype_ev_id is null or old.column3_datatype_ev_id <> new.column3_datatype_ev_id)
+        and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column3_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column3_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column3_datatype_ev_id;
+end if;
+
+if new.column4_datatype_ev_id is not null and (old.column4_datatype_ev_id is null or old.column4_datatype_ev_id <> new.column4_datatype_ev_id)
+        and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column4_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column4_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column4_datatype_ev_id;
+end if;
+
+if new.column5_datatype_ev_id is not null and (old.column5_datatype_ev_id is null or old.column5_datatype_ev_id <> new.column5_datatype_ev_id)
+        and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column5_datatype_ev_id and enumeration_id = 2)
+then RAISE EXCEPTION 'Key (column5_datatype_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 2', new.column5_datatype_ev_id;
+end if;
+
+--check limited fk to enumeration_value table for column#_index_ev_id
+if new.column1_index_ev_id is not null and (old.column1_index_ev_id is null or old.column1_index_ev_id <> new.column1_index_ev_id)
+        and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column1_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column1_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column1_index_ev_id;
+end if;
+
+if new.column2_index_ev_id is not null and (old.column2_index_ev_id is null or old.column2_index_ev_id <> new.column2_index_ev_id)
+        and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column2_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column2_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column2_index_ev_id;
+end if;
+    
+if new.column3_index_ev_id is not null and (old.column3_index_ev_id is null or old.column3_index_ev_id <> new.column3_index_ev_id)
+        and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column3_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column3_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column3_index_ev_id;
+end if;
+
+if new.column4_index_ev_id is not null and (old.column4_index_ev_id is null or old.column4_index_ev_id <> new.column4_index_ev_id)
+        and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column4_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column4_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column4_index_ev_id;
+end if;
+
+if new.column5_index_ev_id is not null and (old.column5_index_ev_id is null or old.column5_index_ev_id <> new.column5_index_ev_id)
+        and not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.column5_index_ev_id and enumeration_id = 6)
+then RAISE EXCEPTION 'Key (column5_index_ev_id)=(%) is not present in table enumeration_value where enumeration_id = 6', new.column5_index_ev_id;
+end if;
+
+--column1 nullness change
+if ((old.column1_not_null_flag is null or old.column1_not_null_flag = false) and new.column1_not_null_flag = true) then
+    if (new.column1_default is not null) then
+        update -=[schema_name]=-.enumeration_link_value set column1_value = new.column1_default
+        where column1_value is null and enumeration_link_id = new.enumeration_link_id;
+    end if;
+    if (new.column1_default is null and exists (select 1 from -=[schema_name]=-.enumeration_link_value where column1_value is null and enumeration_link_id = new.enumeration_link_id)) then
+        RAISE EXCEPTION 'null values exists on -=[schema_name]=-.enumeration_link_value.column1_value, repair before setting -=[schema_name]=-.enumeration_link.column1_not_null_flag = true';
+    end if;
+end if;
+
+--column2 nullness change
+if ((old.column2_not_null_flag is null or old.column2_not_null_flag = false) and new.column2_not_null_flag = true) then
+    if (new.column2_default is not null) then
+        update -=[schema_name]=-.enumeration_link_value set column2_value = new.column2_default
+        where column2_value is null and enumeration_link_id = new.enumeration_link_id;
+    end if;
+    if (new.column2_default is null and exists (select 1 from -=[schema_name]=-.enumeration_link_value where column2_value is null and enumeration_link_id = new.enumeration_link_id)) then
+        RAISE EXCEPTION 'null values exists on -=[schema_name]=-.enumeration_link_value.column2_value, repair before setting -=[schema_name]=-.enumeration_link.column2_not_null_flag = true';
+    end if;
+end if;
+
+--column3 nullness change
+if ((old.column3_not_null_flag is null or old.column3_not_null_flag = false) and new.column3_not_null_flag = true) then
+    if (new.column3_default is not null) then
+        update -=[schema_name]=-.enumeration_link_value set column3_value = new.column3_default
+        where column3_value is null and enumeration_link_id = new.enumeration_link_id;
+    end if;
+    if (new.column3_default is null and exists (select 1 from -=[schema_name]=-.enumeration_link_value where column3_value is null and enumeration_link_id = new.enumeration_link_id)) then
+        RAISE EXCEPTION 'null values exists on -=[schema_name]=-.enumeration_link_value.column3_value, repair before setting -=[schema_name]=-.enumeration_link.column3_not_null_flag = true';
+    end if;
+end if;
+
+--column4 nullness change
+if ((old.column4_not_null_flag is null or old.column4_not_null_flag = false) and new.column4_not_null_flag = true) then
+    if (new.column4_default is not null) then
+        update -=[schema_name]=-.enumeration_link_value set column4_value = new.column4_default
+        where column4_value is null and enumeration_link_id = new.enumeration_link_id;
+    end if;
+    if (new.column4_default is null and exists (select 1 from -=[schema_name]=-.enumeration_link_value where column4_value is null and enumeration_link_id = new.enumeration_link_id)) then
+        RAISE EXCEPTION 'null values exists on -=[schema_name]=-.enumeration_link_value.column4_value, repair before setting -=[schema_name]=-.enumeration_link.column4_not_null_flag = true';
+    end if;
+end if;
+
+--column5 nullness change
+if ((old.column5_not_null_flag is null or old.column5_not_null_flag = false) and new.column5_not_null_flag = true) then
+    if (new.column5_default is not null) then
+        update -=[schema_name]=-.enumeration_link_value set column5_value = new.column5_default
+        where column5_value is null and enumeration_link_id = new.enumeration_link_id;
+    end if;
+    if (new.column5_default is null and exists (select 1 from -=[schema_name]=-.enumeration_link_value where column5_value is null and enumeration_link_id = new.enumeration_link_id)) then
+        RAISE EXCEPTION 'null values exists on -=[schema_name]=-.enumeration_link_value.column5_value, repair before setting -=[schema_name]=-.enumeration_link.column5_not_null_flag = true';
+    end if;
+end if;
+
+--validate the unique_flag and
+--validate the link_creation_rule_ev_id for 'N to 1' or '1 to N'
+if (new.link_creation_rule_ev_id = 30 or new.unique_flag) and
+    exists (
+        select 1 
+        from -=[schema_name]=-.enumeration_value v 
+        where new.enumeration_a_id = v.enumeration_id
+            and 1 < (
+                select count(1)
+                from -=[schema_name]=-.enumeration_link_value lv 
+                where new.enumeration_link_id = lv.enumeration_link_id
+                    and v.enumeration_value_id = lv.enumeration_value_a_id))
+then
+    if new.link_creation_rule_ev_id = 30 then
+        RAISE EXCEPTION 'a > 1 enumeration_link_value for an enumeration_value with enumeration_id (%), correct before setting link_creation_rule_ev_id to 30', new.enumeration_a_id;
+    else
+        RAISE EXCEPTION 'a > 1 enumeration_link_value for an enumeration_value with enumeration_id (%), correct before setting unique_flag = true', new.enumeration_a_id;
+    end if;
+end if;
+
+if (new.link_creation_rule_ev_id = 31 or new.unique_flag) and
+    exists (
+        select 1 
+        from -=[schema_name]=-.enumeration_value v 
+        where new.enumeration_b_id = v.enumeration_id
+            and 1 < (
+                select count(1)
+                from -=[schema_name]=-.enumeration_link_value lv 
+                where new.enumeration_link_id = lv.enumeration_link_id
+                    and v.enumeration_value_id = lv.enumeration_value_b_id))
+then
+    if new.link_creation_rule_ev_id = 31 then
+        RAISE EXCEPTION 'b > 1 enumeration_link_value for an enumeration_value with enumeration_id (%), correct before setting link_creation_rule_ev_id to 31', new.enumeration_b_id;
+    else
+        RAISE EXCEPTION 'b > 1 enumeration_link_value for an enumeration_value with enumeration_id (%), correct before setting unique_flag = true', new.enumeration_b_id;
+    end if;
+end if;
+
+--validate the not_null_flag
+        --this means the N to 1 or 1 to N must have an entry in the enumeration_link_value table
+if new.link_creation_rule_ev_id = 29 and new.not_null_flag is not null
+then RAISE EXCEPTION 'not_null_flag is not supported for N to N links';
+end if;
+
+if new.link_creation_rule_ev_id <> 29 and new.not_null_flag is null
+then RAISE EXCEPTION 'not_null_flag is required for N to 1 or 1 to N links';
+end if;
+
+--set defaults if needed
+if new.name = 'trigger will fill if null' then
+    if new.link_creation_rule_ev_id = 29 then --linking table
+        new.name = (select max(a.name) || '_' || max(b.name) || '_LINK' from -=[schema_name]=-.enumeration a, -=[schema_name]=-.enumeration b where new.enumeration_a_id = a.enumeration_id and new.enumeration_b_id = b.enumeration_id);
+    end if;
+    if new.link_creation_rule_ev_id = 30 then --table a has fk column to b
+        new.name = (select max(b.name) from -=[schema_name]=-.enumeration b where new.enumeration_b_id = b.enumeration_id);
+    end if;
+    if new.link_creation_rule_ev_id = 31 then --table b has fk column to a
+        new.name = (select max(a.name) from -=[schema_name]=-.enumeration a where new.enumeration_a_id = a.enumeration_id);
+    end if;
+end if;
+
+if new.tablename = 'trigger will fill if null' then
+    if new.link_creation_rule_ev_id = 29 then --linking table
+        new.tablename = (select max(a.tablename) || '_' || max(b.tablename) || '_link' from -=[schema_name]=-.enumeration a, -=[schema_name]=-.enumeration b where new.enumeration_a_id = a.enumeration_id and new.enumeration_b_id = b.enumeration_id);
+    end if;
+    if new.link_creation_rule_ev_id = 30 then --table a has fk column to b
+        new.tablename = (select max(b.tablename) from -=[schema_name]=-.enumeration b where new.enumeration_b_id = b.enumeration_id);
+    end if;
+    if new.link_creation_rule_ev_id = 31 then --table b has fk column to a
+        new.tablename = (select max(a.tablename) from -=[schema_name]=-.enumeration a where new.enumeration_a_id = a.enumeration_id);
+    end if;
+end if;
+
+if new.tablename_camel_case = 'trigger will fill if null' then
+    if new.link_creation_rule_ev_id = 29 then --linking table
+        new.tablename_camel_case = (select max(a.tablename_camel_case) || max(b.tablename_camel_case) || 'Link' from -=[schema_name]=-.enumeration a, -=[schema_name]=-.enumeration b where new.enumeration_a_id = a.enumeration_id and new.enumeration_b_id = b.enumeration_id);
+    end if;
+    if new.link_creation_rule_ev_id = 30 then --table a has fk column to b
+        new.tablename_camel_case = (select max(b.tablename_camel_case) from -=[schema_name]=-.enumeration b where new.enumeration_b_id = b.enumeration_id);
+    end if;
+    if new.link_creation_rule_ev_id = 31 then --table b has fk column to a
+        new.tablename_camel_case = (select max(a.tablename_camel_case) from -=[schema_name]=-.enumeration a where new.enumeration_a_id = a.enumeration_id);
+    end if;
+end if;
+
+insert into -=[schema_name]=-.enumeration_link_iud(operation, change_date, applied_flag,
+    enumeration_link_id, add_date, link_creation_rule_ev_id, enumeration_a_id, enumeration_b_id, 
+    enumeration_a_index_ev_id, enumeration_b_index_ev_id, unique_flag, not_null_flag,
+    name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id,
+    column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column1_default,
+    column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column2_default, 
+    column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column3_default,
+    column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column4_default,
+    column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column5_default
+) 
+values (substr( TG_OP, 1, 1 ), now(),
+    case 
+        when exists (
+            select 1
+            from -=[schema_name]=-.enumeration_link_iud iud
+            where iud.enumeration_link_id = old.enumeration_link_id and iud.operation in ('I', 'U') and iud.applied_flag = false)
+        then true
+        else false
+    end,
+    old.enumeration_link_id, old.add_date, old.link_creation_rule_ev_id, old.enumeration_a_id, old.enumeration_b_id,
+    case when old.enumeration_a_index_ev_id = new.enumeration_a_index_ev_id then null else old.enumeration_a_index_ev_id end,
+    case when old.enumeration_b_index_ev_id = new.enumeration_b_index_ev_id then null else old.enumeration_b_index_ev_id end,
+    old.unique_flag, old.not_null_flag, old.name,   old.tablename, old.tablename_camel_case, old.schema_name,
+    case when old.post_create_sql = new.post_create_sql then null else old.post_create_sql end,
+    case when old.child_table_synch_method_ev_id = new.child_table_synch_method_ev_id then null else old.child_table_synch_method_ev_id end,
+    case when old.column1_name = new.column1_name then null else old.column1_name end,
+    case when old.column1_name_camel_case = new.column1_name_camel_case then null else old.column1_name_camel_case end,
+    case when old.column1_datatype_ev_id = new.column1_datatype_ev_id then null else old.column1_datatype_ev_id end,
+    case when old.column1_index_ev_id = new.column1_index_ev_id then null else old.column1_index_ev_id end,
+    case when old.column1_not_null_flag = new.column1_not_null_flag then null else old.column1_not_null_flag end,
+    case when old.column1_default = new.column1_default then null else old.column1_default end,
+    case when old.column2_name = new.column2_name then null else old.column2_name end,
+    case when old.column2_name_camel_case = new.column2_name_camel_case then null else old.column2_name_camel_case end,
+    case when old.column2_datatype_ev_id = new.column2_datatype_ev_id then null else old.column2_datatype_ev_id end,
+    case when old.column2_index_ev_id = new.column2_index_ev_id then null else old.column2_index_ev_id end,
+    case when old.column2_not_null_flag = new.column2_not_null_flag then null else old.column2_not_null_flag end,
+    case when old.column2_default = new.column2_default then null else old.column2_default end,
+    case when old.column3_name = new.column3_name then null else old.column3_name end,
+    case when old.column3_name_camel_case = new.column3_name_camel_case then null else old.column3_name_camel_case end,
+    case when old.column3_datatype_ev_id = new.column3_datatype_ev_id then null else old.column3_datatype_ev_id end,
+    case when old.column3_index_ev_id = new.column3_index_ev_id then null else old.column3_index_ev_id end,
+    case when old.column3_not_null_flag = new.column3_not_null_flag then null else old.column3_not_null_flag end,
+    case when old.column3_default = new.column3_default then null else old.column3_default end,
+    case when old.column4_name = new.column4_name then null else old.column4_name end,
+    case when old.column4_name_camel_case = new.column4_name_camel_case then null else old.column4_name_camel_case end,
+    case when old.column4_datatype_ev_id = new.column4_datatype_ev_id then null else old.column4_datatype_ev_id end,
+    case when old.column4_index_ev_id = new.column4_index_ev_id then null else old.column4_index_ev_id end,
+    case when old.column4_not_null_flag = new.column4_not_null_flag then null else old.column4_not_null_flag end,
+    case when old.column4_default = new.column4_default then null else old.column4_default end,
+    case when old.column5_name = new.column5_name then null else old.column5_name end,
+    case when old.column5_name_camel_case = new.column5_name_camel_case then null else old.column5_name_camel_case end,
+    case when old.column5_datatype_ev_id = new.column5_datatype_ev_id then null else old.column5_datatype_ev_id end,
+    case when old.column5_index_ev_id = new.column5_index_ev_id then null else old.column5_index_ev_id end,
+    case when old.column5_not_null_flag = new.column5_not_null_flag then null else old.column5_not_null_flag end,
+    case when old.column5_default = new.column5_default then null else old.column5_default end
+);
+update -=[schema_name]=-.enumeration_link_value_iud set applied_flag = true
+        where enumeration_link_id = old.enumeration_link_id
+        and applied_flag = false;
+
+RETURN new;
+end;
+$BODY$
+    LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION -=[schema_name]=-.update_enumeration_link() OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create main enumeration_link table
+-------------------------------------------------------------
+CREATE TABLE -=[schema_name]=-.enumeration_link
+(
+    enumeration_link_id bigserial NOT NULL,
+    add_date timestamp with time zone NOT NULL DEFAULT now(),
+    link_creation_rule_ev_id integer NOT NULL,
+    enumeration_a_id integer NOT NULL,
+    enumeration_b_id integer NOT NULL,
+    enumeration_a_index_ev_id integer,
+    enumeration_b_index_ev_id integer,
+    unique_flag boolean NOT NULL DEFAULT false,
+    not_null_flag boolean,
+    name character varying NOT NULL DEFAULT 'trigger will fill if null'::character varying,
+    tablename character varying NOT NULL DEFAULT 'trigger will fill if null'::character varying,
+    tablename_camel_case character varying NOT NULL DEFAULT 'trigger will fill if null'::character varying,
+    schema_name character varying,
+    post_create_sql character varying,
+    child_table_synch_method_ev_id integer NOT NULL,
+    column1_name character varying,
+    column1_name_camel_case character varying,
+    column1_datatype_ev_id integer,
+    column1_index_ev_id integer,
+    column1_not_null_flag boolean,
+    column1_default character varying,
+    column2_name character varying,
+    column2_name_camel_case character varying,
+    column2_datatype_ev_id integer,
+    column2_index_ev_id integer,
+    column2_not_null_flag boolean,
+    column2_default character varying,
+    column3_name character varying,
+    column3_name_camel_case character varying,
+    column3_datatype_ev_id integer,
+    column3_index_ev_id integer,
+    column3_not_null_flag boolean,
+    column3_default character varying,
+    column4_name character varying,
+    column4_name_camel_case character varying,
+    column4_datatype_ev_id integer,
+    column4_index_ev_id integer,
+    column4_not_null_flag boolean,
+    column4_default character varying,
+    column5_name character varying,
+    column5_name_camel_case character varying,
+    column5_datatype_ev_id integer,
+    column5_index_ev_id integer,
+    column5_not_null_flag boolean,
+    column5_default character varying,
+    CONSTRAINT enumeration_enumeration_link_id_pk PRIMARY KEY (enumeration_link_id),
+    CONSTRAINT enumeration_enumeration_link_enumeration_a_id FOREIGN KEY (enumeration_a_id)
+        REFERENCES -=[schema_name]=-.enumeration (enumeration_id) MATCH SIMPLE
+        ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+    CONSTRAINT enumeration_enumeration_link_enumeration_b_id FOREIGN KEY (enumeration_b_id)
+        REFERENCES -=[schema_name]=-.enumeration (enumeration_id) MATCH SIMPLE
+        ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+    CONSTRAINT enumeration_enumeration_link_name_unique UNIQUE (name),
+    CONSTRAINT enumeration_enumeration_link_name_upper_format CHECK ( case when name is null then true when "substring"(name::text, '[A-Z_]{1}[A-Z_0-9]*'::text) = name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_link_tablename_unique UNIQUE (tablename),
+    CONSTRAINT enumeration_enumeration_link_tablename_lower_format CHECK ( case when tablename is null then true when "substring"(tablename::text, '[a-z_]{1}[a-z_0-9]*'::text) = tablename::text then true else false end),
+    CONSTRAINT enumeration_enumeration_link_tablename_camel_case_unique UNIQUE (tablename_camel_case),
+    CONSTRAINT enumeration_enumeration_link_tablename_camel_case_format CHECK ( case when tablename_camel_case is null then true when "substring"(tablename_camel_case::text, '[A-Z]{1}[A-Za-z0-9]*'::text) = tablename_camel_case::text then true else false end),
+    CONSTRAINT enumeration_enumeration_link_schema_name_lower_format CHECK ( case when schema_name is null then true when "substring"(schema_name::text, '[a-z_]{1}[a-z_0-9]*'::text) = schema_name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_link_schema_name_completeness_check CHECK ((child_table_synch_method_ev_id = 22 and schema_name is not null) or child_table_synch_method_ev_id <> 22),
+    CONSTRAINT enumeration_enumeration_link_columns_only_valid_with_linking_tables CHECK (case when link_creation_rule_ev_id <> 29 and column1_name is not null or column2_name is not null or column3_name is not null or column4_name is not null or column5_name is not null then false else true end),
+    CONSTRAINT enumeration_enumeration_link_column_names_unique CHECK(case when column1_name = column2_name then false when column1_name = column3_name then false when column1_name = column4_name then false when column1_name = column5_name then false when column2_name = column3_name then false when column2_name = column4_name then false when column2_name = column5_name then false when column3_name = column4_name then false when column3_name = column5_name then false when column4_name = column5_name then false else true end),
+    CONSTRAINT enumeration_enumeration_link_column_names_camel_case_unique CHECK(case when column1_name_camel_case = column2_name_camel_case then false when column1_name_camel_case = column3_name_camel_case then false when column1_name_camel_case = column4_name_camel_case then false when column1_name_camel_case = column5_name_camel_case then false when column2_name_camel_case = column3_name_camel_case then false when column2_name_camel_case = column4_name_camel_case then false when column2_name_camel_case = column5_name_camel_case then false when column3_name_camel_case = column4_name_camel_case then false when column3_name_camel_case = column5_name_camel_case then false when column4_name_camel_case = column5_name_camel_case then false else true end),
+    CONSTRAINT enumeration_enumeration_link_column1_completeness_check CHECK ((column1_name IS NULL AND column1_name_camel_case IS NULL AND column1_datatype_ev_id IS NULL AND column1_index_ev_id is NULL AND column1_not_null_flag IS NULL) OR (column1_name IS NOT NULL AND column1_name_camel_case IS NOT NULL AND column1_datatype_ev_id IS NOT NULL AND column1_index_ev_id IS NOT NULL AND column1_not_null_flag IS NOT NULL)),
+    CONSTRAINT enumeration_enumeration_link_column1_upper_format CHECK ( case when column1_name is null then true when "substring"(column1_name::text, '[A-Z_]{1}[A-Z_0-9]*'::text) = column1_name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_link_column1_camel_case_format CHECK ( case when column1_name_camel_case is null then true when "substring"(column1_name_camel_case::text, '[A-Z]{1}[A-Za-z0-9]*'::text) = column1_name_camel_case::text then true else false end),
+    CONSTRAINT enumeration_enumeration_link_column2_completeness_check CHECK ((column2_name IS NULL AND column2_name_camel_case IS NULL AND column2_datatype_ev_id IS NULL AND column2_index_ev_id is NULL AND column2_not_null_flag IS NULL) OR (column2_name IS NOT NULL AND column2_name_camel_case IS NOT NULL AND column2_datatype_ev_id IS NOT NULL AND column2_index_ev_id IS NOT NULL AND column2_not_null_flag IS NOT NULL)),
+    CONSTRAINT enumeration_enumeration_link_column2_upper_format CHECK ( case when column2_name is null then true when "substring"(column2_name::text, '[A-Z_]{1}[A-Z_0-9]*'::text) = column2_name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_link_column2_camel_case_format CHECK ( case when column2_name_camel_case is null then true when "substring"(column2_name_camel_case::text, '[A-Z]{1}[A-Za-z0-9]*'::text) = column2_name_camel_case::text then true else false end),
+    CONSTRAINT enumeration_enumeration_link_column3_completeness_check CHECK ((column3_name IS NULL AND column3_name_camel_case IS NULL AND column3_datatype_ev_id IS NULL AND column3_index_ev_id is NULL AND column3_not_null_flag IS NULL) OR (column3_name IS NOT NULL AND column3_name_camel_case IS NOT NULL AND column3_datatype_ev_id IS NOT NULL AND column3_index_ev_id IS NOT NULL AND column3_not_null_flag IS NOT NULL)),
+    CONSTRAINT enumeration_enumeration_link_column3_upper_format CHECK ( case when column3_name is null then true when "substring"(column3_name::text, '[A-Z_]{1}[A-Z_0-9]*'::text) = column3_name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_link_column3_camel_case_format CHECK ( case when column3_name_camel_case is null then true when "substring"(column3_name_camel_case::text, '[A-Z]{1}[A-Za-z0-9]*'::text) = column3_name_camel_case::text then true else false end),
+    CONSTRAINT enumeration_enumeration_link_column4_completeness_check CHECK ((column4_name IS NULL AND column4_name_camel_case IS NULL AND column4_datatype_ev_id IS NULL AND column4_index_ev_id is NULL AND column4_not_null_flag IS NULL) OR (column4_name IS NOT NULL AND column4_name_camel_case IS NOT NULL AND column4_datatype_ev_id IS NOT NULL AND column4_index_ev_id IS NOT NULL AND column4_not_null_flag IS NOT NULL)),
+    CONSTRAINT enumeration_enumeration_link_column4_upper_format CHECK ( case when column4_name is null then true when "substring"(column4_name::text, '[A-Z_]{1}[A-Z_0-9]*'::text) = column4_name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_link_column4_camel_case_format CHECK ( case when column4_name_camel_case is null then true when "substring"(column4_name_camel_case::text, '[A-Z]{1}[A-Za-z0-9]*'::text) = column4_name_camel_case::text then true else false end),
+    CONSTRAINT enumeration_enumeration_link_column5_completeness_check CHECK ((column5_name IS NULL AND column5_name_camel_case IS NULL AND column5_datatype_ev_id IS NULL AND column5_index_ev_id is NULL AND column5_not_null_flag IS NULL) OR (column5_name IS NOT NULL AND column5_name_camel_case IS NOT NULL AND column5_datatype_ev_id IS NOT NULL AND column5_index_ev_id IS NOT NULL AND column5_not_null_flag IS NOT NULL)),
+    CONSTRAINT enumeration_enumeration_link_column5_upper_format CHECK ( case when column5_name is null then true when "substring"(column5_name::text, '[A-Z_]{1}[A-Z_0-9]*'::text) = column5_name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_link_column5_camel_case_format CHECK ( case when column5_name_camel_case is null then true when "substring"(column5_name_camel_case::text, '[A-Z]{1}[A-Za-z0-9]*'::text) = column5_name_camel_case::text then true else false end)
+) 
+WITHOUT OIDS;
+ALTER TABLE -=[schema_name]=-.enumeration_link OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create enumeration_link history table
+-------------------------------------------------------------
+CREATE TABLE -=[schema_name]=-.enumeration_link_iud
+(
+    operation character(1) NOT NULL,
+    change_date timestamp with time zone NOT NULL,
+    applied_flag boolean default false NOT NULL,
+    enumeration_link_id bigint NOT NULL,
+    add_date timestamp with time zone,
+    link_creation_rule_ev_id integer,
+    enumeration_a_id integer,
+    enumeration_b_id integer,
+    enumeration_a_index_ev_id integer,
+    enumeration_b_index_ev_id integer,
+    unique_flag boolean,
+    not_null_flag boolean,
+    name character varying,
+    tablename character varying,
+    tablename_camel_case character varying,
+    schema_name character varying,
+    post_create_sql character varying,
+    child_table_synch_method_ev_id integer,
+    column1_name character varying,
+    column1_name_camel_case character varying,
+    column1_datatype_ev_id integer,
+    column1_index_ev_id integer,
+    column1_not_null_flag boolean,
+    column1_default character varying,
+    column2_name character varying,
+    column2_name_camel_case character varying,
+    column2_datatype_ev_id integer,
+    column2_index_ev_id integer,
+    column2_not_null_flag boolean,
+    column2_default character varying,
+    column3_name character varying,
+    column3_name_camel_case character varying,
+    column3_datatype_ev_id integer,
+    column3_index_ev_id integer,
+    column3_not_null_flag boolean,
+    column3_default character varying,
+    column4_name character varying,
+    column4_name_camel_case character varying,
+    column4_datatype_ev_id integer,
+    column4_index_ev_id integer,
+    column4_not_null_flag boolean,
+    column4_default character varying,
+    column5_name character varying,
+    column5_name_camel_case character varying,
+    column5_datatype_ev_id integer,
+    column5_index_ev_id integer,
+    column5_not_null_flag boolean,
+    column5_default character varying
+) 
+WITHOUT OIDS;
+ALTER TABLE -=[schema_name]=-.enumeration_link_iud OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--register insert trigger on table
+-------------------------------------------------------------
+CREATE TRIGGER insert_enumeration_link
+    BEFORE INSERT
+    ON -=[schema_name]=-.enumeration_link
+    FOR EACH ROW
+    EXECUTE PROCEDURE -=[schema_name]=-.insert_enumeration_link();
+
+-------------------------------------------------------------
+--register update trigger on table
+-------------------------------------------------------------
+CREATE TRIGGER update_enumeration_link
+    BEFORE UPDATE
+    ON -=[schema_name]=-.enumeration_link
+    FOR EACH ROW
+    EXECUTE PROCEDURE -=[schema_name]=-.update_enumeration_link();
+
+-------------------------------------------------------------
+--register delete trigger on table
+-------------------------------------------------------------
+CREATE TRIGGER delete_enumeration_link
+    AFTER DELETE
+    ON -=[schema_name]=-.enumeration_link
+    FOR EACH ROW
+    EXECUTE PROCEDURE -=[schema_name]=-.delete_enumeration_link();
+    
+-------------------------------------------------------------
+--create primary index
+-------------------------------------------------------------
+CREATE UNIQUE INDEX enumeration_link_pk_index
+    ON -=[schema_name]=-.enumeration_link
+    USING btree
+    (enumeration_link_id);
+ALTER TABLE -=[schema_name]=-.enumeration_link CLUSTER ON enumeration_link_pk_index;
+
+-------------------------------------------------------------
+-------------------------------------------------------------
+-----------------ENUMERATION LINK VALUE----------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+
+-------------------------------------------------------------
+--create insert/update trigger for enumeration_link_value
+-------------------------------------------------------------
+CREATE OR REPLACE FUNCTION -=[schema_name]=-.before_insert_update_enumeration_link_value()
+    RETURNS "trigger" AS
+$BODY$
+begin
+
+IF substr( TG_OP, 1, 1 ) = 'U' THEN
+    --no change enumeration_link_value_id
+    IF new.enumeration_link_value_id <> old.enumeration_link_value_id THEN
+        RAISE EXCEPTION 'no updates allowed on enumeration_link_value_id';
+    END IF;
+    --no change enumeration_link_id,
+    IF new.enumeration_link_id <> old.enumeration_link_id THEN
+        RAISE EXCEPTION 'no updates allowed on enumeration_link_id';
+    END IF;
+    --no change enumeration_value_a_id,
+    IF new.enumeration_value_a_id <> old.enumeration_value_a_id THEN
+        RAISE EXCEPTION 'no updates allowed on enumeration_value_a_id';
+    END IF;
+    --no change enumeration_value_b_id,
+    IF new.enumeration_value_b_id <> old.enumeration_value_b_id THEN
+        RAISE EXCEPTION 'no updates allowed on enumeration_value_b_id';
+    END IF;
+END IF;
+
+--check fk on enumeration_value_a_id
+IF substr( TG_OP, 1, 1 ) = 'I' and not exists (
+    select 1
+    from -=[schema_name]=-.enumeration_link link,
+        -=[schema_name]=-.enumeration enum_a,
+        -=[schema_name]=-.enumeration_value value_a
+    where
+        link.enumeration_link_id = new.enumeration_link_id
+        and link.enumeration_a_id = enum_a.enumeration_id
+        and enum_a.enumeration_id = value_a.enumeration_id
+        and value_a.enumeration_value_id = new.enumeration_value_a_id)
+THEN RAISE EXCEPTION 'Key (enumeration_value_a_id)=(%) is not in the valid set for enumeration_link_id (%)', new.enumeration_value_a_id, new.enumeration_link_id;
+END IF;
+
+--check fk on enumeration_value_b_id
+IF substr( TG_OP, 1, 1 ) = 'I' and not exists (
+    select 1
+    from -=[schema_name]=-.enumeration_link link,
+        -=[schema_name]=-.enumeration enum_b,
+        -=[schema_name]=-.enumeration_value value_b
+    where
+        link.enumeration_link_id = new.enumeration_link_id
+        and link.enumeration_b_id = enum_b.enumeration_id
+        and enum_b.enumeration_id = value_b.enumeration_id
+        and value_b.enumeration_value_id = new.enumeration_value_b_id)
+THEN RAISE EXCEPTION 'Key (enumeration_value_b_id)=(%) is not in the valid set for enumeration_link_id (%)', new.enumeration_value_b_id, new.enumeration_link_id;
+END IF;
+
+--set defaults if needed
+if new.name = 'trigger will fill if null' then
+    new.name = (select a.name || '_' || b.name || '_LINK' from -=[schema_name]=-.enumeration_value a, -=[schema_name]=-.enumeration_value b where new.enumeration_value_a_id = a.enumeration_value_id and new.enumeration_value_b_id = b.enumeration_value_id);
+end if;     
+    
+if new.description = 'trigger will fill if null' then
+    new.description = (select a.description || ' - ' || b.description from -=[schema_name]=-.enumeration_value a, -=[schema_name]=-.enumeration_value b where new.enumeration_value_a_id = a.enumeration_value_id and new.enumeration_value_b_id = b.enumeration_value_id);
+end if;     
+    
+--column1
+IF new.column1_value is null THEN
+    new.column1_value = (
+        select (column1_default) 
+        from -=[schema_name]=-.enumeration_link enum 
+        where enum.enumeration_link_id = new.enumeration_link_id);
+    IF new.column1_value is null and true = (
+        select (column1_not_null_flag) 
+        from -=[schema_name]=-.enumeration_link enum 
+        where enum.enumeration_link_id = new.enumeration_link_id)
+    THEN
+        RAISE EXCEPTION 'null value violates column1_non_null_flag';
+        --RETURN NULL;
+    END IF;
+END IF;
+--column2
+IF new.column2_value is null THEN
+    new.column2_value = (
+        select (column2_default) 
+        from -=[schema_name]=-.enumeration_link enum 
+        where enum.enumeration_link_id = new.enumeration_link_id);
+    IF new.column2_value is null and true = (
+        select (column2_not_null_flag) 
+        from -=[schema_name]=-.enumeration_link enum 
+        where enum.enumeration_link_id = new.enumeration_link_id)
+    THEN
+        RAISE EXCEPTION 'null value violates column2_non_null_flag';
+        --RETURN NULL;
+    END IF;
+END IF;
+--column3
+IF new.column3_value is null THEN
+    new.column3_value = (
+        select (column3_default) 
+        from -=[schema_name]=-.enumeration_link enum 
+        where enum.enumeration_link_id = new.enumeration_link_id);
+    IF new.column3_value is null and true = (
+        select (column3_not_null_flag) 
+        from -=[schema_name]=-.enumeration_link enum 
+        where enum.enumeration_link_id = new.enumeration_link_id)
+    THEN
+        RAISE EXCEPTION 'null value violates column3_non_null_flag';
+        --RETURN NULL;
+    END IF;
+END IF;
+--column4
+IF new.column4_value is null THEN
+    new.column4_value = (
+        select (column4_default) 
+        from -=[schema_name]=-.enumeration_link enum 
+        where enum.enumeration_link_id = new.enumeration_link_id);
+    IF new.column4_value is null and true = (
+        select (column4_not_null_flag) 
+        from -=[schema_name]=-.enumeration_link enum 
+        where enum.enumeration_link_id = new.enumeration_link_id)
+    THEN
+        RAISE EXCEPTION 'null value violates column4_non_null_flag';
+        --RETURN NULL;
+    END IF;
+END IF;
+--column5
+IF new.column5_value is null THEN
+    new.column5_value = (
+        select (column5_default) 
+        from -=[schema_name]=-.enumeration_link enum 
+        where enum.enumeration_link_id = new.enumeration_link_id);
+    IF new.column5_value is null and true = (
+        select (column5_not_null_flag) 
+        from -=[schema_name]=-.enumeration_link enum 
+        where enum.enumeration_link_id = new.enumeration_link_id)
+    THEN
+        RAISE EXCEPTION 'null value violates column5_non_null_flag';
+        --RETURN NULL;
+    END IF;
+END IF;
+
+--uniqueness check - a side first
+IF substr( TG_OP, 1, 1 ) = 'I' and exists (
+    select 1
+    from -=[schema_name]=-.enumeration_link link
+    where link.enumeration_link_id = new.enumeration_link_id
+        and (link.unique_flag = true or link.link_creation_rule_ev_id = 30)
+        and 0 < (
+            select count(1)
+            from -=[schema_name]=-.enumeration_link_value link_value
+            where link_value.enumeration_link_id = link.enumeration_link_id
+                and link_value.enumeration_link_value_id <> new.enumeration_link_value_id
+                and link_value.enumeration_value_a_id = new.enumeration_value_a_id
+        )
+    ) THEN  
+    RAISE EXCEPTION 'enumeration_link_id (%) requires unique values for enumeration_value_a_id (%), could not save changes', new.enumeration_link_id, new.enumeration_value_a_id;
+END IF; 
+    
+--uniqueness check - b side first
+IF substr( TG_OP, 1, 1 ) = 'I' and exists (
+    select 1
+    from -=[schema_name]=-.enumeration_link link
+    where link.enumeration_link_id = new.enumeration_link_id
+        and (link.unique_flag = true or link.link_creation_rule_ev_id = 31)
+        and 0 < (
+            select count(1)
+            from -=[schema_name]=-.enumeration_link_value link_value
+            where link_value.enumeration_link_id = link.enumeration_link_id
+                and link_value.enumeration_link_value_id <> new.enumeration_link_value_id
+                and link_value.enumeration_value_b_id = new.enumeration_value_b_id
+        )
+    ) THEN  
+    RAISE EXCEPTION 'enumeration_link_id (%) requires unique values for enumeration_value_b_id (%), could not save changes', new.enumeration_link_id, new.enumeration_value_b_id;
+END IF; 
+    
+--record history for inserts
+IF substr( TG_OP, 1, 1 ) = 'I' THEN
+    insert into -=[schema_name]=-.enumeration_link_value_iud(
+        operation, change_date, applied_flag,
+        enumeration_link_value_id, enumeration_link_id, add_date, 
+        enumeration_value_a_id, enumeration_value_b_id, name
+    ) 
+    values ('I', now(),
+        --we need to request an insert into child table value
+        --we don't do this if the enumeration_link_iud has a 'U' or 'I' unprocessed for this enumeration_link_id
+        case 
+            when exists (
+                select 1
+                from -=[schema_name]=-.enumeration_link_iud iud
+                where iud.enumeration_link_id = new.enumeration_link_id and iud.operation in ('I', 'U') and iud.applied_flag = false)
+            then true
+            else false
+        end,
+        new.enumeration_link_value_id, new.enumeration_link_id, new.add_date,
+        new.enumeration_value_a_id, new.enumeration_value_b_id, new.name
+    );
+END IF;
+
+--record history for updates
+IF substr( TG_OP, 1, 1 ) = 'U' THEN
+    insert into -=[schema_name]=-.enumeration_link_value_iud(
+        operation, change_date, applied_flag, enumeration_link_value_id, 
+        enumeration_link_id, add_date, enumeration_value_a_id, enumeration_value_b_id,
+        name, description, "sequence", column1_value, column2_value, column3_value, 
+        column4_value, column5_value
+    ) 
+    values ('U', now(),
+        --we need to update the child table to match exactly the enumeration_link_value table
+        --we don't do this if the enumeration_link_iud has a 'U' or 'I' unprocessed for this enumeration_link_id
+        case 
+            when exists (
+                select 1
+                from -=[schema_name]=-.enumeration_link_iud iud
+                where iud.enumeration_link_id = new.enumeration_link_id and iud.operation in ('I', 'U') and iud.applied_flag = false)
+            then true
+            when exists (
+                select 1
+                from -=[schema_name]=-.enumeration_link_value_iud iud
+                where iud.enumeration_link_value_id = new.enumeration_link_value_id and iud.operation in ('I', 'U') and iud.applied_flag = false)
+            then true
+            else false
+        end,
+        old.enumeration_link_value_id, old.enumeration_link_id, old.add_date,
+        old.enumeration_value_a_id, old.enumeration_value_b_id, old.name,
+        case when old.description = new.description then null else old.description end,
+        case when old."sequence" = new."sequence" then null else old."sequence" end,
+        case when old.column1_value = new.column1_value then null else old.column1_value end,
+        case when old.column2_value = new.column2_value then null else old.column2_value end,
+        case when old.column3_value = new.column3_value then null else old.column3_value end,
+        case when old.column4_value = new.column4_value then null else old.column4_value end,
+        case when old.column5_value = new.column5_value then null else old.column5_value end
+    );
+END IF;
+
+RETURN new;
+end;
+$BODY$
+    LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION -=[schema_name]=-.before_insert_update_enumeration_link_value() OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create delete trigger for enumeration_link_value table
+-------------------------------------------------------------
+CREATE OR REPLACE FUNCTION -=[schema_name]=-.delete_enumeration_link_value()
+    RETURNS "trigger" AS
+$BODY$
+begin
+insert into -=[schema_name]=-.enumeration_link_value_iud(operation, change_date, applied_flag,
+    enumeration_link_value_id, enumeration_link_id, add_date, 
+    enumeration_value_a_id, enumeration_value_b_id, name, description, "sequence", 
+    column1_value, column2_value, column3_value, column4_value, column5_value) 
+values ('D', now(), true, old.enumeration_link_value_id, old.enumeration_link_id, 
+    old.add_date, old.enumeration_value_a_id, old.enumeration_value_b_id, 
+    old.name,   old.description, old."sequence", old.column1_value, 
+    old.column2_value, old.column3_value, old.column4_value, old.column5_value);
+update -=[schema_name]=-.enumeration_link_value_iud set applied_flag = true
+where enumeration_link_value_id = old.enumeration_link_value_id and operation in ('I', 'U');
+
+RETURN NULL;
+end;
+$BODY$
+    LANGUAGE 'plpgsql' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION -=[schema_name]=-.delete_enumeration_link_value() OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create enumeration_link_value table
+-------------------------------------------------------------
+CREATE TABLE -=[schema_name]=-.enumeration_link_value
+(
+    enumeration_link_value_id bigserial NOT NULL,
+    enumeration_link_id integer NOT NULL,
+    add_date timestamp with time zone DEFAULT now(),
+    enumeration_value_a_id integer NOT NULL,
+    enumeration_value_b_id integer NOT NULL,
+    name character varying NOT NULL DEFAULT 'trigger will fill if null'::character varying,
+    description character varying NOT NULL DEFAULT 'trigger will fill if null'::character varying,
+    "sequence" smallint,
+    column1_value character varying,
+    column2_value character varying,
+    column3_value character varying,
+    column4_value character varying,
+    column5_value character varying,
+    CONSTRAINT enumeration_enumeration_link_value_id_pk PRIMARY KEY (enumeration_link_value_id),
+    CONSTRAINT enumeration_enumeration_link_value_enumeration_link_id FOREIGN KEY (enumeration_link_id)
+        REFERENCES -=[schema_name]=-.enumeration_link (enumeration_link_id) MATCH SIMPLE
+        ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+    CONSTRAINT enumeration_enumeration_link_value_enumeration_value_a_id FOREIGN KEY (enumeration_value_a_id)
+        REFERENCES -=[schema_name]=-.enumeration_value (enumeration_value_id) MATCH SIMPLE
+        ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+    CONSTRAINT enumeration_enumeration_link_value_enumeration_value_b_id FOREIGN KEY (enumeration_value_b_id)
+        REFERENCES -=[schema_name]=-.enumeration_value (enumeration_value_id) MATCH SIMPLE
+        ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED,
+    CONSTRAINT name_upper_format CHECK (case when name is null then true when "substring"(name::text, '[A-Z_]{1}[A-Z_0-9]*'::text) = name::text then true else false end),
+    CONSTRAINT enumeration_enumeration_link_value_unq_sequence UNIQUE (enumeration_link_id, "sequence"),
+    CONSTRAINT enumeration_enumeration_link_value_unq_name UNIQUE (enumeration_link_id, name)
+) 
+WITHOUT OIDS;
+ALTER TABLE -=[schema_name]=-.enumeration_link_value OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--create enumeration_link_value history table
+-------------------------------------------------------------
+CREATE TABLE -=[schema_name]=-.enumeration_link_value_iud
+(
+    operation character(1) NOT NULL,
+    change_date timestamp with time zone NOT NULL,
+    applied_flag boolean default false NOT NULL,
+    enumeration_link_value_id bigint NOT NULL,
+    enumeration_link_id integer,
+    add_date timestamp with time zone,
+    enumeration_value_a_id integer,
+    enumeration_value_b_id integer,
+    name character varying,
+    description character varying,
+    "sequence" smallint,
+    column1_value character varying,
+    column2_value character varying,
+    column3_value character varying,
+    column4_value character varying,
+    column5_value character varying
+) 
+WITHOUT OIDS;
+ALTER TABLE -=[schema_name]=-.enumeration_link_value_iud OWNER TO -=[owner]=-;
+
+-------------------------------------------------------------
+--register insert/update trigger on table enumeration_link_value
+-------------------------------------------------------------
+CREATE TRIGGER before_insert_update_enumeration_link_value
+    BEFORE INSERT OR UPDATE
+    ON -=[schema_name]=-.enumeration_link_value
+    FOR EACH ROW
+    EXECUTE PROCEDURE -=[schema_name]=-.before_insert_update_enumeration_link_value();
+
+-------------------------------------------------------------
+--register delete trigger on table enumeration_link_value
+-------------------------------------------------------------
+CREATE TRIGGER delete_enumeration_link_value
+    AFTER DELETE
+    ON -=[schema_name]=-.enumeration_link_value
+    FOR EACH ROW
+    EXECUTE PROCEDURE -=[schema_name]=-.delete_enumeration_link_value();
+
+-------------------------------------------------------------
+--create primary index
+-------------------------------------------------------------
+CREATE UNIQUE INDEX enumeration_link_value_pk_index
+    ON -=[schema_name]=-.enumeration_link_value
+    USING btree
+    (enumeration_link_value_id);
+ALTER TABLE -=[schema_name]=-.enumeration_link_value CLUSTER ON enumeration_link_value_pk_index;
+
+-------------------------------------------------------------
+-------------------------------------------------------------
+------------------INSERT SYSTEM VALUES-----------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+
+-------------------------------------------------------------
+--insert needed base enumeration values
+--  this has to be inserted first so that the enum inserts are valid,
+--  but we need to mark the changes as applied, as the enum updates take precedence
+-------------------------------------------------------------
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (1, 2, '2007-11-19 00:06:33.218051-06', 'BOOLEAN', 'Boolean', 0, 'Boolean', 'boolean', 'boolean', 'boolean', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (2, 2, '2007-11-19 00:06:33.218051-06', 'INTEGER', 'Integer', 1, 'Integer', 'int', 'integer', 'integer', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (3, 2, '2007-11-19 00:06:33.218051-06', 'STRING', 'String', 2, 'String', NULL, 'character varying', 'string', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (4, 2, '2007-11-19 00:06:33.218051-06', 'LONG', 'Long', 3, 'Long', 'long', 'bigint', 'long', NULL);
+
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (5, 3, '2007-11-20 00:58:27.154737-06', 'SOLO_ONE', 'Solo<ONE>', 0, 'Solo', 'com.tjhruska.mc.util', NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (6, 3, '2007-11-20 00:58:59.325818-06', 'DUO_ONE_TWO', 'Duo<ONE,TWO>', 1, 'Duo', 'com.tjhruska.mc.util', NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (7, 3, '2007-11-20 00:59:27.602273-06', 'TRIO_ONE_TWO_THREE', 'Trio<ONE,TWO,THREE>', 2, 'Trio', 'com.tjhruska.mc.util', NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (8, 3, '2007-11-20 01:01:33.40182-06', 'QUARTET_ONE_TWO_THREE_FOUR', 'Quartet<ONE,TWO,THREE,FOUR>', 3, 'Quartet', 'com.tjhruska.mc.util', NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (9, 3, '2007-11-20 01:03:24.483718-06', 'SET_T', 'Set<T>', 4, 'Set', 'java.util', NULL, 'HashSet', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (10, 3, '2007-11-20 01:03:59.469811-06', 'LIST_T', 'List<T>', 5, 'List', 'java.util', NULL, 'ArrayList', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (11, 3, '2007-11-20 01:04:49.605877-06', 'MAP_K_V', 'Map<K,V>', 6, 'Map', 'java.util', NULL, 'HashMap', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (12, 3, '2007-11-20 01:05:35.695652-06', 'MAP_K_SET_T', 'Map<K,Set<T>>', 7, 'Map', 'java.util', NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (13, 3, '2007-11-20 01:06:04.657341-06', 'MAP_K_LIST_T', 'Map<K,List<T>>', 8, 'Map', 'java.util', NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (14, 3, '2007-11-20 01:06:38.35974-06', 'MAP_K_MAP_K_V', 'Map<K,Map<K,V>>', 9, 'Map', 'java.util', NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (19, 4, '2007-12-18 23:39:31.718-06', 'CREATE_ENUMERATION', 'Create Enumeration', 0, 'java_enumeration_generation_sql', NULL, NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (20, 4, '2007-12-18 23:39:31.718-06', 'CREATE_CLASS_NO_DATABASE', 'Create Class No Database', 1, 'java_class_no_database_generation_sql', NULL, NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (21, 4, '2007-12-21 23:39:31.718-06', 'CREATE_NOTHING', 'Create Nothing', 2, null, NULL, NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (22, 5, '2007-12-23 17:58:00.000-06', 'SYNCH_CHILD_TABLES', 'Synchronize Child Tables', 0, null, NULL, NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (23, 5, '2007-12-23 17:58:00.000-06', 'NO_CHILD_TABLES', 'No Child Tables', 1, null, NULL, NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (24, 5, '2007-12-23 17:58:00.000-06', 'ABANDON_CHILDREN', 'Abandon Any Existing Tables', 2, null, NULL, NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (25, 6, '2007-12-25 12:45:00.000-06', 'NO_INDEX', 'No Index', 1, null, NULL, NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (26, 6, '2007-12-25 12:45:00.000-06', 'HASH', 'Hash', 2, 'hash', NULL, NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (27, 6, '2007-12-25 12:45:00.000-06', 'BTREE_UNIQUE', 'B-Tree Unique', 3, 'btree', 'unique', NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (28, 6, '2007-12-25 12:45:00.000-06', 'BTREE_NON_UNIQUE', 'B-Tree Non Unique', 4, 'btree', NULL, NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (29, 7, '2007-12-30 12:27:00.000-06', 'N_TO_N', 'N to N', 1, 'Will Create Linking Table', 0, NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (30, 7, '2007-12-30 12:27:00.000-06', 'N_TO_ONE', 'N to 1', 2, 'Table A has FK Column to B', 1, NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (31, 7, '2007-12-30 12:27:00.000-06', 'ONE_TO_N', '1 to N', 3, 'Table B has FK Column to A', 2, NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (32, 8, '2011-03-07 15:57:00.000-06', 'ALTER', 'Alter existing table', 1, null, NULL, NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (33, 8, '2011-03-07 15:57:00.000-06', 'DROP_RECREATE', 'Discard data, drop and recreate', 2, null, NULL, NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (34, 8, '2011-03-07 15:57:00.000-06', 'RENAME_CREATE_POP_DROP', 'Migrate data via rename to new table', 3, null, NULL, NULL, NULL, NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (35, 8, '2007-12-30 15:57:00.000-06', 'IGNORE_ABANDON', 'Ignore table', 4, null, NULL, NULL, NULL, NULL);
+
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (44, 2, '2010-11-19 00:06:33.218051-06', 'SHORT', 'Short', 4, 'Short', 'short', 'smallint', 'short', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (45, 2, '2010-11-19 00:06:33.218051-06', 'SERIAL', 'Serial', 5, 'Integer', 'int', 'serial', 'int', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (46, 2, '2010-11-19 00:06:33.218051-06', 'DATETIME', 'Date Time', 6, 'org.joda.time.DateTime', null, 'timestamp with time zone', 'org.jadira.usertype.dateandtime.joda.PersistentDateTime', NULL);
+
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (50, 2, '2010-11-19 00:06:33.218051-06', 'TIME', 'Time', 7, 'java.sql.Time', null, 'time without time zone', 'time', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (51, 2, '2011-11-14 00:07:51.218051-06', 'DECIMAL', 'Decimal', 8, 'java.math.BigDecimal', null, 'double precision', 'big_decimal', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (52, 2, '2007-11-14 00:16:53.218051-06', 'INTEGER_ARRAY', 'Integer[]', 9, 'Integer[]', 'int[]', 'integer[]', 'com.tjhruska.mc.database.IntegerArrayUserType', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (53, 2, '2010-11-14 00:16:53.218051-06', 'SHORT_ARRAY', 'Short[]', 10, 'Short[]', 'short[]', 'smallint[]', 'com.tjhruska.mc.database.ShortArrayUserType', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (54, 2, '2010-11-18 00:08:01.218051-06', 'DECIMAL_ARRAY', 'Decimal[]', 11, 'java.math.BigDecimal[]', NULL, 'numeric[]', 'com.tjhruska.mc.database.BigDecimalArrayUserType', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (55, 2, '2012-02-28 00:08:01.218051-06', 'DOUBLE_ARRAY', 'Double[]', 12, 'Double[]', 'double[]', 'float8[]', 'com.tjhruska.mc.database.DoubleArrayUserType', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (56, 2, '2012-03-18 12:46:01.218051-06', 'DOUBLE', 'Double', 13, 'Double', 'double', 'float8', 'double', NULL);
+
+-------------------
+--test linking records
+--INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (32, 8, '2008-05-10 12:27:00.000-06', 'ANIMAL', 'Animal', 1, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (33, 8, '2008-05-10 12:27:00.000-06', 'PLANT', 'Plant', 2, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (34, 8, '2008-05-10 12:27:00.000-06', 'PROTISTA', 'Protista', 3, NULL, NULL, NULL, NULL, NULL);
+
+--INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (35, 9, '2008-05-10 12:27:00.000-06', 'MUSTANG', 'Mustang', 1, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (36, 9, '2008-05-10 12:27:00.000-06', 'BISON', 'Bison', 2, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (37, 9, '2008-05-10 12:27:00.000-06', 'MAPLE_TREE', 'Maple Tree', 3, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (38, 9, '2008-05-10 12:27:00.000-06', 'CORN', 'Corn', 4, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (39, 9, '2008-05-10 12:27:00.000-06', 'GIARDIA', 'Giardia', 5, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (40, 9, '2008-05-11 12:27:00.000-06', 'GOPHER', 'Gopher', 6, NULL, NULL, NULL, NULL, NULL);
+
+--INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (41, 10, '2008-05-11 12:27:00.000-06', 'MHS', 'Mora High School', 1, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (42, 10, '2008-05-11 12:27:00.000-06', 'NDSA', 'North Dakota State University', 2, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (43, 10, '2008-05-11 12:27:00.000-06', 'UMN', 'University of Minnesota', 3, NULL, NULL, NULL, NULL, NULL);
+
+select setval('-=[schema_name]=-.enumeration_value_enumeration_value_id_seq', 1000);
+
+--and here is where we mark the inserts as applied so that the enum updates take precedence
+update -=[schema_name]=-.enumeration_value_iud set applied_flag = true;
+
+-------------------------------------------------------------
+--insert needed base enumerations
+-------------------------------------------------------------
+INSERT INTO -=[schema_name]=-.enumeration (enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column1_default, column2_default, column3_default, column4_default, column5_default)
+    VALUES (1, '2007-11-19 23:41:58.034969-06', 'INSTALL', 'install_ev', 'Install', '-=[schema_name]=-', null, 23, 19, 'rootDirectory', '-=[packageBase]=-.mc.enums', null, null, null, null, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);      
+INSERT INTO -=[schema_name]=-.enumeration (enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column1_default, column2_default, column3_default, column4_default, column5_default)
+    VALUES (2, '2007-11-19 00:02:18.130816-06', 'DATATYPE', 'datatype_ev', 'Datatype', '-=[schema_name]=-', null, 22, 19, 'rootDirectory', '-=[packageBase]=-.mc.enums', 
+
+    'JAVA_CLASS', 'JavaClass', 3, 25, true, 
+    'JAVA_PRIMITIVE', 'JavaPrimitive', 3, 25, false, 
+    'DATABASE', 'Database', 3, 25, false, 
+    'HIBERNATE', 'Hibernate', 3, 25, false, 
+    NULL, NULL, NULL, NULL, NULL, 
+    NULL, NULL, NULL, NULL, NULL);
+    
+INSERT INTO -=[schema_name]=-.enumeration (enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column1_default, column2_default, column3_default, column4_default, column5_default)
+    VALUES (3, '2007-11-19 23:41:58.034969-06', 'CONTAINER', 'container_ev', 'Container', '-=[schema_name]=-', null, 22, 19, 'rootDirectory', '-=[packageBase]=-.mc.enums', 
+
+    'JAVA_CLASS', 'JavaClass', 3, 25, true, 
+    'JAVA_PACKAGE', 'JavaPackage', 3, 25, false,
+    'HIBERNATE', 'Hibernate', 3, 25, false,  --col3
+    'JAVA_IMPLEMENTATION', 'JavaImplementation', 3, 25, false,
+    NULL, NULL, NULL, NULL, NULL,  --col5
+    NULL, NULL, NULL, NULL, NULL);       --defaults for each column
+
+INSERT INTO -=[schema_name]=-.enumeration (enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column1_default, column2_default, column3_default, column4_default, column5_default)
+    VALUES (4, '2007-12-18 23:02:58.034969-06', 'AUTO_CREATION_METHOD', 'auto_creation_method_ev', 'AutoCreationMethod', '-=[schema_name]=-', null, 22, 19, 'rootDirectory', '-=[packageBase]=-.mc.enums', 'SQL_TAG', 'SqlTag', 3, 25, false, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);      
+INSERT INTO -=[schema_name]=-.enumeration (enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column1_default, column2_default, column3_default, column4_default, column5_default)
+    VALUES (5, '2007-12-23 17:57:58.034969-06', 'CHILD_TABLE_SYNCH_METHOD', 'child_table_synch_method_ev', 'ChildTableSynchMethod', '-=[schema_name]=-', null, 23, 19, 'rootDirectory', '-=[packageBase]=-.mc.enums', null, null, null, null, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);        
+INSERT INTO -=[schema_name]=-.enumeration (enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column1_default, column2_default, column3_default, column4_default, column5_default)
+    VALUES (6, '2007-12-25 12:45:58.034969-06', 'INDEX', 'index_ev', 'DbIndex', '-=[schema_name]=-', null, 22, 19, 'rootDirectory', '-=[packageBase]=-.mc.enums', 'DATABASE', 'Database', 3, 25, false, 'UNIQUE_STRING', 'UniqueString', 3, 25, false, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);     
+INSERT INTO -=[schema_name]=-.enumeration (enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column1_default, column2_default, column3_default, column4_default, column5_default)
+    VALUES (7, '2007-12-30 12:11:58.000000-06', 'LINK_CREATION_RULE', 'link_creation_rule_ev', 'LinkCreationRule', '-=[schema_name]=-', null, 22, 19, 'rootDirectory', '-=[packageBase]=-.mc.enums', 'DATABASE_NOTE', 'DatabaseNote', 3, 25, false, null, null, null, null, null, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);       
+INSERT INTO -=[schema_name]=-.enumeration (enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column1_default, column2_default, column3_default, column4_default, column5_default)
+    VALUES (8, '2011-03-07 15:53:20.000000-06', 'TABLE_CREATION_RULE', 'table_creation_rule_ev', 'TableCreationRule', '-=[schema_name]=-', null, 22, 19, 'rootDirectory', '-=[packageBase]=-.mc.enums', null, null, null, null, null, null, null, null, null, null, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);       
+
+-------------------
+--test linking records
+--INSERT INTO -=[schema_name]=-.enumeration (enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column1_default, column2_default, column3_default, column4_default, column5_default)
+--    VALUES (8, '2008-05-10 12:11:58.000000-06', 'KINGDOM', 'kingdom_ev', 'Kingdom', '-=[schema_name]=-', null, 22, 19, 'rootDirectory', '-=[packageBase]=-.mc.enums', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);       
+--INSERT INTO -=[schema_name]=-.enumeration (enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column1_default, column2_default, column3_default, column4_default, column5_default)
+--    VALUES (9, '2008-05-10 12:11:58.000000-06', 'SPECIES', 'species_ev', 'Species', '-=[schema_name]=-', null, 22, 19, 'rootDirectory', '-=[packageBase]=-.mc.enums', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);       
+--INSERT INTO -=[schema_name]=-.enumeration (enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column1_default, column2_default, column3_default, column4_default, column5_default)
+--    VALUES (10, '2008-05-11 12:11:58.000000-06', 'SCHOOL', 'school_ev', 'School', '-=[schema_name]=-', null, 22, 19, 'rootDirectory', '-=[packageBase]=-.mc.enums', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);     
+
+select setval('-=[schema_name]=-.enumeration_enumeration_id_seq', 1000);
+
+--put in the final missing foreign key needed to keep the data whole
+alter table -=[schema_name]=-.enumeration_value add
+    CONSTRAINT enumeration_enumeration_value_enumeration_id FOREIGN KEY (enumeration_id)
+        REFERENCES -=[schema_name]=-.enumeration (enumeration_id) MATCH SIMPLE
+        ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+
+-------------------------------------------------------------
+--insert needed base enumeration links
+-------------------------------------------------------------
+
+-------------------
+--test linking records
+
+--INSERT INTO -=[schema_name]=-.enumeration_link (enumeration_link_id, add_date, link_creation_rule_ev_id, enumeration_a_id, enumeration_b_id, enumeration_a_index_ev_id, enumeration_b_index_ev_id, unique_flag, not_null_flag, --name, tablename, tablename_camel_case, 
+--    schema_name, post_create_sql, child_table_synch_method_ev_id, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column1_default, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column2_default, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column3_default, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column4_default, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column5_default)
+--    VALUES (1, '2008-05-10 09:49:00.000000-06', 31, 8, 9, NULL, NULL, false, true, --NULL, NULL, NULL, 
+--    '-=[schema_name]=-', NULL, 22, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_link (enumeration_link_id, add_date, link_creation_rule_ev_id, enumeration_a_id, enumeration_b_id, enumeration_a_index_ev_id, enumeration_b_index_ev_id, unique_flag, not_null_flag, 
+--    name, tablename, tablename_camel_case, 
+--    schema_name, post_create_sql, child_table_synch_method_ev_id, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column1_default, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column2_default, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column3_default, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column4_default, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column5_default)
+--    VALUES (2, '2008-05-11 09:49:00.000000-06', 30, 10, 9, NULL, NULL, false, true,
+--    'MASCOT', 'school_mascot', 'SchoolMascot',
+--    '-=[schema_name]=-', NULL, 22, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+select setval('-=[schema_name]=-.enumeration_link_enumeration_link_id_seq', 100);
+
+-------------------------------------------------------------
+--insert needed base enumeration link values
+--  this has to be inserted first so that the enum link inserts are valid,
+--  but we need to mark the changes as applied, as the enum link updates take precedence
+-------------------------------------------------------------
+
+-------------------
+--test linking records
+--INSERT INTO -=[schema_name]=-.enumeration_link_value (enumeration_link_value_id, enumeration_link_id, add_date, enumeration_value_a_id, enumeration_value_b_id, --name, description, 
+--    "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (1, 1, '2008-05-10 09:49:00.000000-06', 32, 35, --NULL, NULL, 
+--    1, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_link_value (enumeration_link_value_id, enumeration_link_id, add_date, enumeration_value_a_id, enumeration_value_b_id, --name, description, 
+--    "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (2, 1, '2008-05-10 09:49:00.000000-06', 32, 36, --NULL, NULL, 
+--    2, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_link_value (enumeration_link_value_id, enumeration_link_id, add_date, enumeration_value_a_id, enumeration_value_b_id, --name, description, 
+--    "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (3, 1, '2008-05-10 09:49:00.000000-06', 33, 37, --NULL, NULL, 
+--    3, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_link_value (enumeration_link_value_id, enumeration_link_id, add_date, enumeration_value_a_id, enumeration_value_b_id, --name, description, 
+--    "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (4, 1, '2008-05-10 09:49:00.000000-06', 33, 38, --NULL, NULL, 
+--    4, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_link_value (enumeration_link_value_id, enumeration_link_id, add_date, enumeration_value_a_id, enumeration_value_b_id, --name, description, 
+--    "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (5, 1, '2008-05-10 09:49:00.000000-06', 34, 39, --NULL, NULL, 
+--    5, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_link_value (enumeration_link_value_id, enumeration_link_id, add_date, enumeration_value_a_id, enumeration_value_b_id, --name, description, 
+--    "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (6, 1, '2008-05-11 09:49:00.000000-06', 32, 40, --NULL, NULL, 
+--    6, NULL, NULL, NULL, NULL, NULL);
+
+--INSERT INTO -=[schema_name]=-.enumeration_link_value (enumeration_link_value_id, enumeration_link_id, add_date, enumeration_value_a_id, enumeration_value_b_id, --name, description, 
+--    "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (7, 2, '2008-05-11 09:49:00.000000-06', 41, 35, --NULL, NULL, 
+--    7, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_link_value (enumeration_link_value_id, enumeration_link_id, add_date, enumeration_value_a_id, enumeration_value_b_id, --name, description, 
+--    "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (8, 2, '2008-05-11 09:49:00.000000-06', 42, 36, --NULL, NULL, 
+--    8, NULL, NULL, NULL, NULL, NULL);
+--INSERT INTO -=[schema_name]=-.enumeration_link_value (enumeration_link_value_id, enumeration_link_id, add_date, enumeration_value_a_id, enumeration_value_b_id, --name, description, 
+--    "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+--    VALUES (9, 2, '2008-05-11 09:49:00.000000-06', 43, 40, --NULL, NULL, 
+--    9, NULL, NULL, NULL, NULL, NULL);
+
+select setval('-=[schema_name]=-.enumeration_link_value_enumeration_link_value_id_seq', 1000);
+
+--and here is where we mark the inserts as applied so that the enum link updates take precedence
+update -=[schema_name]=-.enumeration_link_value_iud set applied_flag = true;
+
+]]></value>
+        </property> 
+    </bean>
+    
+</beans>

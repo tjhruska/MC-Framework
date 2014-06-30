@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <util:map id="replacementValues" key-type="java.lang.String" value-type="java.lang.String">
+        <entry key="AAA" value=""/> 
+        <entry key="BBB" value="Hello World" /> 
+        <entry key="CCC" value="10" /> 
+        <entry key="DDD" value="50" /> 
+        <entry key="XXX" value="-={XXX:-=[XXX]=--=[XXX]=-}=-" />
+        <entry key="YYY" value="-={YYY:-=[YYY]=--=[EEE]=-}=-" />
+    </util:map>
+
+    <util:list id="badEvalStrings" value-type="java.lang.String">
+        <value>-=[</value>
+        <value>-={</value>
+        <value>-={}=-</value>
+        <value>-={:</value>
+        <value>-={::?:</value>
+        <value>-={(AAA: :?: }=-</value>
+        <value>-={AAA): :?: }=-</value>
+        <value>-={AAA&amp;&amp;: :?: }=-</value>
+        <value>-={||AAA: :?: }=-</value>
+        <value>-={AAA||: :?: }=-</value>
+        <value>-={!AAA=="HI": :?: }=-</value>
+        <value>-={AAA!="HI: :?: }=-</value>
+        <value>-={==AAA: :?: }=-</value>
+        <value>-={!: :?: }=-</value>
+        <value>-={(AAA)(BBB): :?: }=-</value>
+        <value><![CDATA[-={AAA&&(BBB: :?: }=-]]></value>
+        <value>-={:: :?: }=-</value>
+        <value>-={:(): :?: }=-</value>
+        <value>-={(AAA: :?: }=-</value>
+        <value>-={AAA): :?: }=-</value>
+        <value>-={(): :?: }=-</value>
+        <value>-={AAA&amp;&amp;: :?: }=-</value>
+        <value>-={AAA||: :?: }=-</value>
+        <value>-={!AAA=="HI": :?: }=-</value>
+        <value>-={AAA!="HI: :?: }=-</value>
+        <value>-={!: :?: }=-</value>
+        <value>-={(AAA)(BBB): :?: }=-</value>
+        <value>-={<![CDATA[AAA&&(BBB:]]> :?: }=-</value>
+        <value>-={:(): :?: }=-</value>
+    </util:list>
+    <util:map id="willReplaceStrings" key-type="java.lang.String" value-type="java.lang.String">
+        <entry key="-=[AAA]=-" value="" />
+        <entry key="-=[BBB]=-!" value="Hello World!" />
+        <entry key="-=[CCC]=-" value="10" />
+        <entry key="45 in -=[DDD]=- chance" value="45 in 50 chance" />
+        <entry key="-=[EEE]=-" value="" />
+        <entry key="Hi -=[FFF]=-" value="Hi " />
+        <entry key="-=[]=-" value="" />
+        <entry key="-={AAA:Hi There}=-" value="Hi There" />
+        <entry key="-={!BBB::?:-=[BBB]=-}=-" value="Hello World" />
+        <entry key="-={CCC:-=[BBB]=-:?:-=[DDD]=-}=-" value="Hello World" />
+        <entry key="-={     GGG   ::?:-=[DDD]=-}=-10" value="5010" />
+        <entry key="-={AAA:-=[EEE]=-}=-" value="" />
+        <entry key="-={!FFF&amp;&amp;AAA:-=[FFF]=-}=-" value="" />
+        <entry key="&quot;-=[BBB]=-&quot;-={AAA:, Said George!}=-" value="&quot;Hello World&quot;, Said George!" />
+    </util:map>
+    <util:map id="willNotReplaceStrings" key-type="java.lang.String" value-type="java.lang.String">
+        <entry key="-=[AAA]=-" value="" />
+        <entry key="-=[BBB]=-!" value="Hello World!" />
+        <entry key="-=[CCC]=-" value="10" />
+        <entry key="45 in -=[DDD]=- chance" value="45 in 50 chance" />
+        <entry key="-=[EEE]=-" value="-=[EEE]=-" />
+        <entry key="Hi -=[FFF]=-" value="Hi -=[FFF]=-" />
+        <entry key="-=[]=-" value="-=[]=-" />
+        <entry key="-={AAA:Hi There}=-" value="Hi There" />
+        <entry key="-={!BBB::?:-=[BBB]=-}=-" value="Hello World" />
+        <entry key="-={CCC:-=[BBB]=-:?:-=[DDD]=-}=-" value="Hello World" />
+        <entry key="-={  GGG ::?:-=[DDD]=-}=-10" value="5010" />
+        <entry key="-={AAA:-=[EEE]=-}=-" value="-=[EEE]=-" />
+        <entry key="-={!FFF&amp;&amp;AAA:-=[FFF]=-}=-" value="-=[FFF]=-" />
+        <entry key="&quot;-=[BBB]=-&quot;-={AAA:, Said George!}=-" value="&quot;Hello World&quot;, Said George!" />
+    </util:map>
+    <util:map id="loopTest" key-type="java.lang.String" value-type="java.lang.String">
+        <entry key="-=[XXX]=-" value="" />
+        <entry key="-=[YYY]=-" value="" />
+    </util:map>
+</beans>

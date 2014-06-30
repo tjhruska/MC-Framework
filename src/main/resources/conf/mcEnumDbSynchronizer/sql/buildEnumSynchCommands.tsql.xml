@@ -1,0 +1,961 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <bean id="buildEnumSynchCommands" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="template">
+            <value><![CDATA[
+----------------------------------------------------------
+--LAYOUT
+--select 'enumeration_id' as section, enumeration_id as id, # as sequence, # as sequence2, ';' as new_sql
+--union
+--select 'enumeration_id' as section, enumeration_id as id, # as sequence, # as sequence2, ';' as new_sql
+--union
+--  ...
+--select 'enumeration_link_id' as section, enumeration_link_id as id, # as sequence, # as sequence2, ';' as new_sql
+--union
+--select 'enumeration_link_id' as section, enumeration_link_id as id, # as sequence, # as sequence2, ';' as new_sql
+--  ...
+--order by section, id, sequence, sequence2;
+----------------------------------------------------------
+--FIRST SECTION = enumeration_id (synch the core child tables)
+--sequence  sequence2  new_sql
+--1  0  drop child table (used for enum deletes and updates)
+--        drop insert function
+--        drop update function
+--        drop delete function
+--2  0  start create - child table (used for enum inserts and updates)
+--          define insert trigger
+--          define update trigger
+--          define delete trigger
+--          create table
+--              base columns
+--              optional columns 1-5
+--3  #  continue create - add fk columns to link to other child tables
+--          one record per linking 'N to 1' or '1 to N'
+--              add linking column to other child table
+--              add fk to linking column
+--4  0  continue create - finalize create statement
+--          single record to close create statment
+--              pk
+--              fk to enumeration_value
+--          pk index
+--          optional indexs 1-5
+--          post create sql
+--          --REMOVED insert select to fill child table
+--5  #  add requested indexs for links to other child tables
+--7  0  delete individual rows from child (used for value updates)
+--8  0  start insert select (used for value inserts and updates)
+--          open the insert statement
+--9  #  continue insert select
+--          add column names to insert statement
+--10 0  continue insert select
+--          finish insert statement
+--          start select statement
+--11 #  continue insert select
+--          add column values to insert statement
+--12 0  continue insert select
+--          begin from clause
+--13 0  continue insert select
+--          add from clause table entries for link column data
+--14 0  finish insert select
+--          add where clause
+--15 0  update value iud for inserts and updates
+--16 0  update enum iud
+        
+--SECOND SECTION = enumeration_link_id (synch linking tables)
+--sequence  sequence2  new_sql
+--1  0  drop child table (used for enum deletes and updates)
+--        drop insert function
+--        drop update function
+--        drop delete function
+--2  0  start create - child table (used for enum inserts and updates)
+--          define insert trigger
+--          define update trigger
+--          define delete trigger
+--          create table
+--              base columns
+--              optional columns 1-5
+--3  #  continue create - add fk columns to link to other child tables
+--          one record per linking 'N to 1' or '1 to N'
+--              add linking column to other child table
+--              add fk to linking column
+--4  0  continue create - finalize create statement
+--          single record to close create statment
+--              pk
+--              fk to enumeration_value
+--          pk index
+--          optional indexs 1-5
+--          post create sql
+--          --REMOVED insert select to fill child table
+--5  #  add requested indexs for links to other child tables
+--7  0  delete individual rows from child (used for value updates)
+--8  0  start insert select (used for value inserts and updates)
+--          open the insert statement
+--9  #  continue insert select
+--          add column names to insert statement
+--10 0  continue insert select
+--          finish insert statement
+--          start select statement
+--11 #  continue insert select
+--          add column values to insert statement
+--12 0  continue insert select
+--          begin from clause
+--13 0  continue insert select
+--          add from clause table entries for link column data
+--14 0  finish insert select
+--          add where clause
+--15 0  update value iud for inserts and updates
+--16 0  update enum iud
+
+
+--sequence  sequence2  new_sql
+-------------------------------------------------------------
+--1  0  drop child table (used for enum deletes and updates)
+--        drop insert function
+--        drop update function
+--        drop delete function
+-------------------------------------------------------------
+select 'enumeration_id'::varchar as section, iud.enumeration_id as id, 1 as sequence, 0 as sequence2, '
+--1  0  drop child table (used for enum deletes and updates)
+set constraints all deferred;
+drop table ' 
+    || case when iud.schema_name is not null then iud.schema_name else enum.schema_name end 
+    || '.' || iud.tablename || ';
+drop function '
+    || case when iud.schema_name is not null then iud.schema_name else enum.schema_name end 
+    || '.insert_' || iud.tablename || '();
+drop function '
+    || case when iud.schema_name is not null then iud.schema_name else enum.schema_name end 
+    || '.update_' || iud.tablename || '();
+drop function '
+    || case when iud.schema_name is not null then iud.schema_name else enum.schema_name end 
+    || '.delete_' || iud.tablename || '();
+update -=[schema_name]=-.enumeration_iud set applied_flag = true where enumeration_id = '
+    || iud.enumeration_id || E' and operation = \'' || iud.operation
+    || E'\' and applied_flag = false;' as new_sql
+from    -=[schema_name]=-.enumeration_iud iud, -=[schema_name]=-.enumeration enum
+where enum.child_table_synch_method_ev_id in (22, 23)
+    and iud.operation in ('D', 'U')
+    and iud.applied_flag = false
+    and iud.enumeration_id = enum.enumeration_id
+union
+        
+--sequence  sequence2  new_sql
+-------------------------------------------------------------
+--2  0  start create - child table (used for enum inserts and updates)
+--          define insert trigger
+--          define update trigger
+--          define delete trigger
+--          create table
+--              base columns
+--              optional columns 1-5
+-------------------------------------------------------------
+select 'enumeration_id'::varchar, enum.enumeration_id, 2 as sequence, 0 as sequence2,
+'
+--2  0  start create - child table (used for enum inserts and updates)
+CREATE OR REPLACE FUNCTION ' || enum.schema_name || '.insert_' || enum.tablename || '()
+    RETURNS "trigger" AS
+$BODY$
+begin
+if not exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = new.' || enum.tablename || '_id and enumeration_id = ' || enum.enumeration_id || E' and add_date = new.add_date and name = new.name and description = new.description)
+then RAISE EXCEPTION \'no manual inserts allowed on ' || enum.tablename || '; insert into -=[schema_name]=-.enumeration_value with enumeration_id = ' || enum.enumeration_id || E', then run SynchronizeChildTables\';
+end if;
+RETURN NEW;
+end;
+$BODY$
+    LANGUAGE \'plpgsql\' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION ' || enum.schema_name || '.insert_' || enum.tablename || '() OWNER TO -=[owner]=-;
+
+CREATE OR REPLACE FUNCTION ' || enum.schema_name || '.update_' || enum.tablename || E'()
+    RETURNS "trigger" AS
+$BODY$
+begin
+    RAISE EXCEPTION \'no updates allowed on ' || enum.tablename || '; update -=[schema_name]=-.enumeration_value where enumeration_id = ' || enum.enumeration_id || E', then run SynchronizeChildTables\';
+RETURN NEW;
+end;
+$BODY$
+    LANGUAGE \'plpgsql\' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION ' || enum.schema_name || '.update_' || enum.tablename || '() OWNER TO -=[owner]=-;
+
+CREATE OR REPLACE FUNCTION ' || enum.schema_name || '.delete_' || enum.tablename || '()
+    RETURNS "trigger" AS
+$BODY$
+begin
+if exists (select 1 from -=[schema_name]=-.enumeration_value where enumeration_value_id = old.' || enum.tablename || '_id) 
+    and not exists (select 1 from -=[schema_name]=-.enumeration_value_iud where enumeration_value_id = old.' || enum.tablename || E'_id and operation = \'U\' and applied_flag = false)
+        then
+    RAISE EXCEPTION \'no deletions allowed on ' || enum.tablename || '; delete from -=[schema_name]=-.enumeration_value where enumeration_id = ' || enum.enumeration_id || E', then run SynchronizeChildTables\';
+end if;
+RETURN OLD;
+end;
+$BODY$
+  LANGUAGE \'plpgsql\' VOLATILE SECURITY DEFINER;
+ALTER FUNCTION ' || enum.schema_name || '.delete_' || enum.tablename || '() OWNER TO -=[owner]=-;
+
+create table ' || enum.schema_name || '.' || enum.tablename || '(
+    ' || enum.tablename || '_id integer NOT NULL,
+    enumeration_id integer NOT NULL,
+    add_date timestamp with time zone NOT NULL DEFAULT now(),
+    name character varying NOT NULL,
+    description character varying NOT NULL,
+    "sequence" smallint' ||
+    case when enum.column1_name is null then '' else ',
+    ' || lower(enum.column1_name) || ' ' || datatype_ev1.column3_value
+    || case when enum.column1_not_null_flag then ' NOT NULL' else '' end end ||
+    case when enum.column2_name is null then '' else ',
+    ' || lower(enum.column2_name) || ' ' || datatype_ev2.column3_value
+    || case when enum.column2_not_null_flag then ' NOT NULL' else '' end end ||
+    case when enum.column3_name is null then '' else ',
+    ' || lower(enum.column3_name) || ' ' || datatype_ev3.column3_value
+    || case when enum.column3_not_null_flag then ' NOT NULL' else '' end end ||
+    case when enum.column4_name is null then '' else ',
+    ' || lower(enum.column4_name) || ' ' || datatype_ev4.column3_value
+    || case when enum.column4_not_null_flag then ' NOT NULL' else '' end end ||
+    case when enum.column5_name is null then '' else ',
+    ' || lower(enum.column5_name) || ' ' || datatype_ev5.column3_value
+    || case when enum.column5_not_null_flag then ' NOT NULL' else '' end end as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev1
+        on (enum.column1_datatype_ev_id = datatype_ev1.enumeration_value_id
+        and datatype_ev1.enumeration_id = 2)
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev2
+        on (enum.column2_datatype_ev_id = datatype_ev2.enumeration_value_id
+        and datatype_ev2.enumeration_id = 2)
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev3
+        on (enum.column3_datatype_ev_id = datatype_ev3.enumeration_value_id
+        and datatype_ev3.enumeration_id = 2)
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev4
+        on (enum.column4_datatype_ev_id = datatype_ev4.enumeration_value_id
+        and datatype_ev4.enumeration_id = 2)
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev5
+        on (enum.column5_datatype_ev_id = datatype_ev5.enumeration_value_id
+        and datatype_ev5.enumeration_id = 2)
+    left outer join -=[schema_name]=-.enumeration_value index_ev1
+        on (enum.column1_index_ev_id = index_ev1.enumeration_value_id
+        and index_ev1.enumeration_id = 6)
+    left outer join -=[schema_name]=-.enumeration_value index_ev2
+        on (enum.column2_index_ev_id = index_ev2.enumeration_value_id
+        and index_ev2.enumeration_id = 6)
+    left outer join -=[schema_name]=-.enumeration_value index_ev3
+        on (enum.column3_index_ev_id = index_ev3.enumeration_value_id
+        and index_ev3.enumeration_id = 6)
+    left outer join -=[schema_name]=-.enumeration_value index_ev4
+        on (enum.column4_index_ev_id = index_ev4.enumeration_value_id
+        and index_ev4.enumeration_id = 6)
+    left outer join -=[schema_name]=-.enumeration_value index_ev5
+        on (enum.column5_index_ev_id = index_ev5.enumeration_value_id
+        and index_ev5.enumeration_id = 6)
+where enum.child_table_synch_method_ev_id = 22
+    and exists (
+        select 1
+        from -=[schema_name]=-.enumeration_iud iud
+        where iud.enumeration_id = enum.enumeration_id
+            and iud.operation in ('I', 'U')
+            and applied_flag = false
+    )
+union
+    
+--enumeration_id sequence  sequence2  new_sql
+-------------------------------------------------------------
+--3  #  continue create - add fk columns to link to other child tables
+--          one record per linking 'N to 1' or '1 to N'
+--              add column linking to other child table
+--              add fk to linking column
+-------------------------------------------------------------
+--a side first
+select 'enumeration_id'::varchar, enum.enumeration_id, 3 as sequence, enum_link_a.enumeration_link_id as sequence2, ',
+    --3  #  continue create - add fk column to link to other child tables
+    ' || enum_link_a.tablename || '_id integer,
+    CONSTRAINT ' || case when enum.schema_name is not null then enum.schema_name end || '_' 
+        || enum.tablename || '_' || enum_link_a.tablename || '_id FOREIGN KEY ('
+        || enum_link_a.tablename || '_id)
+        REFERENCES ' || case when enum_b.schema_name is not null then enum_b.schema_name || '.' end
+        || enum_b.tablename || '(' || enum_b.tablename || '_id) MATCH SIMPLE
+        ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED' as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+    join -=[schema_name]=-.enumeration_link enum_link_a
+        on (enum.enumeration_id = enum_link_a.enumeration_a_id
+        and enum_link_a.link_creation_rule_ev_id = 30)
+    join -=[schema_name]=-.enumeration enum_b
+        on (enum_link_a.enumeration_b_id = enum_b.enumeration_id)
+where 
+    enum.child_table_synch_method_ev_id = 22
+    and enum_b.child_table_synch_method_ev_id in (22, 24)
+    and exists (
+        select 1
+        from -=[schema_name]=-.enumeration_iud iud
+        where iud.enumeration_id = enum.enumeration_id
+            and iud.operation in ('I', 'U')
+            and applied_flag = false
+    )
+union
+--b side second
+select 'enumeration_id'::varchar, enum.enumeration_id, 3 as sequence, enum_link_b.enumeration_link_id as sequence2, ',
+    --3  #  continue create - add fk column to link to other child tables
+    ' || enum_link_b.tablename || '_id integer,
+    CONSTRAINT ' || case when enum.schema_name is not null then enum.schema_name end || '_' 
+        || enum.tablename || '_' || enum_link_b.tablename || '_id FOREIGN KEY ('
+        || enum_link_b.tablename || '_id)
+        REFERENCES ' || case when enum_a.schema_name is not null then enum_a.schema_name || '.' end
+        || enum_a.tablename || '(' || enum_a.tablename || '_id) MATCH SIMPLE
+        ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED' as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+    join -=[schema_name]=-.enumeration_link enum_link_b
+        on (enum.enumeration_id = enum_link_b.enumeration_b_id
+        and enum_link_b.link_creation_rule_ev_id = 31)
+    join -=[schema_name]=-.enumeration enum_a
+        on (enum_link_b.enumeration_a_id = enum_a.enumeration_id)
+where 
+    enum.child_table_synch_method_ev_id = 22
+    and enum_a.child_table_synch_method_ev_id in (22, 24)
+    and exists (
+        select 1
+        from -=[schema_name]=-.enumeration_iud iud
+        where iud.enumeration_id = enum.enumeration_id
+            and iud.operation in ('I', 'U')
+            and applied_flag = false
+    )
+union
+
+-------------------------------------------------------------
+--4  0  continue create - finalize create statement
+--          single record to close create statment
+--              pk
+--              fk to enumeration_value
+--          pk index
+--          optional indexs 1-5
+--          post create sql
+--          --REMOVED insert select to fill child table
+--          attach insert trigger to child table
+--          attach update trigger to child table
+--          attach delete trigger to child table
+-------------------------------------------------------------
+select 'enumeration_id'::varchar, enum.enumeration_id, 4 as sequence, 0 as sequence2, '
+--4  0  continue create - finalize create statement
+    ,CONSTRAINT enumeration_' || enum.tablename || '_id_pk PRIMARY KEY (' || enum.tablename || '_id),
+    CONSTRAINT enumeration_' || enum.tablename || '_id_fk FOREIGN KEY (' || enum.tablename || '_id)
+        REFERENCES -=[schema_name]=-.enumeration_value (enumeration_value_id) MATCH SIMPLE
+        ON UPDATE NO ACTION ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED
+)WITHOUT OIDS;
+ALTER TABLE ' || enum.schema_name || '.' || enum.tablename || ' OWNER TO -=[owner]=-;
+    
+CREATE UNIQUE INDEX '|| enum.tablename || '_pk_index
+  ON ' || enum.schema_name || '.' || enum.tablename || '
+  USING btree
+  (' || enum.tablename || '_id);
+ALTER TABLE ' || enum.schema_name || '.' || enum.tablename || ' CLUSTER ON ' || enum.tablename || '_pk_index;
+' ||
+
+--optional column1 index
+    case 
+        when enum.column1_name is null then '' 
+        when enum.column1_index_ev_id = 25 then ''
+        else '
+CREATE ' || case when index_ev1.column2_value is not null then index_ev1.column2_value || ' ' else '' end || 'INDEX '|| enum.tablename || '_' || enum.column1_name || '_pk_index
+  ON ' || enum.schema_name || '.' || enum.tablename || '
+  USING ' || index_ev1.column1_value || '
+  (' || enum.column1_name || ');'
+        end ||
+        
+--optional column2 index
+    case 
+        when enum.column2_name is null then '' 
+        when enum.column2_index_ev_id = 25 then ''
+        else '
+CREATE ' || case when index_ev2.column2_value is not null then index_ev2.column2_value || ' ' else '' end || 'INDEX '|| enum.tablename || '_' || enum.column2_name || '_pk_index
+  ON ' || enum.schema_name || '.' || enum.tablename || '
+  USING ' || index_ev2.column1_value || '
+  (' || enum.column2_name || ');'
+        end ||
+
+--optional column3 index
+    case 
+        when enum.column3_name is null then '' 
+        when enum.column3_index_ev_id = 25 then ''
+        else '
+CREATE ' || case when index_ev3.column2_value is not null then index_ev3.column2_value || ' ' else '' end || 'INDEX '|| enum.tablename || '_' || enum.column3_name || '_pk_index
+  ON ' || enum.schema_name || '.' || enum.tablename || '
+  USING ' || index_ev3.column1_value || '
+  (' || enum.column3_name || ');'
+        end ||
+
+--optional column4 index
+    case 
+        when enum.column4_name is null then '' 
+        when enum.column4_index_ev_id = 25 then ''
+        else '
+CREATE ' || case when index_ev4.column2_value is not null then index_ev4.column2_value || ' ' else '' end || 'INDEX '|| enum.tablename || '_' || enum.column4_name || '_pk_index
+  ON ' || enum.schema_name || '.' || enum.tablename || '
+  USING ' || index_ev4.column1_value || '
+  (' || enum.column4_name || ');'
+        end ||
+
+--optional column5 index
+    case 
+        when enum.column5_name is null then '' 
+        when enum.column5_index_ev_id = 25 then ''
+        else '
+CREATE ' || case when index_ev5.column2_value is not null then index_ev5.column2_value || ' ' else '' end || 'INDEX '|| enum.tablename || '_' || enum.column5_name || '_pk_index
+  ON ' || enum.schema_name || '.' || enum.tablename || '
+  USING ' || index_ev5.column1_value || '
+  (' || enum.column5_name || ');'
+        end || '
+
+--optional insertion point for post_create_sql
+' || case when enum.post_create_sql is not null then enum.post_create_sql || ';' else '' end || '
+    
+CREATE TRIGGER insert_' || enum.tablename || '
+  BEFORE INSERT
+  ON ' || enum.schema_name || '.' || enum.tablename || '
+  FOR EACH ROW
+  EXECUTE PROCEDURE ' || enum.schema_name || '.insert_' || enum.tablename || '();
+    
+CREATE TRIGGER update_' || enum.tablename || '
+  BEFORE UPDATE
+  ON ' || enum.schema_name || '.' || enum.tablename || '
+  FOR EACH ROW
+  EXECUTE PROCEDURE ' || enum.schema_name || '.update_' || enum.tablename || '();
+    
+CREATE TRIGGER delete_' || enum.tablename || '
+  BEFORE DELETE
+  ON ' || enum.schema_name || '.' || enum.tablename || '
+  FOR EACH ROW
+  EXECUTE PROCEDURE ' || enum.schema_name || '.delete_' || enum.tablename || '();
+' as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev1
+        on (enum.column1_datatype_ev_id = datatype_ev1.enumeration_value_id
+        and datatype_ev1.enumeration_id = 2)
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev2
+        on (enum.column2_datatype_ev_id = datatype_ev2.enumeration_value_id
+        and datatype_ev2.enumeration_id = 2)
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev3
+        on (enum.column3_datatype_ev_id = datatype_ev3.enumeration_value_id
+        and datatype_ev3.enumeration_id = 2)
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev4
+        on (enum.column4_datatype_ev_id = datatype_ev4.enumeration_value_id
+        and datatype_ev4.enumeration_id = 2)
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev5
+        on (enum.column5_datatype_ev_id = datatype_ev5.enumeration_value_id
+        and datatype_ev5.enumeration_id = 2)
+    left outer join -=[schema_name]=-.enumeration_value index_ev1
+        on (enum.column1_index_ev_id = index_ev1.enumeration_value_id
+        and index_ev1.enumeration_id = 6)
+    left outer join -=[schema_name]=-.enumeration_value index_ev2
+        on (enum.column2_index_ev_id = index_ev2.enumeration_value_id
+        and index_ev2.enumeration_id = 6)
+    left outer join -=[schema_name]=-.enumeration_value index_ev3
+        on (enum.column3_index_ev_id = index_ev3.enumeration_value_id
+        and index_ev3.enumeration_id = 6)
+    left outer join -=[schema_name]=-.enumeration_value index_ev4
+        on (enum.column4_index_ev_id = index_ev4.enumeration_value_id
+        and index_ev4.enumeration_id = 6)
+    left outer join -=[schema_name]=-.enumeration_value index_ev5
+        on (enum.column5_index_ev_id = index_ev5.enumeration_value_id
+        and index_ev5.enumeration_id = 6)
+where enum.child_table_synch_method_ev_id = 22
+    and exists (
+        select 1
+        from -=[schema_name]=-.enumeration_iud iud
+        where iud.enumeration_id = enum.enumeration_id
+            and iud.operation in ('I', 'U')
+            and applied_flag = false
+    )
+union
+
+--enumeration_id sequence  sequence2  new_sql
+-------------------------------------------------------------
+--5  #  add requested indexs for links to other child tables
+-------------------------------------------------------------
+--a side first
+select 'enumeration_id'::varchar, enum.enumeration_id, 5 as sequence, enum_link_a.enumeration_link_id as sequence2, '
+    --5  #  add requested indexs for links to other child tables
+CREATE ' || case when index_ev.column2_value is not null then index_ev.column2_value || ' ' else '' end || 'INDEX '|| enum.tablename || '_' || enum_b.tablename || '_index
+  ON ' || enum.schema_name || '.' || enum.tablename || '
+  USING ' || index_ev.column1_value || '
+  (' || enum_b.tablename || '_id);' as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+    join -=[schema_name]=-.enumeration_link enum_link_a
+        on (enum.enumeration_id = enum_link_a.enumeration_a_id
+        and enum_link_a.link_creation_rule_ev_id = 30)
+    join -=[schema_name]=-.enumeration enum_b
+        on (enum_link_a.enumeration_b_id = enum_b.enumeration_id)
+    join -=[schema_name]=-.enumeration_value index_ev
+        on (enum_link_a.enumeration_b_index_ev_id = index_ev.enumeration_value_id
+        and index_ev.enumeration_id = 6 and index_ev.enumeration_value_id <> 25)
+where 
+    enum.child_table_synch_method_ev_id = 22
+    and enum_b.child_table_synch_method_ev_id in (22, 24)
+    and exists (
+        select 1
+        from -=[schema_name]=-.enumeration_iud iud
+        where iud.enumeration_id = enum.enumeration_id
+            and iud.operation in ('I', 'U')
+            and applied_flag = false
+    )
+union
+--b side second
+select 'enumeration_id'::varchar, enum.enumeration_id, 5 as sequence, enum_link_b.enumeration_link_id as sequence2, '
+    --5  #  add requested indexs for links to other child tables
+CREATE ' || case when index_ev.column2_value is not null then index_ev.column2_value || ' ' else '' end || 'INDEX '|| enum.tablename || '_' || enum_a.tablename || '_index
+  ON ' || enum.schema_name || '.' || enum.tablename || '
+  USING ' || index_ev.column1_value || '
+  (' || enum_a.tablename || '_id);' as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+    join -=[schema_name]=-.enumeration_link enum_link_b
+        on (enum.enumeration_id = enum_link_b.enumeration_b_id
+        and enum_link_b.link_creation_rule_ev_id = 31)
+    join -=[schema_name]=-.enumeration enum_a
+        on (enum_link_b.enumeration_a_id = enum_a.enumeration_id)
+    join -=[schema_name]=-.enumeration_value index_ev
+        on (enum_link_b.enumeration_a_index_ev_id = index_ev.enumeration_value_id
+        and index_ev.enumeration_id = 6 and index_ev.enumeration_value_id <> 25)
+where 
+    enum.child_table_synch_method_ev_id = 22
+    and enum_a.child_table_synch_method_ev_id in (22, 24)
+    and exists (
+        select 1
+        from -=[schema_name]=-.enumeration_iud iud
+        where iud.enumeration_id = enum.enumeration_id
+            and iud.operation in ('I', 'U')
+            and applied_flag = false
+    )
+union
+
+-------------------------------------------------------------
+--7  0  delete individual rows from child (used for value updates)
+-------------------------------------------------------------
+select 'enumeration_id'::varchar, enum.enumeration_id, 7 as sequence, 0 as sequence2, '
+--7  0  delete individual rows from child (used for value updates)
+delete from ' || case when enum.schema_name is not null then enum.schema_name || '.' else '' end 
+    || enum.tablename || ' where ' 
+    || enum.tablename || '_id = ' || value.enumeration_value_id || ';' as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+    inner join -=[schema_name]=-.enumeration_value value
+        on enum.enumeration_id = value.enumeration_id
+where enum.child_table_synch_method_ev_id = 22
+    and exists (
+        select 1
+        from -=[schema_name]=-.enumeration_value_iud iud
+        where iud.enumeration_value_id = value.enumeration_value_id
+            and iud.operation in ('U')
+            and applied_flag = false
+    )
+union
+
+-------------------------------------------------------------
+--8  0  start insert select (used for value inserts and updates)
+--          open the insert statement
+-------------------------------------------------------------
+select 'enumeration_id'::varchar, enum.enumeration_id, 8 as sequence, 0 as sequence2, '
+--8  0  start insert select (used for value inserts and updates)
+insert into
+    ' || case when enum.schema_name is not null then enum.schema_name || '.' else '' end || enum.tablename || 
+    '(' || enum.tablename || '_id, enumeration_id, ' ||
+    'add_date, name, description, sequence' ||
+    case when enum.column1_name is null then '' else ', ' || lower(enum.column1_name) end ||
+    case when enum.column2_name is null then '' else ', ' || lower(enum.column2_name) end ||
+    case when enum.column3_name is null then '' else ', ' || lower(enum.column3_name) end ||
+    case when enum.column4_name is null then '' else ', ' || lower(enum.column4_name) end ||
+    case when enum.column5_name is null then '' else ', ' || lower(enum.column5_name) end as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+where enum.child_table_synch_method_ev_id = 22
+    and (
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_value_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        ) or
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        )
+    )
+union
+
+--enumeration_id sequence  sequence2  new_sql
+-------------------------------------------------------------
+--9  #  continue insert select
+--          add column names to insert statement
+-------------------------------------------------------------
+--a side first
+select 'enumeration_id'::varchar, enum.enumeration_id, 9 as sequence, enum_link_a.enumeration_link_id as sequence2, '
+    , ' || enum_link_a.tablename || '_id       --9  #   continue insert select by adding link column names' as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+    join -=[schema_name]=-.enumeration_link enum_link_a
+        on (enum.enumeration_id = enum_link_a.enumeration_a_id
+        and enum_link_a.link_creation_rule_ev_id = 30)
+    join -=[schema_name]=-.enumeration enum_b
+        on (enum_link_a.enumeration_b_id = enum_b.enumeration_id)
+where 
+    enum.child_table_synch_method_ev_id = 22
+    and enum_b.child_table_synch_method_ev_id in (22, 24)
+    and (
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_value_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        ) or
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        )
+    )
+union
+--b side second
+select 'enumeration_id'::varchar, enum.enumeration_id, 9 as sequence, enum_link_b.enumeration_link_id as sequence2, '
+    , ' || enum_link_b.tablename || '_id       --9  #   continue insert select by adding link column names' as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+    join -=[schema_name]=-.enumeration_link enum_link_b
+        on (enum.enumeration_id = enum_link_b.enumeration_b_id
+        and enum_link_b.link_creation_rule_ev_id = 31)
+    join -=[schema_name]=-.enumeration enum_a
+        on (enum_link_b.enumeration_a_id = enum_a.enumeration_id)
+where 
+    enum.child_table_synch_method_ev_id = 22
+    and enum_a.child_table_synch_method_ev_id in (22, 24)
+    and (
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_value_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        ) or
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        )
+    )
+union
+
+--enumeration_id sequence  sequence2  new_sql
+-------------------------------------------------------------
+--10 0  continue insert select
+--          finish insert statement
+--          start select statement
+-------------------------------------------------------------
+select 'enumeration_id'::varchar, enum.enumeration_id, 10 as sequence, 0 as sequence2, '
+)    --10 0 continue insert select (finish column names, start select)
+select 
+    enum_value.enumeration_value_id, enum_value.enumeration_id,
+    enum_value.add_date, enum_value.name, enum_value.description, 
+    enum_value.sequence' ||
+    case when enum.column1_name is null then '' else ', enum_value.column1_value' end ||
+    case when enum.column2_name is null then '' else ', enum_value.column2_value' end ||
+    case when enum.column3_name is null then '' else ', enum_value.column3_value' end ||
+    case when enum.column4_name is null then '' else ', enum_value.column4_value' end ||
+    case when enum.column5_name is null then '' else ', enum_value.column5_value' end as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+where enum.child_table_synch_method_ev_id = 22
+    and (
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_value_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        ) or
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        )
+    )
+union
+    
+--enumeration_id sequence  sequence2  new_sql
+-------------------------------------------------------------
+--11 #  continue insert select
+--          add link column names to statement portion of insert select
+-------------------------------------------------------------
+--a side first
+select 'enumeration_id'::varchar, enum.enumeration_id, 11 as sequence, enum_link_a.enumeration_link_id as sequence2, '
+    , enum_link_value_' || enum_link_a.enumeration_link_id || '.enumeration_value_b_id       --11  #    continue insert select by adding link column names to select statement' as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+    join -=[schema_name]=-.enumeration_link enum_link_a
+        on (enum.enumeration_id = enum_link_a.enumeration_a_id
+        and enum_link_a.link_creation_rule_ev_id = 30)
+    join -=[schema_name]=-.enumeration enum_b
+        on (enum_link_a.enumeration_b_id = enum_b.enumeration_id)
+where 
+    enum.child_table_synch_method_ev_id = 22
+    and enum_b.child_table_synch_method_ev_id in (22, 24)
+    and (
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_value_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        ) or
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        )
+    )
+union
+--b side second
+select 'enumeration_id'::varchar, enum.enumeration_id, 11 as sequence, enum_link_b.enumeration_link_id as sequence2, '
+    , enum_link_value_' || enum_link_b.enumeration_link_id || '.enumeration_value_a_id       --11  #    continue insert select by adding link column names to select statement' as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+    join -=[schema_name]=-.enumeration_link enum_link_b
+        on (enum.enumeration_id = enum_link_b.enumeration_b_id
+        and enum_link_b.link_creation_rule_ev_id = 31)
+    join -=[schema_name]=-.enumeration enum_a
+        on (enum_link_b.enumeration_a_id = enum_a.enumeration_id)
+where 
+    enum.child_table_synch_method_ev_id = 22
+    and enum_a.child_table_synch_method_ev_id in (22, 24)
+    and (
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_value_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        ) or
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        )
+    )
+union
+
+--enumeration_id sequence  sequence2  new_sql
+-------------------------------------------------------------
+--12 0  continue insert select
+--          begin from clause
+-------------------------------------------------------------
+select 'enumeration_id'::varchar, enum.enumeration_id, 12 as sequence, 0 as sequence2, '
+from           --12 0   continue insert select - begin from clause
+    -=[schema_name]=-.enumeration enum
+    join -=[schema_name]=-.enumeration_value enum_value
+        on (enum.enumeration_id = enum_value.enumeration_id)' as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+where enum.child_table_synch_method_ev_id = 22
+    and (
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_value_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        ) or
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        )
+    )
+union
+
+--enumeration_id sequence  sequence2  new_sql
+-------------------------------------------------------------
+--13 0  continue insert select
+--          add from clause table entries for link column data
+-------------------------------------------------------------
+--a side first
+select 'enumeration_id'::varchar, enum.enumeration_id, 13 as sequence, enum_link_a.enumeration_link_id as sequence2, '
+    --13 0  continue insert select - add from clause table entries for link column data
+    join -=[schema_name]=-.enumeration_link enum_link_' || enum_link_a.enumeration_link_id || '
+        on (enum_link_' || enum_link_a.enumeration_link_id || '.enumeration_link_id = ' || enum_link_a.enumeration_link_id || ')
+    left outer join -=[schema_name]=-.enumeration_link_value enum_link_value_' || enum_link_a.enumeration_link_id || '
+        on (enum_link_' || enum_link_a.enumeration_link_id || 
+                '.enumeration_link_id = enum_link_value_' || enum_link_a.enumeration_link_id || '.enumeration_link_id
+            and enum_value.enumeration_value_id = enum_link_value_' 
+                || enum_link_a.enumeration_link_id || '.enumeration_value_a_id)' as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+    join -=[schema_name]=-.enumeration_link enum_link_a
+        on (enum.enumeration_id = enum_link_a.enumeration_a_id
+        and enum_link_a.link_creation_rule_ev_id = 30)
+    join -=[schema_name]=-.enumeration enum_b
+        on (enum_link_a.enumeration_b_id = enum_b.enumeration_id)
+where 
+    enum.child_table_synch_method_ev_id = 22
+    and enum_b.child_table_synch_method_ev_id in (22, 24)
+    and (
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_value_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        ) or
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        )
+    )
+union
+--b side second
+select 'enumeration_id'::varchar, enum.enumeration_id, 13 as sequence, enum_link_b.enumeration_link_id as sequence2, '
+    --13 0  continue insert select - add from clause table entries for link column data
+    join -=[schema_name]=-.enumeration_link enum_link_' || enum_link_b.enumeration_link_id || '
+        on (enum_link_' || enum_link_b.enumeration_link_id || '.enumeration_link_id = ' || enum_link_b.enumeration_link_id || ')
+    left outer join -=[schema_name]=-.enumeration_link_value enum_link_value_' || enum_link_b.enumeration_link_id || '
+        on (enum_link_' || enum_link_b.enumeration_link_id || 
+                '.enumeration_link_id = enum_link_value_' || enum_link_b.enumeration_link_id || '.enumeration_link_id
+            and enum_value.enumeration_value_id = enum_link_value_' 
+                || enum_link_b.enumeration_link_id || '.enumeration_value_b_id)' as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+    join -=[schema_name]=-.enumeration_link enum_link_b
+        on (enum.enumeration_id = enum_link_b.enumeration_b_id
+        and enum_link_b.link_creation_rule_ev_id = 31)
+    join -=[schema_name]=-.enumeration enum_a
+        on (enum_link_b.enumeration_a_id = enum_a.enumeration_id)
+where 
+    enum.child_table_synch_method_ev_id = 22
+    and enum_a.child_table_synch_method_ev_id in (22, 24)
+    and (
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_value_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        ) or
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        )
+    )
+union
+
+--enumeration_id sequence  sequence2  new_sql
+-------------------------------------------------------------
+--14 0  finish insert select
+--          add where clause
+-------------------------------------------------------------
+select 'enumeration_id'::varchar, enum.enumeration_id, 14 as sequence, 0 as sequence2, '
+where           --14 0  finish insert select - add where clause
+    enum.enumeration_id = ' || enum.enumeration_id || E'
+    and (
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_value_iud iud
+            where iud.enumeration_value_id = enum_value.enumeration_value_id
+                and iud.operation in (\'I\', \'U\')
+                and applied_flag = false
+        ) or
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in (\'I\', \'U\')
+                and applied_flag = false
+        )
+    );' as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+where enum.child_table_synch_method_ev_id = 22
+    and (
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_value_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        ) or
+        exists (
+            select 1
+            from -=[schema_name]=-.enumeration_iud iud
+            where iud.enumeration_id = enum.enumeration_id
+                and iud.operation in ('I', 'U')
+                and applied_flag = false
+        )
+    )
+union
+
+-------------------------------------------------------------
+--15 0  update value iud for inserts and updates
+-------------------------------------------------------------
+select 'enumeration_id'::varchar, enum.enumeration_id, 15 as sequence, 0 as sequence2, '
+--15 0  update value iud for inserts and updates
+update -=[schema_name]=-.enumeration_value_iud set applied_flag = true ' ||
+    E' where applied_flag = false and operation in (\'I\', \'U\') and enumeration_value_id = ' || 
+    value.enumeration_value_id || ';' as new_sql
+from
+    -=[schema_name]=-.enumeration enum
+    inner join -=[schema_name]=-.enumeration_value value
+        on enum.enumeration_id = value.enumeration_id
+where enum.child_table_synch_method_ev_id = 22
+    and exists (
+        select 1
+        from -=[schema_name]=-.enumeration_value_iud iud
+        where iud.enumeration_value_id = value.enumeration_value_id
+            and iud.operation in ('I', 'U')
+            and applied_flag = false
+    )
+union
+
+-------------------------------------------------------------
+--16  0  update enum iud
+-------------------------------------------------------------
+select 'enumeration_id'::varchar, iud.enumeration_id, 16 as sequence, 0 as sequence2, '
+--16  0  update enum iud
+update -=[schema_name]=-.enumeration_iud set applied_flag = true where enumeration_id = '
+    || iud.enumeration_id || E' and operation = \'I\' and applied_flag = false;' as new_sql
+from    -=[schema_name]=-.enumeration_iud iud, -=[schema_name]=-.enumeration enum
+where enum.child_table_synch_method_ev_id = 22
+    and iud.enumeration_id = enum.enumeration_id
+    and iud.operation in ('I')
+    and iud.applied_flag = false
+
+order by section, id, sequence, sequence2;
+]]></value>
+        </property> 
+    </bean>
+    
+</beans>
