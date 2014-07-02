@@ -1,5 +1,6 @@
-package com.tjhruska.mc.apps;
+package com.tjhruska.mc.apps
 
+import groovy.transform.Synchronized;
 import groovy.util.logging.Slf4j
 
 import java.sql.ResultSet
@@ -21,91 +22,61 @@ import com.tjhruska.mc.util.tagReplacement.SQLTemplate
 @Slf4j
 class McInstaller extends BeanNameAwareRunnable {
 	
-	@Resource (name="getInstalled")
-	SQLTemplate getInstalled;
+	SQLTemplate initInstalled
+	SQLTemplate getInstalled
+	SQLTemplate addInstalled
+	Map<String, String> installProperties
+  List installTasks
 	
-	@Resource (name="addInstalled")
-	SQLTemplate addInstalled;
-	
-	
-	List<Duo<SQLTemplate,BeanNameAwareRunnable>> installs;
-  //void setInstalls(List<Duo<SQLTemplate,BeanNameAwareRunnable>> installs){
-  //  this.installs = installs
-  //}
-
-	Map<String, String> installProperties;
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-    McInstallerForProjectsHelper.configure("application").run()
-		//ApplicationContext context = Context.getClassPathXmlApplicationContext("conf/mcInstaller/application_context.xml");
-		//((McInstaller)context.getBean("mcInstaller")).run();
-	}
-
+  @Synchronized
 	public void run() {
-		for (Map.Entry<String, String> entry : installProperties.entrySet()){
-			log.info("installProperty: {}, value: {}", entry.getKey(), entry.getValue());
-		}
+    installProperties.each { key, value ->
+      log.info("installProperty: ${key}, value: ${value}")
+    }
 
-		List<String> alreadyCompletedInstalls;
-		try{
-			alreadyCompletedInstalls = getInstalled.query( installProperties, 
-				new RowMapper<String> (){
-					public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-						return rs.getString("description");
-					}});
-			log.info("found {} previous installation records.", alreadyCompletedInstalls.size());
-		}catch (Exception e){
-			log.info("failed to get previous installation list, assuming no installs and continuing.");
-			alreadyCompletedInstalls = new ArrayList<String>();
-		}
-		
-		try {
-			runQueries(alreadyCompletedInstalls);
-		} catch (SQLException e) {
-			//already reported, and hopefully rolled back.
-		}
+		List<String> alreadyCompletedTasks = getAlreadyCompletedTasks()
+	
+    installTasks.eachWithIndex { task, i ->
+      def taskName = task.getBeanName()
+      def completedTask = (alreadyCompletedTasks.size > 0 ? alreadyCompletedTasks.remove(0): null)
+      
+      if (completedTask != null && completedTask.equals(taskName)) {
+        log.info(">>>>>>>> task {} previously run, skipping.", taskName)
+        return
+      } else if (completedTask != null) {
+        log.error("installTasks list has changed in configuration from what has already been run in db."
+          + "  Not allowed. Previously run {}, asked to run {} at index {}",
+          completedTask, taskName, i)
+        throw new RuntimeException("installTasks tasks that have already been run should not be changed in configuration.");
+      }
+      
+      log.info(">>>>>>>> about to run install task {}.", taskName)
+      if (task instanceof SQLTemplate) {
+        task.jdbcQuery(installProperties)
+      } else {
+        task.run()
+      }
+      log.info(">>>>>>>> finished run install task {}.", taskName)
+      installProperties.put('install_version', taskName)
+      addInstalled.update(installProperties)
+      installProperties.remove('install_version')
+    }
 	}
 
-	public void runQueries(List<String> alreadyCompletedInstalls) throws SQLException{
-		int installCount = 0;
-		boolean firstSynchronize = true;
-		for (Duo<SQLTemplate,BeanNameAwareRunnable> commandPair: installs){
-			SQLTemplate sqlTemplate = commandPair.getOne();
-			BeanNameAwareRunnable runnable = commandPair.getTwo();
-			if (runnable instanceof McEnumDbSynchronizer && firstSynchronize){
-				firstSynchronize = false;
-				((McEnumDbSynchronizer)runnable).setSkipEnumToColumnTableNextRun();
-			}
-			if (sqlTemplate != null){
-				if (alreadyCompletedInstalls.contains(sqlTemplate.getBeanName())){
-					log.info("Skipping query {}, already installed.", sqlTemplate.getBeanName());
-					continue;
-				}
-				//log.info("About to run install query {}", sqlTemplate.getBeanName());
-				try {
-					sqlTemplate.jdbcQuery(installProperties);
-					log.info("finished running query {}", sqlTemplate.getBeanName());
-					
-					installProperties.put("install_version", sqlTemplate.getBeanName());
-					addInstalled.update(installProperties);
-					installProperties.remove("install_version");
-					//log.info("Recorded installation of {} in database.", sqlTemplate.getBeanName());
-			
-					installCount++;
-				} catch (SQLException e) {
-					log.error("received an exception when processing {}, aborting installation.", sqlTemplate.getBeanName());
-					log.error("query:\n{}", sqlTemplate.applyTags(installProperties));
-					throw e;
-				}
-			}
-			if (runnable != null){
-				log.info("executing job {}, configured to run after install query {}.", runnable.getBeanName(), (sqlTemplate == null ? "none" : sqlTemplate.getBeanName()));
-				runnable.run();
-			}
-		}
-		log.info("Completed {} install queries.", installCount);
-	}
-}
+  private ArrayList getAlreadyCompletedTasks() {
+    initInstalled.jdbcQuery(installProperties)
+    def alreadyCompletedInstalls
+    try{
+      alreadyCompletedInstalls = getInstalled.query( installProperties,
+          new RowMapper<String> (){
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+              return rs.getString('task')
+            }})
+      log.info('found {} previous installation records.', alreadyCompletedInstalls.size())
+    }catch (Exception e){
+      log.info('failed to get previous installation list, assuming no installs and continuing.', e)
+      alreadyCompletedInstalls = new ArrayList<String>()
+    }
+    return alreadyCompletedInstalls
+  }
+} 

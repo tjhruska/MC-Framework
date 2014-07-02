@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 
-    <bean id="install_01.00_enum_model" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+    <bean id="install_0000_enum_model" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
         <property name="jdbcTemplate" ref="jdbcTemplate" />
         <property name="dataSource" ref="dataSource" />
         <property name="template">
@@ -26,8 +26,6 @@ END$BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 ALTER FUNCTION reverse_string(text) OWNER TO admin;
-
-create schema -=[schema_name]=-;
         
 -------------------------------------------------------------
 -------------------------------------------------------------
@@ -2026,8 +2024,8 @@ update -=[schema_name]=-.enumeration_value_iud set applied_flag = true;
 -------------------------------------------------------------
 --insert needed base enumerations
 -------------------------------------------------------------
-INSERT INTO -=[schema_name]=-.enumeration (enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column1_default, column2_default, column3_default, column4_default, column5_default)
-    VALUES (1, '2007-11-19 23:41:58.034969-06', 'INSTALL', 'install_ev', 'Install', '-=[schema_name]=-', null, 23, 19, 'rootDirectory', '-=[packageBase]=-.mc.enums', null, null, null, null, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);      
+--INSERT INTO -=[schema_name]=-.enumeration (enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column1_default, column2_default, column3_default, column4_default, column5_default)
+--    VALUES (1, '2007-11-19 23:41:58.034969-06', 'INSTALL', 'install_ev', 'Install', '-=[schema_name]=-', null, 23, 19, 'rootDirectory', '-=[packageBase]=-.mc.enums', null, null, null, null, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);      
 INSERT INTO -=[schema_name]=-.enumeration (enumeration_id, add_date, name, tablename, tablename_camel_case, schema_name, post_create_sql, child_table_synch_method_ev_id, auto_creation_method_ev_id, folder_tag, java_package, column1_name, column1_name_camel_case, column1_datatype_ev_id, column1_index_ev_id, column1_not_null_flag, column2_name, column2_name_camel_case, column2_datatype_ev_id, column2_index_ev_id, column2_not_null_flag, column3_name, column3_name_camel_case, column3_datatype_ev_id, column3_index_ev_id, column3_not_null_flag, column4_name, column4_name_camel_case, column4_datatype_ev_id, column4_index_ev_id, column4_not_null_flag, column5_name, column5_name_camel_case, column5_datatype_ev_id, column5_index_ev_id, column5_not_null_flag, column1_default, column2_default, column3_default, column4_default, column5_default)
     VALUES (2, '2007-11-19 00:02:18.130816-06', 'DATATYPE', 'datatype_ev', 'Datatype', '-=[schema_name]=-', null, 22, 19, 'rootDirectory', '-=[packageBase]=-.mc.enums', 
 

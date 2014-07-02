@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 
 public class SQLTemplate extends Template {
@@ -57,14 +58,17 @@ public class SQLTemplate extends Template {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
+	@Transactional
 	public <T> List<T> query(Map<String, String> parameters, RowMapper<T> rm) {
 		return jdbcTemplate.query(applyTags(parameters).toString(), rm);
 	}
 	
+	@Transactional
 	public void query(Map<String, String> parameters, RowCallbackHandler rch){
 		jdbcTemplate.query(applyTags(parameters).toString(), rch);
 	}
 	
+	@Transactional
 	public int update(Map<String, String> parameters) {
 		return jdbcTemplate.update(applyTags(parameters).toString());
 	}
@@ -83,6 +87,7 @@ public class SQLTemplate extends Template {
 			throw e;
 		} finally {
 		  statement.close();
+		  connection.close();
 		}
 	}
 }

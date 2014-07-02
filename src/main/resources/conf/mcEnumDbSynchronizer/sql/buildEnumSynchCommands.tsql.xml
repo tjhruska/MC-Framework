@@ -670,13 +670,28 @@ select
     enum_value.enumeration_value_id, enum_value.enumeration_id,
     enum_value.add_date, enum_value.name, enum_value.description, 
     enum_value.sequence' ||
-    case when enum.column1_name is null then '' else ', enum_value.column1_value' end ||
-    case when enum.column2_name is null then '' else ', enum_value.column2_value' end ||
-    case when enum.column3_name is null then '' else ', enum_value.column3_value' end ||
-    case when enum.column4_name is null then '' else ', enum_value.column4_value' end ||
-    case when enum.column5_name is null then '' else ', enum_value.column5_value' end as new_sql
+    case when enum.column1_name is null then '' else ', enum_value.column1_value' || case when datatype_ev1.enumeration_value_id <> 3 then '::' || datatype_ev1.column3_value else '' end end ||
+    case when enum.column2_name is null then '' else ', enum_value.column2_value' || case when datatype_ev2.enumeration_value_id <> 3 then '::' || datatype_ev2.column3_value else '' end end ||
+    case when enum.column3_name is null then '' else ', enum_value.column3_value' || case when datatype_ev3.enumeration_value_id <> 3 then '::' || datatype_ev3.column3_value else '' end end ||
+    case when enum.column4_name is null then '' else ', enum_value.column4_value' || case when datatype_ev4.enumeration_value_id <> 3 then '::' || datatype_ev4.column3_value else '' end end ||
+    case when enum.column5_name is null then '' else ', enum_value.column5_value' || case when datatype_ev5.enumeration_value_id <> 3 then '::' || datatype_ev5.column3_value else '' end end as new_sql
 from
     -=[schema_name]=-.enumeration enum
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev1
+        on (enum.column1_datatype_ev_id = datatype_ev1.enumeration_value_id
+        and datatype_ev1.enumeration_id = 2)
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev2
+        on (enum.column2_datatype_ev_id = datatype_ev2.enumeration_value_id
+        and datatype_ev2.enumeration_id = 2)
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev3
+        on (enum.column3_datatype_ev_id = datatype_ev3.enumeration_value_id
+        and datatype_ev3.enumeration_id = 2)
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev4
+        on (enum.column4_datatype_ev_id = datatype_ev4.enumeration_value_id
+        and datatype_ev4.enumeration_id = 2)
+    left outer join -=[schema_name]=-.enumeration_value datatype_ev5
+        on (enum.column5_datatype_ev_id = datatype_ev5.enumeration_value_id
+        and datatype_ev5.enumeration_id = 2)
 where enum.child_table_synch_method_ev_id = 22
     and (
         exists (

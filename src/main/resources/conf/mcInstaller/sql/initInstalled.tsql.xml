@@ -5,14 +5,21 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 
-    <bean id="getInstalled" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+    <bean id="initInstalled" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
         <property name="jdbcTemplate" ref="jdbcTemplate" />
         <property name="dataSource" ref="dataSource" />
         <property name="template">
             <value><![CDATA[
-select task
-from -=[schema_name]=-.installed_tasks
-order by installed_tasks_id
+CREATE SCHEMA IF NOT EXISTS -=[schema_name]=-;
+CREATE TABLE IF NOT EXISTS -=[schema_name]=-.installed_tasks
+(
+    installed_tasks_id bigserial NOT NULL,
+    add_date timestamp with time zone DEFAULT now(),
+    task character varying,
+    CONSTRAINT installed_tasks_id_pk PRIMARY KEY (installed_tasks_id)
+) 
+WITHOUT OIDS;
+ALTER TABLE -=[schema_name]=-.installed_tasks OWNER TO -=[owner]=-;
 ]]></value>
         </property> 
     </bean>

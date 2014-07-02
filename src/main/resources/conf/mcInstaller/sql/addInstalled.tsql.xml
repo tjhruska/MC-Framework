@@ -10,11 +10,8 @@
         <property name="dataSource" ref="dataSource" />
         <property name="template">
             <value><![CDATA[
-insert into -=[schema_name]=-.enumeration_value (enumeration_id, name, description, sequence)
-values (1, 
-    replace(upper('-=[install_version]=-'), 
-    '.', '_'), '-=[install_version]=-', 
-    (select coalesce(max(sequence) + 1, 1) from -=[schema_name]=-.enumeration_value where enumeration_id = 1))
+insert into -=[schema_name]=-.installed_tasks (task)
+values ('-=[install_version]=-')
 ]]></value>
         </property> 
     </bean>
