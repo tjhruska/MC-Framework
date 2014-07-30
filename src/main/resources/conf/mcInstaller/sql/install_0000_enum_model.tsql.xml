@@ -1986,6 +1986,8 @@ INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumerati
     VALUES (55, 2, '2012-02-28 00:08:01.218051-06', 'DOUBLE_ARRAY', 'Double[]', 12, 'Double[]', 'double[]', 'float8[]', 'com.tjhruska.mc.database.DoubleArrayUserType', NULL);
 INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
     VALUES (56, 2, '2012-03-18 12:46:01.218051-06', 'DOUBLE', 'Double', 13, 'Double', 'double', 'float8', 'double', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (57, 2, '2014-07-08 12:46:01.218051-06', 'DATE', 'Local Date', 14, 'org.joda.time.LocalDate', null, 'timestamp without time zone', 'org.jadira.usertype.dateandtime.joda.PersistentLocalDate', NULL);
 
 -------------------
 --test linking records

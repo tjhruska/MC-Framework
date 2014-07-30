@@ -137,10 +137,10 @@ select
   max(t.src_folder_tag) as folder_tag, max(replace(t.java_package, '.', '/')) as java_package, 
   max(t.name_camel_case || '.groovy') as fileName, null::varchar as fileName2,
   null::varchar as fragment2, '
-import groovy.transform.EqualsAndHashCode
+//import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
-@EqualsAndHashCode
+//@EqualsAndHashCode
 @ToString
 public class ' || max(t.name_camel_case) || case 
   when max(t.java_fq_superclass) is null then '' 
