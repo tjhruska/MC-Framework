@@ -17,9 +17,12 @@ public interface TransactionalTestSetupServiceIface {
   public abstract void saveOrUpdate(DaoDomain dao, BaseDomain domain);
 
   public abstract BaseDomain findByPK(DaoDomain dao, Serializable id);
-  
-  public abstract List<BaseDomain> findByCriteria(DaoDomain dao, Restriction restriction);
-  
+
+  public abstract List<BaseDomain> findByCriteria(DaoDomain dao,
+      Restriction restriction);
+
+  public BaseDomain findOneByCriteria(DaoDomain dao, Restriction restriction);
+
   @Transactional
   public abstract void delete(DaoDomain dao, BaseDomain domain);
 }
