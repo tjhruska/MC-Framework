@@ -95,7 +95,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see com.tjhruska.mc.database.DaoDomain#getDomainClass()
    */
   @Override
@@ -105,7 +105,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see
    * com.tjhruska.mc.database.DaoDomain#save(com.tjhruska.mc.database.BaseDomain
    * )
@@ -118,7 +118,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see
    * com.tjhruska.mc.database.DaoDomain#saveOrUpdate(com.tjhruska.mc.database
    * .BaseDomain)
@@ -132,7 +132,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see
    * com.tjhruska.mc.database.DaoDomain#delete(com.tjhruska.mc.database.BaseDomain
    * )
@@ -145,7 +145,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see com.tjhruska.mc.database.DaoDomain#findByPK(java.io.Serializable)
    */
   @Override
@@ -157,7 +157,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see com.tjhruska.mc.database.DaoDomain#findAll()
    */
   @Override
@@ -173,7 +173,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * com.tjhruska.mc.database.DaoDomain#findOneByCriteria(com.tjhruska.mc.database
    * .restrictions.Restriction)
@@ -182,15 +182,14 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
   public T findOneByCriteria(Restriction restriction) {
     List<T> results = findByCriteria(restriction);
     if (results.size() != 1) {
-      throw new NoSuchElementException(
-          "Expected exactly one record, but found " + results.size());
+      throw new NoSuchElementException("Expected exactly one record, but found " + results.size());
     }
     return results.iterator().next();
   }
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see
    * com.tjhruska.mc.database.DaoDomain#findByCriteria(com.tjhruska.mc.database
    * .restrictions.Restriction)
@@ -203,7 +202,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see
    * com.tjhruska.mc.database.DaoDomain#findByCriteria(com.tjhruska.mc.database
    * .restrictions.Restriction, java.lang.Integer)
@@ -224,7 +223,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see com.tjhruska.mc.database.DaoDomain#clearCache()
    */
   @Override
@@ -234,12 +233,13 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see com.tjhruska.mc.database.DaoDomain#flush()
    */
   @Override
   @Transactional
   public void flush() {
     getSession().flush();
+    getSession().clear();
   }
 }
