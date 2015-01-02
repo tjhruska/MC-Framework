@@ -5,9 +5,11 @@ package com.tjhruska.mc.database;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.NoSuchElementException;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -59,7 +61,11 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
     if (session != null) {
       return session;
     } else {
-      return sessionFactory.getCurrentSession();
+      try {
+        return sessionFactory.getCurrentSession();
+      } catch (HibernateException e) {
+        return sessionFactory.openSession();
+      }
     }
   }
 
@@ -182,7 +188,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
   public T findOneByCriteria(Restriction restriction) {
     List<T> results = findByCriteria(restriction);
     if (results.size() != 1) {
-      throw new NoSuchElementException("Expected exactly one record, but found " + results.size());
+      throw new EntityNotFoundException("Expected exactly one record, but found " + results.size());
     }
     return results.iterator().next();
   }

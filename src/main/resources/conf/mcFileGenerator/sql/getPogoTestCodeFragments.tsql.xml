@@ -329,7 +329,7 @@ select
     --begin if
         case 
             when c.fk_flag = true and c.fk_orm_lazy_flag is not null 
-            then 'if (' || c.name_camel_case || ' == null)
+            then 'if (' || c.name_camel_case || ' == null) {
       ' else '' 
         end ||
     --contents of if
@@ -338,18 +338,25 @@ select
         case when c.name_camel_case <> 'id' and c.fk_flag = true and c.fk_orm_lazy_flag is null then 'Id' else '' end ||
         case 
           when c.fk_flag = true and c.fk_orm_lazy_flag is not null 
-          then case when c.mc_table_id = fkt.mc_table_id then '(null)' else '(new ' || fkt.name_camel_case || 'Test().getTestObject(number, 0))' end
+          then case when c.mc_table_id = fkt.mc_table_id then '(null)' else '(new ' || fkt.name_camel_case || 'Test(' || lower(substring(fkt.name_camel_case, 1, 1)) || substring(fkt.name_camel_case, 2, length(fkt.name_camel_case)) || 'Dao : getDao()' || ').persistTestObject(number + ' || c.mc_column_id || '))' end
           else '(number)' 
+        end ||
+        case
+          when c.fk_flag = true and c.fk_orm_lazy_flag is not null and c.fk_pojo_collection_container_ev_id in (8, 9) and c.fk_pojo_collection_name_camel_case is not null
+          then '
+      ' || lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || 
+        '.' || c.name_camel_case || '.' || c.fk_pojo_collection_name_camel_case || '.add(' || lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || ')'
+          else ''
         end ||
     --else clause
         case 
             when c.fk_flag = true and c.fk_orm_lazy_flag is not null 
             then '
-    else
+    } else {
       ' || lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || 
       '.set' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) ||
       '(' || c.name_camel_case || ')
-'
+    }'
             else '' 
         end
     
@@ -482,12 +489,22 @@ select
     ' || max(t.name_camel_case) || ' source = getTestObject(number, 0)
     ' || max(t.name_camel_case) || ' target = (' || max(t.name_camel_case) || ')domain
     ' || string_agg(
-    case when c.pk_flag = true then '' else 
+    case 
+      when c.pk_flag = true 
+      then '' 
+      else 
       'target.set'  || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || 
         case when e.mc_table_id is null and c.fk_flag = true and c.fk_orm_lazy_flag is null then 'Id' else '' end ||
       '(source.get' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) ||
         case when e.mc_table_id is null and c.fk_flag = true and c.fk_orm_lazy_flag is null then 'Id' else '' end ||
-      '())' end, '
+      '())' ||
+      case
+        when c.fk_flag = true and c.fk_orm_lazy_flag is not null and c.fk_pojo_collection_container_ev_id in (8, 9) and c.fk_pojo_collection_name_camel_case is not null
+        then '
+    target.' || c.name_camel_case || '.' || c.fk_pojo_collection_name_camel_case || '.add(target)'
+        else ''
+      end
+    end, '
     ' order by c.sequence) || '
 ' as fragment
 from
@@ -577,6 +594,8 @@ select
 --          '()[i])
 --    }'
       when c.pk_flag = true then ''
+      when c.fk_flag = true and c.fk_orm_lazy_flag is not null 
+      then 'new ' || fkt.name_camel_case || 'Test().assertDomainUpdates(expectedD.get' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || '(), actualD.get' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || '())'
       else
         'assertEquals("' || c.name_camel_case || ' is different than expected", expectedD.get' ||
           upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || 
