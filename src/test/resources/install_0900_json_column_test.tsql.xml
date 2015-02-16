@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+    <bean id="install_0900_json_column_test" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="template">
+            <value><![CDATA[
+begin transaction;
+set constraints all deferred;
+
+---------------------------------------------
+--insert records for mc_table
+INSERT INTO -=[schema_name]=-.mc_table(add_date,
+  mc_table_id, system_no_modify_flag, "name", description, name_camel_case,
+  table_creation_rule_ev_id, suppress_table_changes_flag, create_iud_table_flag, schema_name, within_create_sql, post_create_sql,
+  create_pojo_flag, src_folder_tag, suppress_pojo_changes_flag, java_package, java_fq_superclass, constructor_from_field_flag, extra_java_code,
+  create_orm_flag, suppress_orm_changes_flag, extra_orm_code, orm_discriminator_column_id,
+  create_gui_data_service_flag, suppress_gui_data_service_changes_flag, gui_pagify_flag, gui_records_per_page)
+VALUES ('2015-02-10 04:44PM',
+  50, false, 'json_test', 'Test table for json columns', 'JsonTest', -- base
+  32, false, true, '-=[schema_name]=-', null, null, --table related
+  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', false, null, --pojo
+  true, false, null, null, --orm
+  true, false, true, 25); --gui
+
+------------------------------------------------------------------------
+--insert columns from the mc model
+------------------------------------------------------------------------
+INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
+  name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
+  fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, fk_orm_lazy_flag, fk_orm_link_thru_to_table_id, fk_orm_inverse_flag,
+  not_null_flag, default_value, constraint_sql, pojo_constructor_field_flag, 
+  gui_header, gui_tool_tip, gui_sortable_flag, gui_field_group_name, gui_field_group_sequence, gui_field_group_guard_column_id, gui_field_group_field_required_flag)
+VALUES 
+(501, 50, 1, 'json_test_id', 'Artificial ID', 
+'id', 45, 25, true, false, null, null, 
+null,null,null,null,null,null,
+true, null, null, false, 
+'Id', 'System Generated ID', true, null, null, null, null),
+
+(502, 50, 2, 'add_date', 'Add Date of Record.', 
+'addDate', 46, 25, false, false, null, null, 
+null,null,null,null,null,null,
+true, 'now()', null, false, 
+'Add Date', null, false, null, null, null, null),
+
+(503, 50, 3, 'json_foo', 'Json Field 1', 
+'jsonFoo', 58, 25, false, false, null, null, 
+null,null,null,null,null,null,
+false,  null, null, false, 
+'JSON Foo', 'Test JSON Field 1 (Nullable)', false, null, null, null, null),
+
+(504, 50, 4, 'json_bar', 'Json Field 2', 
+'jsonBar', 58, 25, false, false, null, null, 
+null,null,null,null,null,null,
+true, E'\'{}\'', null, false, 
+'JSON Bar', 'Test JSON Field 2 (Not Nullable)', false, null, null, null, null);
+
+commit transaction;
+         ]]></value>
+        </property> 
+    </bean>
+
+</beans>

@@ -1,0 +1,23 @@
+spring.datasource.driverClassName=org.postgresql.Driver
+spring.datasource.url=jdbc:postgresql://localhost:5432/mc_test
+spring.datasource.username=admin
+spring.datasource.password=XXXXXXXXXXX
+
+hibernate.mappingDirectory=classpath:conf/hibernateMappingFiles/
+hibernate.mappingLocations=classpath:conf/hibernateMappingFiles/*.hbm.xml
+hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+hibernate.show_sql=false
+hibernate.jdbc.batch_size=50
+
+mc.schemaName               =mc
+mc.typeOfPlainOldObject     =PlainOldGroovyObject
+mc.logDirectory             =/Volumes/Crypt/code_repo/mc-framework/logs
+mc.rootDirectory            =/Volumes/Crypt/code_repo/mc-framework/src/main/groovy
+mc.rootDirectory2           =/Volumes/Crypt/code_repo/mc-framework/src/main/java
+mc.testDirectory            =/Volumes/Crypt/code_repo/mc-framework/src/test/groovy
+mc.testAbstractBaseImport   =com.tjhruska.mc.database.test.GeneratedDomainAndDaoTest
+mc.testAbstractBaseClass    =GeneratedDomainAndDaoTest
+mc.ormDirectory             =/Volumes/Crypt/code_repo/mc-framework/src/main/resources/conf/hibernateMappingFiles
+mc.backupDirectory          =/Volumes/Crypt/code_repo/mc-framework/backup
+mc.packageBase              =com.tjhruska.mc
+mc.adminUser                =admin

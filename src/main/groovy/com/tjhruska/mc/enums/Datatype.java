@@ -1,5 +1,5 @@
 /**
- *   Copyright  2007-2011 Timothy James Hruska (tjhruska@yahoo.com)
+ *   Copyright (c) 2007-2015 Timothy James Hruska (tjhruska@yahoo.com)
  *
  *   com.tjhruska.mc.enums
  *   Datatype.java
@@ -38,10 +38,14 @@ public enum Datatype {
     SERIAL(45, "SERIAL", "Serial", 5, "Integer", "int", "serial", "int"),
     DATETIME(46, "DATETIME", "Date Time", 6, "org.joda.time.DateTime", null, "timestamp with time zone", "org.jadira.usertype.dateandtime.joda.PersistentDateTime"),
     TIME(50, "TIME", "Time", 7, "java.sql.Time", null, "time without time zone", "time"),
-    DECIMAL(51, "DECIMAL", "Decimal", 8, "Decimal", null, "double precision", "decimal"),
-    INTEGER_ARRAY(52, "INTEGER_ARRAY", "Integer[]", 9, "Integer[]", "int[]", "integer[]", "integer[]"),
-    SHORT_ARRAY(53, "SHORT_ARRAY", "Short[]", 10, "Short[]", "short[]", "smallint[]", "short[]"),
-    DECIMAL_ARRAY(54, "DECIMAL_ARRAY", "Decimal[]", 11, "Decimal[]", null, "double precision[]", "decimal[]");
+    DECIMAL(51, "DECIMAL", "Decimal", 8, "java.math.BigDecimal", null, "double precision", "big_decimal"),
+    INTEGER_ARRAY(52, "INTEGER_ARRAY", "Integer[]", 9, "Integer[]", "int[]", "integer[]", "com.tjhruska.mc.database.IntegerArrayUserType"),
+    SHORT_ARRAY(53, "SHORT_ARRAY", "Short[]", 10, "Short[]", "short[]", "smallint[]", "com.tjhruska.mc.database.ShortArrayUserType"),
+    DECIMAL_ARRAY(54, "DECIMAL_ARRAY", "Decimal[]", 11, "java.math.BigDecimal[]", null, "numeric[]", "com.tjhruska.mc.database.BigDecimalArrayUserType"),
+    DOUBLE_ARRAY(55, "DOUBLE_ARRAY", "Double[]", 12, "Double[]", "double[]", "float8[]", "com.tjhruska.mc.database.DoubleArrayUserType"),
+    DOUBLE(56, "DOUBLE", "Double", 13, "Double", "double", "float8", "double"),
+    DATE(57, "DATE", "Local Date", 14, "org.joda.time.LocalDate", null, "timestamp without time zone", "org.jadira.usertype.dateandtime.joda.PersistentLocalDate"),
+    JSON(58, "JSON", "Javascript Object Notation", 15, "java_class_dynamic", null, "json", "hibernate_dynamic");
 
     public final static int enumerationId = 2;
     public final static String idColumnName = "datatype_ev_id";

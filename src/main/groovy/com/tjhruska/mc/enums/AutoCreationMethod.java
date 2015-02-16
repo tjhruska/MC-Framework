@@ -1,5 +1,5 @@
 /**
- *   Copyright  2007-2011 Timothy James Hruska (tjhruska@yahoo.com)
+ *   Copyright (c) 2007-2015 Timothy James Hruska (tjhruska@yahoo.com)
  *
  *   com.tjhruska.mc.enums
  *   AutoCreationMethod.java

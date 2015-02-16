@@ -10,3 +10,4 @@ backup
 bin
 build
 local_*.properties
+application.properties

@@ -17,18 +17,17 @@
         <id name="id" type="int" column="mc_index_id">
             <meta attribute="scope-set">protected</meta>
             <generator class="sequence">
-                <param name="sequence">mc_index_mc_index_id_seq</param>
+                <param name="sequence">mc.mc_index_mc_index_id_seq</param>
             </generator>
         </id>
-
         <property name="addDate" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime" not-null="true" column="add_date" insert="false" update="false" />
 
-        <property name="tableId" type="integer" column="mc_table_id" not-null="true"/>
+        <many-to-one name="table" column="mc_table_id" class="com.tjhruska.mc.domain.system.Table" cascade="save-update" not-null="true" lazy="false"/>
         <property name="index" type="DbIndex" column="index_ev_id" not-null="true"/>
         <property name="indexName" type="string" column="index_name" not-null="false"/>
         <list name="columns" schema="mc" table="mc_index_column" fetch="subselect" inverse="false" lazy="false" cascade="save-update" >
             <key column="mc_index_id" />
-            <list-index column="sequence" /><many-to-many column="mc_column_id" class="Column"/>
+            <list-index column="sequence" /><many-to-many column="mc_column_id" class="com.tjhruska.mc.domain.system.Column"/>
         </list>
     </class>    
 </hibernate-mapping>

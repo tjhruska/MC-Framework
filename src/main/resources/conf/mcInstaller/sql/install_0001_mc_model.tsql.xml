@@ -157,8 +157,8 @@ CREATE TABLE -=[schema_name]=-.mc_column
   
   fk_flag boolean NOT NULL,
   fk_table_id integer,                                   --table to which we are linking
-  fk_collected_table_pk_column_id integer,                         --table to which we are bridging a link
-  fk_pojo_collection_container_ev_id integer,             --type of collection on foreign table 
+  fk_collected_table_pk_column_id integer,               --table to which we are bridging a link
+  fk_pojo_collection_container_ev_id integer,            --type of collection on foreign table 
   fk_pojo_collection_name_camel_case character varying,  --name of collection on foreign table
   fk_pojo_collection_local_key_column_id integer,        --if map/list the column on current table is the key/index
   fk_orm_lazy_flag boolean,                              --should collection on foreign table be lazy loaded

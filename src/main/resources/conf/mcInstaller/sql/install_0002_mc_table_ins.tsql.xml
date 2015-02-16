@@ -24,7 +24,7 @@ INSERT INTO -=[schema_name]=-.mc_table(add_date,
 VALUES ('2011-02-23 07:17AM',
   1, true, 'mc_table', 'A Table in our model, and the corresponding pojo, orm, and gui requirements.', 'Table', -- base
   32, false, true, '-=[schema_name]=-', null, null, --table related
-  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', true, null, --pojo
+  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', false, null, --pojo
   true, false, null, null, --orm
   true, false, true, 25); --gui
 
@@ -39,7 +39,7 @@ INSERT INTO -=[schema_name]=-.mc_table(add_date,
 VALUES ('2011-02-23 07:17AM',
   2, true, 'mc_column', 'Columns (fields) that are properties of a Table, and their meta data that describe how to maintain them.', 'Column', -- base
   32, false, true, '-=[schema_name]=-', null, null, --table related
-  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', true, null, --pojo
+  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', false, null, --pojo
   true, false, null, null, --orm
   true, false, true, 25); --gui
   
@@ -54,7 +54,7 @@ INSERT INTO -=[schema_name]=-.mc_table(add_date,
 VALUES ('2011-02-23 07:17AM',
   4, true, 'mc_child', 'Child of a Table, and the discriminators and subclass definitions.', 'Child', -- base
   32, false, true, '-=[schema_name]=-', null, null, --table related
-  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', true, null, --pojo
+  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', false, null, --pojo
   true, false, null, null, --orm
   true, false, true, 25); --gui
 
@@ -84,7 +84,7 @@ INSERT INTO -=[schema_name]=-.mc_table(add_date,
 VALUES ('2011-02-23 07:17AM',
   6, true, 'mc_index', 'An multi-column Index for a Table.  (Single column indexes should be defined by Column.)', 'Index', -- base
   32, false, true, '-=[schema_name]=-', null, null, --table related
-  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', true, null, --pojo
+  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', false, null, --pojo
   true, false, null, null, --orm
   true, false, true, 25); --gui
 

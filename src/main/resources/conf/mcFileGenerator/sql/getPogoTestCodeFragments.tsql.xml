@@ -54,7 +54,7 @@ import org.junit.Ignore;'
 
 import com.tjhruska.mc.database.BaseDomain
 import com.tjhruska.mc.database.DaoDomain;
-import com.tjhruska.praenoto.server.GeneratedDomainAndDaoTest;' as fragment
+import -=[testAbstractBaseImport]=-;' as fragment
 from
   -=[schema_name]=-.mc_table as t
 where
@@ -193,7 +193,7 @@ select
 '
         else ''
      end) ||
-'class ' || max(t.name_camel_case) || 'Test extends GeneratedDomainAndDaoTest {
+'class ' || max(t.name_camel_case) || 'Test extends -=[testAbstractBaseClass]=- {
   
   @Autowired
   DaoDomain<' || max(t.name_camel_case) || '> ' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || 'Dao
@@ -257,14 +257,22 @@ select
   null::varchar as fragment2, '
   @Before
   public void setup() {'
-  || string_agg(distinct '
+  ||
+  string_agg(distinct '
     ' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case))
     || 'Test = new ' || collected_table.name_camel_case || 'Test()
     ' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case))
     || 'Test.' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case))
     || 'Dao = ' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case))
     || 'Dao', '
-')
+' order by '
+    ' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case))
+    || 'Test = new ' || collected_table.name_camel_case || 'Test()
+    ' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case))
+    || 'Test.' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case))
+    || 'Dao = ' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case))
+    || 'Dao'
+  )
   || '
   }
 ' as fragment

@@ -17,10 +17,9 @@
         <id name="id" type="int" column="mc_table_id">
             <meta attribute="scope-set">protected</meta>
             <generator class="sequence">
-                <param name="sequence">mc_table_mc_table_id_seq</param>
+                <param name="sequence">mc.mc_table_mc_table_id_seq</param>
             </generator>
         </id>
-
         <property name="addDate" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime" not-null="true" column="add_date" insert="false" update="false" />
 
         <property name="systemNoModifyFlag" type="boolean" column="system_no_modify_flag" not-null="false"/>
@@ -51,11 +50,11 @@
         <property name="guiPickerDescriptionColumnId" type="integer" column="gui_picker_description_column_id" not-null="false"/>
         <list name="columns" schema="mc" table="mc_column" fetch="subselect" inverse="false" lazy="false" cascade="save-update" >
             <key column="mc_table_id" />
-            <list-index column="sequence" /><one-to-many class="Column" />
+            <list-index column="sequence" /><one-to-many class="com.tjhruska.mc.domain.system.Column" />
         </list>
         <set name="indexes" lazy="false" cascade="all-delete-orphan" fetch="subselect" inverse="false">
             <key column="mc_table_id"/>
-            <one-to-many class="Index"/>
+            <one-to-many class="com.tjhruska.mc.domain.system.Index"/>
         </set>
     </class>    
 </hibernate-mapping>

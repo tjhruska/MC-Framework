@@ -24,13 +24,22 @@ select t.mc_table_id as id, 10.000 as sequence, '0.000' as sequence2, false as s
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
         
 <hibernate-mapping auto-import="false" package="' || max(t.java_package) || '">
-' || string_agg(distinct case when enum.enumeration_id is null then '' else '
+' ||
+  string_agg(distinct case when enum.enumeration_id is null then '' else '
 
     <typedef name="' || enum.tablename_camel_case || '" class="com.tjhruska.mc.database.GenericEnumUserType">
         <param name="enumClass">' || enum.java_package || '.' || enum.tablename_camel_case || '</param>
         <param name="identifierMethod">get' || enum.tablename_camel_case || 'EvId</param>
         <param name="valueOfMethod">get' || enum.tablename_camel_case || 'ById</param>
-    </typedef>' end, '') || '
+    </typedef>' end,
+  '' order by case when enum.enumeration_id is null then '' else '
+
+    <typedef name="' || enum.tablename_camel_case || '" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">' || enum.java_package || '.' || enum.tablename_camel_case || '</param>
+        <param name="identifierMethod">get' || enum.tablename_camel_case || 'EvId</param>
+        <param name="valueOfMethod">get' || enum.tablename_camel_case || 'ById</param>
+    </typedef>' end
+  ) || '
 
     <class name="' || max(t.name_camel_case) || '" table="' || max(t.name) || '" schema="' || max(t.schema_name) || '" dynamic-update="true">
         ' ||
@@ -46,16 +55,27 @@ select t.mc_table_id as id, 10.000 as sequence, '0.000' as sequence2, false as s
         </id>'
         else '
         <composite-id>
-            ' || string_agg(distinct '<key-property name="' || pk.name_camel_case 
-            || case 
-                when pk_enum.enumeration_id is not null 
+            ' ||
+          string_agg(distinct '<key-property name="' || pk.name_camel_case
+            || case
+                when pk_enum.enumeration_id is not null
                 then '" type="' || enum.tablename_camel_case
-                when pk.fk_flag = true and pk.fk_orm_lazy_flag is null and pk.name_camel_case <> 'id' 
-                then 'Id' 
-                else '' 
+                when pk.fk_flag = true and pk.fk_orm_lazy_flag is null and pk.name_camel_case <> 'id'
+                then 'Id'
+                else ''
                end
-            ||'" column="' || pk.name || '" />', '
-            ') || '
+            ||'" column="' || pk.name || '" />',
+          '
+            ' order by '<key-property name="' || pk.name_camel_case
+            || case
+                when pk_enum.enumeration_id is not null
+                then '" type="' || enum.tablename_camel_case
+                when pk.fk_flag = true and pk.fk_orm_lazy_flag is null and pk.name_camel_case <> 'id'
+                then 'Id'
+                else ''
+               end
+            ||'" column="' || pk.name || '" />'
+          ) || '
         </composite-id>
         '
       end ||

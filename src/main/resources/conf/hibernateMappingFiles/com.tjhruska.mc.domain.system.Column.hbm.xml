@@ -6,6 +6,12 @@
 <hibernate-mapping auto-import="false" package="com.tjhruska.mc.domain.system">
 
 
+    <typedef name="Container" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.Container</param>
+        <param name="identifierMethod">getContainerEvId</param>
+        <param name="valueOfMethod">getContainerById</param>
+    </typedef>
+
     <typedef name="Datatype" class="com.tjhruska.mc.database.GenericEnumUserType">
         <param name="enumClass">com.tjhruska.mc.enums.Datatype</param>
         <param name="identifierMethod">getDatatypeEvId</param>
@@ -18,24 +24,17 @@
         <param name="valueOfMethod">getDbIndexById</param>
     </typedef>
 
-    <typedef name="Container" class="com.tjhruska.mc.database.GenericEnumUserType">
-        <param name="enumClass">com.tjhruska.mc.enums.Container</param>
-        <param name="identifierMethod">getContainerEvId</param>
-        <param name="valueOfMethod">getContainerById</param>
-    </typedef>
-
     <class name="Column" table="mc_column" schema="mc" dynamic-update="true">
         
         <id name="id" type="int" column="mc_column_id">
             <meta attribute="scope-set">protected</meta>
             <generator class="sequence">
-                <param name="sequence">mc_column_mc_column_id_seq</param>
+                <param name="sequence">mc.mc_column_mc_column_id_seq</param>
             </generator>
         </id>
-
         <property name="addDate" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime" not-null="true" column="add_date" insert="false" update="false" />
 
-        <property name="tableId" type="integer" column="mc_table_id" not-null="true"/>
+        <many-to-one name="table" column="mc_table_id" class="com.tjhruska.mc.domain.system.Table" cascade="save-update" not-null="true" lazy="false"/>
         <property name="sequence" type="short" column="sequence" not-null="true"/>
         <property name="name" type="string" column="name" not-null="true"/>
         <property name="description" type="string" column="description" not-null="true"/>
@@ -62,11 +61,11 @@
         <property name="guiSortableFlag" type="boolean" column="gui_sortable_flag" not-null="false"/>
         <property name="guiFieldGroupName" type="string" column="gui_field_group_name" not-null="false"/>
         <property name="guiFieldGroupSequence" type="short" column="gui_field_group_sequence" not-null="false"/>
-        <property name="guiFieldGroupGuardColumnId" type="integer" column="gui_field_group_guard_column_id" not-null="false"/>
+        <many-to-one name="guiFieldGroupGuardColumn" column="gui_field_group_guard_column_id" class="com.tjhruska.mc.domain.system.Column" cascade="save-update" not-null="false" lazy="false"/>
         <property name="guiFieldGroupFieldRequiredFlag" type="boolean" column="gui_field_group_field_required_flag" not-null="false"/>
         <list name="guardedColumns" schema="mc" table="mc_column" fetch="subselect" inverse="true" lazy="false" cascade="save-update" >
             <key column="gui_field_group_guard_column_id" />
-            <list-index column="gui_field_group_sequence" /><one-to-many class="Column" />
+            <list-index column="gui_field_group_sequence" /><one-to-many class="com.tjhruska.mc.domain.system.Column" />
         </list>
     </class>    
 </hibernate-mapping>

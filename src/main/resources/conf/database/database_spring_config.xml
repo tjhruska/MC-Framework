@@ -33,7 +33,7 @@
     </bean>
 	
 	<bean id="sessionFactory"
-			class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+			class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="mappingLocations" value="${hibernate.mappingLocations}" />
 		<property name="hibernateProperties">
@@ -49,7 +49,7 @@
 	<tx:annotation-driven />
 	
 	<bean id="transactionManager"
-		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	
@@ -68,10 +68,6 @@
 	  
 	<bean id="restrictionHelper" class="com.tjhruska.mc.database.restrictions.RestrictionHelperHibernate"/>
 	
-	<bean id="daoLoader" class="com.tjhruska.mc.util.spring.DaoLoader">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>	
+	<bean id="daoLoader" class="com.tjhruska.mc.util.spring.DaoLoader" />
 	
 </beans>

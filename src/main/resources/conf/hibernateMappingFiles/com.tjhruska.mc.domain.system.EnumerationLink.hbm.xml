@@ -6,82 +6,22 @@
 <hibernate-mapping auto-import="false" package="com.tjhruska.mc.domain.system">
 
 
+    <typedef name="Datatype" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.Datatype</param>
+        <param name="identifierMethod">getDatatypeEvId</param>
+        <param name="valueOfMethod">getDatatypeById</param>
+    </typedef>
+
+    <typedef name="DbIndex" class="com.tjhruska.mc.database.GenericEnumUserType">
+        <param name="enumClass">com.tjhruska.mc.enums.DbIndex</param>
+        <param name="identifierMethod">getDbIndexEvId</param>
+        <param name="valueOfMethod">getDbIndexById</param>
+    </typedef>
+
     <typedef name="LinkCreationRule" class="com.tjhruska.mc.database.GenericEnumUserType">
         <param name="enumClass">com.tjhruska.mc.enums.LinkCreationRule</param>
         <param name="identifierMethod">getLinkCreationRuleEvId</param>
         <param name="valueOfMethod">getLinkCreationRuleById</param>
-    </typedef>
-
-    <typedef name="DbIndex" class="com.tjhruska.mc.database.GenericEnumUserType">
-        <param name="enumClass">com.tjhruska.mc.enums.DbIndex</param>
-        <param name="identifierMethod">getDbIndexEvId</param>
-        <param name="valueOfMethod">getDbIndexById</param>
-    </typedef>
-
-    <typedef name="DbIndex" class="com.tjhruska.mc.database.GenericEnumUserType">
-        <param name="enumClass">com.tjhruska.mc.enums.DbIndex</param>
-        <param name="identifierMethod">getDbIndexEvId</param>
-        <param name="valueOfMethod">getDbIndexById</param>
-    </typedef>
-
-    <typedef name="Datatype" class="com.tjhruska.mc.database.GenericEnumUserType">
-        <param name="enumClass">com.tjhruska.mc.enums.Datatype</param>
-        <param name="identifierMethod">getDatatypeEvId</param>
-        <param name="valueOfMethod">getDatatypeById</param>
-    </typedef>
-
-    <typedef name="DbIndex" class="com.tjhruska.mc.database.GenericEnumUserType">
-        <param name="enumClass">com.tjhruska.mc.enums.DbIndex</param>
-        <param name="identifierMethod">getDbIndexEvId</param>
-        <param name="valueOfMethod">getDbIndexById</param>
-    </typedef>
-
-    <typedef name="Datatype" class="com.tjhruska.mc.database.GenericEnumUserType">
-        <param name="enumClass">com.tjhruska.mc.enums.Datatype</param>
-        <param name="identifierMethod">getDatatypeEvId</param>
-        <param name="valueOfMethod">getDatatypeById</param>
-    </typedef>
-
-    <typedef name="DbIndex" class="com.tjhruska.mc.database.GenericEnumUserType">
-        <param name="enumClass">com.tjhruska.mc.enums.DbIndex</param>
-        <param name="identifierMethod">getDbIndexEvId</param>
-        <param name="valueOfMethod">getDbIndexById</param>
-    </typedef>
-
-    <typedef name="Datatype" class="com.tjhruska.mc.database.GenericEnumUserType">
-        <param name="enumClass">com.tjhruska.mc.enums.Datatype</param>
-        <param name="identifierMethod">getDatatypeEvId</param>
-        <param name="valueOfMethod">getDatatypeById</param>
-    </typedef>
-
-    <typedef name="DbIndex" class="com.tjhruska.mc.database.GenericEnumUserType">
-        <param name="enumClass">com.tjhruska.mc.enums.DbIndex</param>
-        <param name="identifierMethod">getDbIndexEvId</param>
-        <param name="valueOfMethod">getDbIndexById</param>
-    </typedef>
-
-    <typedef name="Datatype" class="com.tjhruska.mc.database.GenericEnumUserType">
-        <param name="enumClass">com.tjhruska.mc.enums.Datatype</param>
-        <param name="identifierMethod">getDatatypeEvId</param>
-        <param name="valueOfMethod">getDatatypeById</param>
-    </typedef>
-
-    <typedef name="DbIndex" class="com.tjhruska.mc.database.GenericEnumUserType">
-        <param name="enumClass">com.tjhruska.mc.enums.DbIndex</param>
-        <param name="identifierMethod">getDbIndexEvId</param>
-        <param name="valueOfMethod">getDbIndexById</param>
-    </typedef>
-
-    <typedef name="Datatype" class="com.tjhruska.mc.database.GenericEnumUserType">
-        <param name="enumClass">com.tjhruska.mc.enums.Datatype</param>
-        <param name="identifierMethod">getDatatypeEvId</param>
-        <param name="valueOfMethod">getDatatypeById</param>
-    </typedef>
-
-    <typedef name="DbIndex" class="com.tjhruska.mc.database.GenericEnumUserType">
-        <param name="enumClass">com.tjhruska.mc.enums.DbIndex</param>
-        <param name="identifierMethod">getDbIndexEvId</param>
-        <param name="valueOfMethod">getDbIndexById</param>
     </typedef>
 
     <class name="EnumerationLink" table="enumeration_link" schema="mc" dynamic-update="true">
@@ -89,15 +29,14 @@
         <id name="id" type="int" column="enumeration_link_id">
             <meta attribute="scope-set">protected</meta>
             <generator class="sequence">
-                <param name="sequence">enumeration_link_enumeration_link_id_seq</param>
+                <param name="sequence">mc.enumeration_link_enumeration_link_id_seq</param>
             </generator>
         </id>
-
         <property name="addDate" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime" not-null="true" column="add_date" insert="false" update="false" />
 
         <property name="linkCreationRule" type="LinkCreationRule" column="link_creation_rule_ev_id" not-null="true"/>
-        <property name="enumerationAId" type="integer" column="enumeration_a_id" not-null="true"/>
-        <property name="enumerationBId" type="integer" column="enumeration_b_id" not-null="true"/>
+        <many-to-one name="enumerationA" column="enumeration_a_id" class="com.tjhruska.mc.domain.system.Enumeration" cascade="save-update" not-null="true" lazy="proxy"/>
+        <many-to-one name="enumerationB" column="enumeration_b_id" class="com.tjhruska.mc.domain.system.Enumeration" cascade="save-update" not-null="true" lazy="proxy"/>
         <property name="enumerationAIndex" type="DbIndex" column="enumeration_a_index_ev_id" not-null="false"/>
         <property name="enumerationBIndex" type="DbIndex" column="enumeration_b_index_ev_id" not-null="false"/>
         <property name="uniqueFlag" type="boolean" column="unique_flag" not-null="true"/>
@@ -140,7 +79,7 @@
         <property name="column5Default" type="string" column="column5_default" not-null="false"/>
         <list name="linkValues" schema="mc" table="enumeration_link_value" fetch="subselect" inverse="false" lazy="false" cascade="save-update" >
             <key column="enumeration_link_id" />
-            <list-index column="sequence" /><one-to-many class="EnumerationLinkValue" />
+            <list-index column="sequence" /><one-to-many class="com.tjhruska.mc.domain.system.EnumerationLinkValue" />
         </list>
     </class>    
 </hibernate-mapping>

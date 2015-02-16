@@ -60,7 +60,7 @@ public enum ' || e.tablename_camel_case || ' {' as fragment,
 --first section of helper file
 ------------------------------------------------------------------------------------------
 '/**
- *   Copyright © ' || date_part('year', e.add_date) || ' Timothy James Hruska (tjhruska@yahoo.com)
+ *   Copyright (c) ' || date_part('year', e.add_date) || ' Timothy James Hruska (tjhruska@yahoo.com)
  *
  *   ' || e.java_package || '
  *   ' || e.tablename_camel_case || 'Helper.java' || '

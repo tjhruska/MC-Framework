@@ -11,13 +11,12 @@
         <id name="id" type="int" column="enumeration_link_value_id">
             <meta attribute="scope-set">protected</meta>
             <generator class="sequence">
-                <param name="sequence">enumeration_link_value_enumeration_link_value_id_seq</param>
+                <param name="sequence">mc.enumeration_link_value_enumeration_link_value_id_seq</param>
             </generator>
         </id>
-
         <property name="addDate" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime" not-null="true" column="add_date" insert="false" update="false" />
 
-        <property name="enumerationLinkId" type="integer" column="enumeration_link_id" not-null="true"/>
+        <many-to-one name="enumerationLink" column="enumeration_link_id" class="com.tjhruska.mc.domain.system.EnumerationLink" cascade="save-update" not-null="true" lazy="false"/>
         <property name="enumerationValueAId" type="integer" column="enumeration_value_a_id" not-null="true"/>
         <property name="enumerationValueBId" type="integer" column="enumeration_value_b_id" not-null="true"/>
         <property name="name" type="string" column="name" not-null="true"/>

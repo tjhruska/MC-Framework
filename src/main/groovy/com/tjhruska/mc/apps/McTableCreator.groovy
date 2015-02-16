@@ -177,7 +177,7 @@ class McTableCreator extends BeanNameAwareRunnable {
       commandFragments.eachWithIndex { commandFragment, i ->
         boolean hasNext = (i + 1 < commandFragments.size)
 
-        log.debug("${commandFragment.mcTableId}-${commandFragment.mcTableId}-${commandFragment.sequence}")
+        //log.debug("${commandFragment.mcTableId}-${commandFragment.mcTableId}-${commandFragment.sequence}")
 
         //store a link to the old command in-case we are changing
         Command prevCommand = currentCommand
