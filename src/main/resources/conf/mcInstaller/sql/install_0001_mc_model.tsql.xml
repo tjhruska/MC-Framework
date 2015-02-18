@@ -191,6 +191,12 @@ CREATE TABLE -=[schema_name]=-.mc_column
   CONSTRAINT mc_column_name_camel_case UNIQUE (mc_table_id, name_camel_case),
   CONSTRAINT mc_column_name_unique UNIQUE (mc_table_id, name),
   CONSTRAINT mc_column_sequence_unique UNIQUE (mc_table_id, sequence) DEFERRABLE INITIALLY DEFERRED,
+  CONSTRAINT mc_column_datatype_ref_integrity CHECK (
+CASE
+    WHEN datatype_ev_id not in (58) and (datatype_ref1 is not null or datatype_ref2 is not null or datatype_ref3 is not null) THEN false
+    WHEN datatype_ev_id in (58) and (pk_flag = true or fk_flag = true) THEN false
+    ELSE true
+END),   
   CONSTRAINT mc_column_fk_pojo_collection CHECK (
 CASE
     WHEN fk_pojo_collection_container_ev_id IS NULL THEN true

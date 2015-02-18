@@ -354,11 +354,22 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
   fk_orm_lazy_flag, fk_orm_link_thru_to_table_id, fk_orm_inverse_flag,
   not_null_flag, default_value, 
-  constraint_sql, pojo_constructor_field_flag, gui_header, 
-  gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
-  gui_field_group_sequence, gui_field_group_guard_column_id, 
-  gui_field_group_field_required_flag)
-VALUES (35, 2, 8, 'datatype_ev_id', 'Data type of the column, within the database, java, orm, and js.', 'datatype', 2, 25, false, true, 12, null, null,null,null,null,null,null,true, null, null, false, 'Data Type', 'Data type for DB Table, POJO, ORM, and GUI.', true, null, null, null, null);
+  constraint_sql, 
+  pojo_constructor_field_flag, gui_header, gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
+  gui_field_group_sequence, gui_field_group_guard_column_id, gui_field_group_field_required_flag)
+VALUES (35, 2, 8, 'datatype_ev_id', 'Data type of the column, within the database, java, orm, and js.',
+  'datatype', 2, 25, false, true, 12, null,
+  null,null,null,
+  null,null,
+  null,true, null,
+  'CONSTRAINT mc_column_datatype_ref_integrity CHECK (
+CASE
+    WHEN datatype_ev_id not in (58) and (datatype_ref1 is not null or datatype_ref2 is not null or datatype_ref3 is not null) THEN false
+    WHEN datatype_ev_id in (58) and (pk_flag = true or fk_flag = true) THEN false
+    ELSE true
+END)',
+  false, 'Data Type', 'Data type for DB Table, POJO, ORM, and GUI.', true, null,
+  null, null, null);
 
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
@@ -399,7 +410,6 @@ VALUES (196, 2, 11, 'datatype_ref3', 'Extra meta data to help with code creation
   false, null, null, false, 
   'Data Type Ref 3', 'Data type extra data to assist with creation of DB Table, POJO, ORM, and GUI.', true, null, 
   null, null, null);
-
 
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
