@@ -39,6 +39,18 @@ select t.mc_table_id as id, 10.000 as sequence, '0.000' as sequence2, false as s
         <param name="identifierMethod">get' || enum.tablename_camel_case || 'EvId</param>
         <param name="valueOfMethod">get' || enum.tablename_camel_case || 'ById</param>
     </typedef>' end
+  ) || 
+
+  string_agg(distinct case when json_col.mc_column_id is null then '' else '
+
+    <typedef name="' || json_col.datatype_ref2 || '" class="com.tjhruska.mc.database.JsonToClassUserType">
+        <param name="mappedClass">' || json_col.datatype_ref1 || '.' || json_col.datatype_ref2 || '</param>
+    </typedef>' end,
+  '' order by case when json_col.mc_column_id is null then '' else '
+
+    <typedef name="' || json_col.datatype_ref2 || '" class="com.tjhruska.mc.database.JsonToClassUserType">
+        <param name="mappedClass">' || json_col.datatype_ref1 || '.' || json_col.datatype_ref2 || '</param>
+    </typedef>' end
   ) || '
 
     <class name="' || max(t.name_camel_case) || '" table="' || max(t.name) || '" schema="' || max(t.schema_name) || '" dynamic-update="true">
@@ -100,6 +112,8 @@ from
   -=[schema_name]=-.mc_column as c_enum on (t.mc_table_id = c_enum.mc_table_id and c_enum.fk_flag = true)
     left outer join
   -=[schema_name]=-.enumeration as enum on c_enum.fk_table_id = enum.mc_table_id
+    left outer join
+  -=[schema_name]=-.mc_column as json_col on (t.mc_table_id = json_col.mc_table_id and json_col.datatype_ev_id = 58)
 where
   t.create_orm_flag = true
 group by
@@ -129,6 +143,10 @@ select t.mc_table_id as id, 20.000 as sequence, '0.000' as sequence2, false as s
         when 
             c.fk_flag = true and c.fk_orm_lazy_flag is not null then '
         <many-to-one name="' || c.name_camel_case || '" column="' || c.name || '" class="' || f.java_package || '.' || f.name_camel_case || '" cascade="' || case when c.fk_pojo_collection_container_ev_id is null then 'none' else 'save-update' end ||'" not-null="' || c.not_null_flag || '" lazy="' || case when c.fk_orm_lazy_flag = false then 'false' else 'proxy' end || '"/>'
+        when
+            c.datatype_ev_id = 58 then '
+        <property name="' || c.name_camel_case || '" type="' || c.datatype_ref2 || '" column="' || c.name 
+        || '" not-null="' || c.not_null_flag || '"/>'
         else '
         <property name="' || c.name_camel_case || '" type="' || d.hibernate || '" column="' || c.name 
         || '" not-null="' || c.not_null_flag || '"/>' end, '' order by c.sequence) as fragment
@@ -148,7 +166,7 @@ group by
   t.mc_table_id
 UNION
 -------------------------
---Section 30 - list columns
+--Section 30 - list columns (collections)
 --id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
 select t.mc_table_id as id, 30.000 as sequence, '0.000' as sequence2, false as suppress_changes_flag, 
   'ormDirectory' as folder_tag, 

@@ -1,8 +1,8 @@
 
-package com.tjhruska.mc.domain.system;
+package com.tjhruska.mc.domain.system
 
 
-import com.tjhruska.mc.database.BaseDomain;
+import com.tjhruska.mc.database.BaseDomain
 //import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
@@ -10,13 +10,13 @@ import groovy.transform.ToString
 @ToString
 public class Child extends BaseDomain {
 
-    Integer tableId
-    Integer parentId
-    String description
-    String nameCamelCase
-    String ormDiscriminatorValue
-    Boolean createConstraintUsingDiscriminatorFlag
-    String extraJavaCode
-    String extraORMCode
+  Integer tableId
+  Integer parentId
+  String description
+  String nameCamelCase
+  String ormDiscriminatorValue
+  Boolean createConstraintUsingDiscriminatorFlag
+  String extraJavaCode
+  String extraORMCode
 
 }

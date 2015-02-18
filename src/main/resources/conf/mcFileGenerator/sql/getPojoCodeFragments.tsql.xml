@@ -125,6 +125,26 @@ where
     or
     (what.a in (1, 2) and e.mc_table_id is null and c.fk_pojo_collection_container_ev_id is not null)
   )
+  UNION
+-------------------------
+--Section 20 - import classes represented by json data types
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select
+  t.mc_table_id as id, 20.000 as sequence, 
+  'import ' || c.datatype_ref1 || '.' || c.datatype_ref2 as sequence2,
+  t.suppress_pojo_changes_flag as suppress_changes_flag,
+  t.src_folder_tag as folder_tag, replace(t.java_package, '.', '/') as java_package, t.name_camel_case || '.groovy' as fileName, null::varchar as fileName2,
+  null::varchar as fragment2, 
+'
+import ' || c.datatype_ref1 || '.' || c.datatype_ref2 || ';'
+ as fragment
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_column as c
+where
+  t.create_pojo_flag = true
+  and t.mc_table_id = c.mc_table_id
+  and c.datatype_ev_id = 58
 UNION
 -------------------------
 --Section 30 - open class declaration, and constructor if indicated (use string_agg to make constructor)
@@ -193,7 +213,7 @@ select
   case
   when what.a = 2 then '
     private ' || 
-    coalesce(e.tablename_camel_case, d.java_class) || ' ' 
+    coalesce(e.tablename_camel_case, c.datatype_ref2, d.java_class) || ' ' 
     || case when e.enumeration_id is null and c.fk_table_id is not null
         then c.name_camel_case || 'Id'
         else c.name_camel_case end || ';'

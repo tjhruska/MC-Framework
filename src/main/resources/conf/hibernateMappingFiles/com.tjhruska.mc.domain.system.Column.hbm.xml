@@ -40,6 +40,9 @@
         <property name="description" type="string" column="description" not-null="true"/>
         <property name="nameCamelCase" type="string" column="name_camel_case" not-null="true"/>
         <property name="datatype" type="Datatype" column="datatype_ev_id" not-null="true"/>
+        <property name="datatypeRef1" type="string" column="datatype_ref1" not-null="false"/>
+        <property name="datatypeRef2" type="string" column="datatype_ref2" not-null="false"/>
+        <property name="datatypeRef3" type="string" column="datatype_ref3" not-null="false"/>
         <property name="dbIndex" type="DbIndex" column="index_ev_id" not-null="false"/>
         <property name="primaryKeyFlag" type="boolean" column="pk_flag" not-null="true"/>
         <property name="foreignKeyFlag" type="boolean" column="fk_flag" not-null="true"/>

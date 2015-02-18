@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+        
+<hibernate-mapping auto-import="false" package="com.tjhruska.mc.domain.system">
+
+
+    <typedef name="List" class="com.tjhruska.mc.database.JsonToClassUserType">
+        <param name="mappedClass">java.util.List</param>
+    </typedef>
+
+    <typedef name="Map" class="com.tjhruska.mc.database.JsonToClassUserType">
+        <param name="mappedClass">java.util.Map</param>
+    </typedef>
+
+    <class name="JsonExample" table="json_example" schema="mc" dynamic-update="true">
+        
+        <id name="id" type="int" column="json_example_id">
+            <meta attribute="scope-set">protected</meta>
+            <generator class="sequence">
+                <param name="sequence">mc.json_example_json_example_id_seq</param>
+            </generator>
+        </id>
+        <property name="addDate" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime" not-null="true" column="add_date" insert="false" update="false" />
+
+        <property name="jsonFoo" type="List" column="json_foo" not-null="false"/>
+        <property name="jsonBar" type="Map" column="json_bar" not-null="true"/>
+    </class>    
+</hibernate-mapping>

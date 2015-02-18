@@ -1,14 +1,14 @@
 
-package com.tjhruska.mc.domain.system;
+package com.tjhruska.mc.domain.system
 
-import org.springframework.beans.factory.annotation.Autowired;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Ignore;
+import org.springframework.beans.factory.annotation.Autowired
+import static org.junit.Assert.*
+import org.junit.Before
+import org.junit.Ignore
 
 import com.tjhruska.mc.database.BaseDomain
-import com.tjhruska.mc.database.DaoDomain;
-import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTest;
+import com.tjhruska.mc.database.DaoDomain
+import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTest
 import com.tjhruska.mc.domain.system.Enumeration
 import com.tjhruska.mc.domain.system.EnumerationTest
   

@@ -1,13 +1,13 @@
 
-package com.tjhruska.mc.domain.system;
+package com.tjhruska.mc.domain.system
 
-import org.springframework.beans.factory.annotation.Autowired;
-import static org.junit.Assert.*;
-import org.junit.Before;
+import org.springframework.beans.factory.annotation.Autowired
+import static org.junit.Assert.*
+import org.junit.Before
 
 import com.tjhruska.mc.database.BaseDomain
-import com.tjhruska.mc.database.DaoDomain;
-import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTest;
+import com.tjhruska.mc.database.DaoDomain
+import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTest
   
 class ChildTest extends GeneratedDomainAndDaoTest {
   

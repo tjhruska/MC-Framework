@@ -22,7 +22,7 @@ INSERT INTO -=[schema_name]=-.mc_table(add_date,
   create_orm_flag, suppress_orm_changes_flag, extra_orm_code, orm_discriminator_column_id,
   create_gui_data_service_flag, suppress_gui_data_service_changes_flag, gui_pagify_flag, gui_records_per_page)
 VALUES ('2015-02-10 04:44PM',
-  50, false, 'json_test', 'Test table for json columns', 'JsonTest', -- base
+  50, false, 'json_example', 'Test table for json columns', 'JsonExample', -- base
   32, false, true, '-=[schema_name]=-', null, null, --table related
   true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', false, null, --pojo
   true, false, null, null, --orm
@@ -32,31 +32,31 @@ VALUES ('2015-02-10 04:44PM',
 --insert columns from the mc model
 ------------------------------------------------------------------------
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
-  name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
+  name_camel_case, datatype_ev_id, datatype_ref1, datatype_ref2, datatype_ref3, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, fk_orm_lazy_flag, fk_orm_link_thru_to_table_id, fk_orm_inverse_flag,
   not_null_flag, default_value, constraint_sql, pojo_constructor_field_flag, 
   gui_header, gui_tool_tip, gui_sortable_flag, gui_field_group_name, gui_field_group_sequence, gui_field_group_guard_column_id, gui_field_group_field_required_flag)
 VALUES 
-(501, 50, 1, 'json_test_id', 'Artificial ID', 
-'id', 45, 25, true, false, null, null, 
+(501, 50, 1, 'json_example_id', 'Artificial ID', 
+'id', 45, null, null, null, 25, true, false, null, null, 
 null,null,null,null,null,null,
 true, null, null, false, 
 'Id', 'System Generated ID', true, null, null, null, null),
 
 (502, 50, 2, 'add_date', 'Add Date of Record.', 
-'addDate', 46, 25, false, false, null, null, 
+'addDate', 46, null, null, null, 25, false, false, null, null, 
 null,null,null,null,null,null,
 true, 'now()', null, false, 
 'Add Date', null, false, null, null, null, null),
 
 (503, 50, 3, 'json_foo', 'Json Field 1', 
-'jsonFoo', 58, 25, false, false, null, null, 
+'jsonFoo', 58, 'java.util', 'List', 'new java.util.ArrayList()', 25, false, false, null, null, 
 null,null,null,null,null,null,
 false,  null, null, false, 
 'JSON Foo', 'Test JSON Field 1 (Nullable)', false, null, null, null, null),
 
 (504, 50, 4, 'json_bar', 'Json Field 2', 
-'jsonBar', 58, 25, false, false, null, null, 
+'jsonBar', 58, 'java.util', 'Map', 'new java.util.HashMap()', 25, false, false, null, null, 
 null,null,null,null,null,null,
 true, E'\'{}\'', null, false, 
 'JSON Bar', 'Test JSON Field 2 (Not Nullable)', false, null, null, null, null);

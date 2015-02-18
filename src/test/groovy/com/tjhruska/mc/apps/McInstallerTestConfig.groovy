@@ -25,7 +25,7 @@ public class McInstallerTestConfig extends McInstallerAbstractConfig {
     3.times {
       mcInstaller.installTasks.pop()
     }
-    //mcInstaller.installTasks.add(install_0900_json_column_test)
+    mcInstaller.installTasks.add(install_0900_json_column_test)
     mcInstaller.installTasks.add(mcTableCreator)
     mcInstaller.installTasks.add(mcEnumDbSynchronizer)
     mcInstaller.installTasks.add(mcFileGenerator)

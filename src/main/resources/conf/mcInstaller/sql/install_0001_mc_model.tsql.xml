@@ -152,6 +152,9 @@ CREATE TABLE -=[schema_name]=-.mc_column
   description character varying NOT NULL,
   name_camel_case character varying NOT NULL,
   datatype_ev_id integer NOT NULL,
+  datatype_ref1 character varying,
+  datatype_ref2 character varying,
+  datatype_ref3 character varying,
   index_ev_id integer,
   pk_flag boolean NOT NULL,
   
