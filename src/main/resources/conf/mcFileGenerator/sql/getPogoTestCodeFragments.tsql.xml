@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
 
-    <bean id="getPogoTestCodeFragments" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+    <bean id="getPogoTestCodeFragments" class="com.tjhruska.mc.util.tagReplacement.SQLTemplateImpl">
         <property name="jdbcTemplate" ref="jdbcTemplate" />
         <property name="dataSource" ref="dataSource" />
         <property name="template">
@@ -460,7 +460,7 @@ select
     then '.put(i, ' -- I have no idea if this will work
     else 'UNEXPECTED CONTAINER TYPE, UNDEFINED HOW TO ADD TEST ITEM TO CONTAINER'
       end || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case))
-      || 'Test.getTestObject(i, i-1))
+      || 'Test.getTestObject(i+(10*number), i-1))
       }
     }
     ' || lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || '.set'

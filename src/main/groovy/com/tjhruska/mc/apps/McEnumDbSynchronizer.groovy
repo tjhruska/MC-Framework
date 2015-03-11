@@ -13,14 +13,14 @@ import java.util.Map
 
 import javax.annotation.Resource
 
-
 import org.springframework.context.ApplicationContext
 import org.springframework.jdbc.core.RowMapper
 
 import com.tjhruska.mc.util.BeanNameAwareRunnable
 import com.tjhruska.mc.util.Duo
 import com.tjhruska.mc.util.spring.Context
-import com.tjhruska.mc.util.tagReplacement.SQLTemplate
+import com.tjhruska.mc.util.tagReplacement.SQLTemplate;
+import com.tjhruska.mc.util.tagReplacement.SQLTemplateImpl
 
 
 @Slf4j
@@ -63,7 +63,7 @@ public class McEnumDbSynchronizer extends BeanNameAwareRunnable {
 		}else{
 			log.info('Retrieved {} command fragments, converting them into commands.', commandFragments.size())
 	
-			List<SQLTemplate> sqlTemplates = CommandBuilder.buildCommands(commandFragments, buildEnumSynchCommands)
+			List<SQLTemplateImpl> sqlTemplates = CommandBuilder.buildCommands(commandFragments, buildEnumSynchCommands)
 		
 			log.info('Built {} commands from {} command fragments', sqlTemplates.size(), commandFragments.size())
 	
@@ -77,10 +77,10 @@ public class McEnumDbSynchronizer extends BeanNameAwareRunnable {
 		
 	}
 
-	public void runCommands(List<SQLTemplate> sqlTemplates){
+	public void runCommands(List<SQLTemplateImpl> sqlTemplates){
 		int successCount = 0
 		int failCount = 0
-		for (SQLTemplate sqlTemplate : sqlTemplates){
+		for (SQLTemplateImpl sqlTemplate : sqlTemplates){
 			log.info('applying command {}', sqlTemplate.getBeanName())
 			log.trace('\n{}', sqlTemplate.applyTags(installProperties))
 			try {
@@ -110,11 +110,11 @@ public class McEnumDbSynchronizer extends BeanNameAwareRunnable {
   @Slf4j
 	public static class CommandBuilder{
 		
-		public static List<SQLTemplate> buildCommands(
+		public static List<SQLTemplateImpl> buildCommands(
 			List<CommandFragment> commandFragments, 
 			SQLTemplate buildEnumSynchCommands)
 		{
-			List<SQLTemplate> sqlTemplates = new ArrayList<SQLTemplate>()
+			List<SQLTemplateImpl> sqlTemplates = new ArrayList<SQLTemplateImpl>()
       if (commandFragments.size() == 0)
         return sqlTemplates
        
@@ -148,7 +148,7 @@ public class McEnumDbSynchronizer extends BeanNameAwareRunnable {
 				{
 					log.debug('More rows={}, if false or record changed, then save off {}-{}', [commandFragment != commandFragments.last(), prevItem.getOne(), prevItem.getTwo().toString()])
 					//finished with sqlTemplate, add it to list
-					SQLTemplate sqlTemplate = new SQLTemplate(prevCommand.toString())
+					SQLTemplateImpl sqlTemplate = new SQLTemplateImpl(prevCommand.toString())
 					sqlTemplate.setBeanName(prevItem.getOne() + '-' + prevItem.getTwo())
 					sqlTemplate.setDataSource(buildEnumSynchCommands.getDataSource())
 					sqlTemplate.setJdbcTemplate(buildEnumSynchCommands.getJdbcTemplate())

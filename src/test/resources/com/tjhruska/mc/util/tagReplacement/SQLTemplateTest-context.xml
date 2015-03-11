@@ -8,13 +8,13 @@
 	<import resource="TemplateTest-context.xml"/>
 	
 	<bean id="sqlTemplateConstructorInjected"
-		class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+		class="com.tjhruska.mc.util.tagReplacement.SQLTemplateImpl">
 		<constructor-arg
 			value="select * from info where info_id = -=[INFO_ID]=-">
 		</constructor-arg>
 	</bean>
 	<bean id="sqlTemplatePropertyInjected1"
-		class="com.tjhruska.mc.util.tagReplacement.SQLTemplate">
+		class="com.tjhruska.mc.util.tagReplacement.SQLTemplateImpl">
 		<property name="template"
 			value="select * from -=IF[A:info_a:?:info]IF=- where -=IF[ A : info_id = -=[INFO_ID]=- :?: info_id = -=[INFO_ID]=- ]IF=-">
 		</property>

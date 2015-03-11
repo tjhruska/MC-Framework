@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.RowMapper
 import com.tjhruska.mc.util.BeanNameAwareRunnable
 import com.tjhruska.mc.util.FileUtils
 import com.tjhruska.mc.util.tagReplacement.SQLTemplate
+import com.tjhruska.mc.util.tagReplacement.SQLTemplateImpl
 
 
 class McTableCreator extends BeanNameAwareRunnable {
@@ -101,7 +102,7 @@ class McTableCreator extends BeanNameAwareRunnable {
         log.info('All commands suppressed.  Nothing to run at this time.')
       }else{
 
-        SQLTemplate combinedCommandSqlTemplate = new SQLTemplate(combinedCommand.toString())
+        SQLTemplateImpl combinedCommandSqlTemplate = new SQLTemplateImpl(combinedCommand.toString())
         combinedCommandSqlTemplate.setBeanName('combinedCommandSqlTemplate')
         combinedCommandSqlTemplate.setDataSource(getExistingTablesAndViews.getDataSource())
         combinedCommandSqlTemplate.setJdbcTemplate(getExistingTablesAndViews.getJdbcTemplate())
@@ -135,7 +136,7 @@ class McTableCreator extends BeanNameAwareRunnable {
     private static final Logger log = LoggerFactory.getLogger(Command)
 
     public Command(SQLTemplate buildTableCreatorCommands, CommandFragment commandFragment, Map<String,String> existingTablesAndViews){
-      sqlTemplate = new SQLTemplate(buildTableCreatorCommands.getDataSource(),
+      sqlTemplate = new SQLTemplateImpl(buildTableCreatorCommands.getDataSource(),
           buildTableCreatorCommands.getJdbcTemplate())
       sqlTemplate.setBeanName('createTable(mcTableId:' + commandFragment.mcTableId + ')')
       sql = new StringBuilder()

@@ -1,6 +1,7 @@
 package com.tjhruska.mc.apps
 
 import groovy.util.logging.Slf4j
+
 import java.io.File
 import java.io.IOException
 import java.sql.ResultSet
@@ -19,12 +20,13 @@ import org.springframework.jdbc.core.RowMapper
 import com.tjhruska.mc.util.BeanNameAwareRunnable
 import com.tjhruska.mc.util.FileUtils
 import com.tjhruska.mc.util.spring.Context
-import com.tjhruska.mc.util.tagReplacement.SQLTemplate
+import com.tjhruska.mc.util.tagReplacement.SQLTemplate;
+import com.tjhruska.mc.util.tagReplacement.SQLTemplateImpl
 
 @Slf4j
 class McFileGenerator extends BeanNameAwareRunnable {
 
-	List<SQLTemplate> fragmentQueries
+	List<SQLTemplateImpl> fragmentQueries
 	Map<String, String> installProperties
 
 	public void run() {

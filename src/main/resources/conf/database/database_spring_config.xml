@@ -27,7 +27,7 @@
         </constructor-arg>
     </bean>
     
-    <bean id="parentSQLTemplate" class="com.tjhruska.mc.util.tagReplacement.SQLTemplate" abstract="true">
+    <bean id="parentSQLTemplate" class="com.tjhruska.mc.util.tagReplacement.SQLTemplateImpl" abstract="true">
         <property name="simpleJdbcTemplate" ref="simpleJdbcTemplate" />
         <property name="dataSource" ref="dataSource" />
     </bean>

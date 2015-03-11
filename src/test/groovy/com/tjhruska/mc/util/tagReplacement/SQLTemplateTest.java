@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.tjhruska.mc.util.tagReplacement.SQLTemplate;
+import com.tjhruska.mc.util.tagReplacement.SQLTemplateImpl;
 import com.tjhruska.mc.util.tagReplacement.Template;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -19,11 +19,11 @@ import com.tjhruska.mc.util.tagReplacement.Template;
 public class SQLTemplateTest {
 	
 	@Autowired
-	private Map<String, SQLTemplate> sqlTemplateMap;
+	private Map<String, SQLTemplateImpl> sqlTemplateMap;
 	@Autowired
 	private Map<String, Template> allTemplateMap;
 
-	public void setSqlTemplates(Map<String, SQLTemplate> sqlTemplates) {
+	public void setSqlTemplates(Map<String, SQLTemplateImpl> sqlTemplates) {
 		this.sqlTemplateMap = sqlTemplates;
 	}
 
@@ -41,7 +41,7 @@ public class SQLTemplateTest {
 		assertEquals("allTemplateMap size was wrong", 6, allTemplateMap.size());
 		
 		System.out.println("sqlTemplates:");
-		for (Map.Entry<String, SQLTemplate> entry : sqlTemplateMap.entrySet()){
+		for (Map.Entry<String, SQLTemplateImpl> entry : sqlTemplateMap.entrySet()){
 			System.out.println("	key:" + entry.getKey() + " value:" + entry.getValue().getTemplate());
 		}
 

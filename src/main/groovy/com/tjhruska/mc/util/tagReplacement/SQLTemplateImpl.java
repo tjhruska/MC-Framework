@@ -16,15 +16,19 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 
-public class SQLTemplate extends Template {
+public class SQLTemplateImpl extends Template implements SQLTemplate {
 	private static final Logger log
-		= LoggerFactory.getLogger(SQLTemplate.class);
+		= LoggerFactory.getLogger(SQLTemplateImpl.class);
 
 //	private DriverManagerDataSource dataSource;
 	private DataSource dataSource;
 	private JdbcTemplate jdbcTemplate;
 	
-	public void setDataSource(DataSource dataSource){
+	/* (non-Javadoc)
+   * @see com.tjhruska.mc.util.tagReplacement.SQLTemplate#setDataSource(org.apache.tomcat.jdbc.pool.DataSource)
+   */
+	@Override
+  public void setDataSource(DataSource dataSource){
 		this.dataSource = dataSource;
 	}
 
@@ -32,7 +36,11 @@ public class SQLTemplate extends Template {
 		return dataSource;
 	}
 	
-	public void setJdbcTemplate(JdbcTemplate jdbcTemplate){
+	/* (non-Javadoc)
+   * @see com.tjhruska.mc.util.tagReplacement.SQLTemplate#setJdbcTemplate(org.springframework.jdbc.core.JdbcTemplate)
+   */
+	@Override
+  public void setJdbcTemplate(JdbcTemplate jdbcTemplate){
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
@@ -40,40 +48,56 @@ public class SQLTemplate extends Template {
 		return jdbcTemplate;
 	}
 	
-	public SQLTemplate() {
+	public SQLTemplateImpl() {
 		super();
 	}
 
-	public SQLTemplate(String template) {
+	public SQLTemplateImpl(String template) {
 		super(template);
 	}
 
-	public SQLTemplate(String template, Boolean keepUnusedTags, Integer maxIterations){
+	public SQLTemplateImpl(String template, Boolean keepUnusedTags, Integer maxIterations){
 		super(template, keepUnusedTags, maxIterations);
 	}
 	
-	public SQLTemplate(DataSource dataSource, JdbcTemplate jdbcTemplate){
+	public SQLTemplateImpl(DataSource dataSource, JdbcTemplate jdbcTemplate){
 		super();
 		this.dataSource = dataSource;
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	@Transactional
+	/* (non-Javadoc)
+   * @see com.tjhruska.mc.util.tagReplacement.SQLTemplate#query(java.util.Map, org.springframework.jdbc.core.RowMapper)
+   */
+	@Override
+  @Transactional
 	public <T> List<T> query(Map<String, String> parameters, RowMapper<T> rm) {
 		return jdbcTemplate.query(applyTags(parameters).toString(), rm);
 	}
 	
-	@Transactional
+	/* (non-Javadoc)
+   * @see com.tjhruska.mc.util.tagReplacement.SQLTemplate#query(java.util.Map, org.springframework.jdbc.core.RowCallbackHandler)
+   */
+	@Override
+  @Transactional
 	public void query(Map<String, String> parameters, RowCallbackHandler rch){
 		jdbcTemplate.query(applyTags(parameters).toString(), rch);
 	}
 	
-	@Transactional
+	/* (non-Javadoc)
+   * @see com.tjhruska.mc.util.tagReplacement.SQLTemplate#update(java.util.Map)
+   */
+	@Override
+  @Transactional
 	public int update(Map<String, String> parameters) {
 		return jdbcTemplate.update(applyTags(parameters).toString());
 	}
 	
-	public void jdbcQuery(Map<String, String> parameters) throws SQLException{
+	/* (non-Javadoc)
+   * @see com.tjhruska.mc.util.tagReplacement.SQLTemplate#jdbcQuery(java.util.Map)
+   */
+	@Override
+  public void jdbcQuery(Map<String, String> parameters) throws SQLException{
 		String sql = applyTags(parameters).toString();
 		Connection connection = dataSource.getConnection();
 		Statement statement = null;
