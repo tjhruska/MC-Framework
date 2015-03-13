@@ -2,6 +2,8 @@ package com.tjhruska.mc.util.tagReplacement
 
 import org.apache.tomcat.jdbc.pool.DataSource
 
+import groovy.util.logging.Slf4j
+
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
@@ -15,37 +17,11 @@ import org.springframework.jdbc.core.RowCallbackHandler
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.transaction.annotation.Transactional
 
-
+@Slf4j
 public class SQLTemplateImpl extends Template implements SQLTemplate {
-  private static final Logger log = LoggerFactory.getLogger(SQLTemplateImpl.class)
 
-  //	private DriverManagerDataSource dataSource;
-  private DataSource dataSource
-  private JdbcTemplate jdbcTemplate
-
-  /* (non-Javadoc)
-   * @see com.tjhruska.mc.util.tagReplacement.SQLTemplate#setDataSource(org.apache.tomcat.jdbc.pool.DataSource)
-   */
-  @Override
-  public void setDataSource(DataSource dataSource){
-    this.dataSource = dataSource
-  }
-
-  public DataSource getDataSource() {
-    return dataSource
-  }
-
-  /* (non-Javadoc)
-   * @see com.tjhruska.mc.util.tagReplacement.SQLTemplate#setJdbcTemplate(org.springframework.jdbc.core.JdbcTemplate)
-   */
-  @Override
-  public void setJdbcTemplate(JdbcTemplate jdbcTemplate){
-    this.jdbcTemplate = jdbcTemplate
-  }
-
-  public JdbcTemplate getJdbcTemplate() {
-    return jdbcTemplate
-  }
+  DataSource dataSource
+  JdbcTemplate jdbcTemplate
 
   public SQLTemplateImpl() {
     super()

@@ -513,6 +513,7 @@ select
       case
         when c.fk_flag = true and c.fk_orm_lazy_flag is not null and c.fk_pojo_collection_container_ev_id in (8, 9) and c.fk_pojo_collection_name_camel_case is not null
         then '
+    target.' || c.name_camel_case || '.' || c.fk_pojo_collection_name_camel_case || '.clear()' || '
     target.' || c.name_camel_case || '.' || c.fk_pojo_collection_name_camel_case || '.add(target)'
         else ''
       end

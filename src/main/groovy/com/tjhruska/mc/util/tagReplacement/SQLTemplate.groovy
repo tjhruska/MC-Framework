@@ -12,11 +12,13 @@ import org.springframework.transaction.annotation.Transactional
 
 interface SQLTemplate {
 
+  DataSource getDataSource()
   void setDataSource(DataSource dataSource)
 
+  JdbcTemplate getJdbcTemplate()
   void setJdbcTemplate(JdbcTemplate jdbcTemplate)
 
-  public abstract <T> List<T> query(Map<String, String> parameters, RowMapper<T> rm)
+  abstract <T> List<T> query(Map<String, String> parameters, RowMapper<T> rm)
 
   void query(Map<String, String> parameters, RowCallbackHandler rch)
 
