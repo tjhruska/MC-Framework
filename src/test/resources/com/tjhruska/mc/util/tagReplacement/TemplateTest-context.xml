@@ -18,25 +18,25 @@
     </util:map>
 
 	<bean id="templateConstructorInjected1"
-		class="com.tjhruska.mc.util.tagReplacement.Template">
+		class="com.tjhruska.mc.util.tagReplacement.TemplateImpl">
 		<constructor-arg
 			value="Hello there Mr. -=[LNAME]=-.  Pleasure to meet you.">
 		</constructor-arg>
 	</bean>
 	<bean id="templateConstructorInjected2"
-		class="com.tjhruska.mc.util.tagReplacement.Template">
+		class="com.tjhruska.mc.util.tagReplacement.TemplateImpl">
 		<constructor-arg value="-=[YYY]=-" />
 		<constructor-arg value="true" />
 		<constructor-arg value="50" />
 	</bean>
 	<bean id="templatePropertyInjected1"
-		class="com.tjhruska.mc.util.tagReplacement.Template">
+		class="com.tjhruska.mc.util.tagReplacement.TemplateImpl">
 		<property name="template">
 			<value>-={SUFFIX: -=[LNAME]=- -=[SUFFIX]=-, -=[FNAME]=- :?: -=[FNAME]=- }=-(-=[LNAME]=-) </value>
 		</property>
 	</bean>
 	<bean id="templatePropertyInjected2"
-		class="com.tjhruska.mc.util.tagReplacement.Template">
+		class="com.tjhruska.mc.util.tagReplacement.TemplateImpl">
 		<property name="template"
 			value="Goodbye -=[FNAME]=-, thanks for playing.  -=[GOODBYE]=-">
 		</property>

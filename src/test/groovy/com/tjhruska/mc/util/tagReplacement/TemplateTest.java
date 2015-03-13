@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.tjhruska.mc.util.tagReplacement.Template;
+import com.tjhruska.mc.util.tagReplacement.TemplateImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
@@ -37,7 +37,7 @@ public class TemplateTest {
 
 	@Test
 	public void testSimpleConstructor() {
-		assertNotNull("Template not injected", templateConstructorInjected1);
+		assertNotNull("TemplateImpl not injected", templateConstructorInjected1);
 		
 		//happy path
 		assertEquals("Incorrect string returned from template",
@@ -58,7 +58,7 @@ public class TemplateTest {
 
 	@Test
 	public void testFullConstructor() {
-		assertNotNull("Template not injected", templateConstructorInjected2);
+		assertNotNull("TemplateImpl not injected", templateConstructorInjected2);
 	
 		//happy path
 		assertEquals("Incorrect string returned from template",
@@ -86,7 +86,7 @@ public class TemplateTest {
 		}catch(RuntimeException e){}
 		
 		//New template expecting default iterations
-		Template t = new Template(templateConstructorInjected2.getTemplate());
+		Template t = new TemplateImpl(templateConstructorInjected2.getTemplate());
 		assertEquals("Incorrect string returned from template",
 			"**********-=[YYY]=-",
 			t.applyTags(replacementValues).toString());
@@ -94,7 +94,7 @@ public class TemplateTest {
 
 	@Test
 	public void testConditional(){
-		assertNotNull("Template not injected", templatePropertyInjected1);
+		assertNotNull("TemplateImpl not injected", templatePropertyInjected1);
 	
 		//Suffix found
 		assertEquals("Incorrect string returned from template",
@@ -111,7 +111,7 @@ public class TemplateTest {
 	
 	@Test
 	public void testCascade(){
-		assertNotNull("Template not injected", templatePropertyInjected2);
+		assertNotNull("TemplateImpl not injected", templatePropertyInjected2);
 	
 		//Suffix found
 		assertEquals("Incorrect string returned from template",

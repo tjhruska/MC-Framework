@@ -12,7 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.tjhruska.mc.util.tagReplacement.SQLTemplateImpl;
-import com.tjhruska.mc.util.tagReplacement.Template;
+import com.tjhruska.mc.util.tagReplacement.TemplateImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
@@ -21,13 +21,13 @@ public class SQLTemplateTest {
 	@Autowired
 	private Map<String, SQLTemplateImpl> sqlTemplateMap;
 	@Autowired
-	private Map<String, Template> allTemplateMap;
+	private Map<String, TemplateImpl> allTemplateMap;
 
 	public void setSqlTemplates(Map<String, SQLTemplateImpl> sqlTemplates) {
 		this.sqlTemplateMap = sqlTemplates;
 	}
 
-	public void setAllTemplates(Map<String, Template> allTemplates) {
+	public void setAllTemplates(Map<String, TemplateImpl> allTemplates) {
 		this.allTemplateMap = allTemplates;
 	}
 
@@ -46,7 +46,7 @@ public class SQLTemplateTest {
 		}
 
 		System.out.println("allTemplates:");
-		for (Map.Entry<String, Template> entry : allTemplateMap.entrySet()){
+		for (Map.Entry<String, TemplateImpl> entry : allTemplateMap.entrySet()){
 			System.out.println("	key:" + entry.getKey() + " value:" + entry.getValue().getTemplate());
 		}
 

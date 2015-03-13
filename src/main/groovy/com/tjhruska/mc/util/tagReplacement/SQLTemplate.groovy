@@ -9,8 +9,9 @@ import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.core.RowCallbackHandler
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.transaction.annotation.Transactional
+import com.tjhruska.mc.util.tagReplacement.TemplateImpl
 
-interface SQLTemplate {
+interface SQLTemplate extends Template {
 
   DataSource getDataSource()
   void setDataSource(DataSource dataSource)

@@ -18,7 +18,7 @@ import org.springframework.jdbc.core.RowMapper
 import org.springframework.transaction.annotation.Transactional
 
 @Slf4j
-public class SQLTemplateImpl extends Template implements SQLTemplate {
+public class SQLTemplateImpl extends TemplateImpl implements SQLTemplate {
 
   DataSource dataSource
   JdbcTemplate jdbcTemplate
