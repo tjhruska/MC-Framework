@@ -113,7 +113,7 @@ public class VerifyAppenderLogback implements Appender, VerifyAppender {
       if (object == null || !(object instanceof LogMessage))
         return false
       LogMessage other = (LogMessage) object
-      return Objects.equal(level, other.level) && Objects.equal(throwable.detailMessage, other.throwable.detailMessage) &&
+      return Objects.equal(level, other.level) && Objects.equal(throwable?.getMessage(), other.throwable?.getMessage()) &&
       ((substringMatch== true && other.message.startsWith(message)) || Objects.equal(message, other.message) )
     }
 
