@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.ImportResource
 import org.springframework.context.annotation.Configuration
 
-import com.tjhruska.mc.util.tagReplacement.SQLTemplate;
+import com.tjhruska.mc.util.tagReplacement.SQLTemplate
 
 @ImportResource( [
   'classpath:conf/mcFileGenerator/sql/getOrmCodeFragments.tsql.xml',
-  'classpath:conf/mcFileGenerator/sql/getEnumCodeFragments.tsql.xml',
+  'classpath:conf/mcFileGenerator/sql/getGroovyEnumCodeFragments.tsql.xml',
   'classpath:conf/mcFileGenerator/sql/getPogoCodeFragments.tsql.xml',
   'classpath:conf/mcFileGenerator/sql/getPogoTestCodeFragments.tsql.xml' ] )
 @Configuration
@@ -48,8 +48,8 @@ class McFileGeneratorConfig {
   @Resource (name="getOrmCodeFragments")
   private SQLTemplate getOrmCodeFragments
 
-  @Resource (name="getEnumCodeFragments")
-  private SQLTemplate getEnumCodeFragments
+  @Resource (name="getGroovyEnumCodeFragments")
+  private SQLTemplate getGroovyEnumCodeFragments
 
   @Resource (name="getPogoCodeFragments")
   private SQLTemplate getPogoCodeFragments
@@ -75,7 +75,7 @@ class McFileGeneratorConfig {
     mcFileGenerator.installProperties = installProperties
     mcFileGenerator.fragmentQueries = []
     mcFileGenerator.fragmentQueries.add(getOrmCodeFragments)
-    mcFileGenerator.fragmentQueries.add(getEnumCodeFragments)
+    mcFileGenerator.fragmentQueries.add(getGroovyEnumCodeFragments)
     mcFileGenerator.fragmentQueries.add(getPogoCodeFragments)
     mcFileGenerator.fragmentQueries.add(getPogoTestCodeFragments)
 

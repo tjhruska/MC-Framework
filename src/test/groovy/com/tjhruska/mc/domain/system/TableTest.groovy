@@ -89,7 +89,7 @@ class TableTest extends GeneratedDomainAndDaoTest {
     if (columnTest != null) {
       columnTest.table = table
       (1..(10-number)).each { i ->
-      columns.add(columnTest.getTestObject(i, i-1))
+      columns.add(columnTest.getTestObject(i+(10*number), i-1))
       }
     }
     table.setColumns(columns)
@@ -98,7 +98,7 @@ class TableTest extends GeneratedDomainAndDaoTest {
     if (indexTest != null) {
       indexTest.table = table
       (1..(10-number)).each { i ->
-      indexes.add(indexTest.getTestObject(i, i-1))
+      indexes.add(indexTest.getTestObject(i+(10*number), i-1))
       }
     }
     table.setIndexes(indexes)

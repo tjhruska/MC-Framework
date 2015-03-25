@@ -2,7 +2,7 @@
  *   Copyright (c) 2011 Timothy James Hruska (tjhruska@yahoo.com)
  *
  *   com.tjhruska.mc.enums
- *   TableCreationRuleHelper.java
+ *   TableCreationRuleHelper.groovy
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the LGNU Lesser General Public License as 
@@ -17,39 +17,39 @@
  *   You should have received a copy of the LGNU Lesser General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.tjhruska.mc.enums;
+package com.tjhruska.mc.enums
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.io.Serializable
+import java.util.Arrays
+import java.util.HashMap
+import java.util.HashSet
+import java.util.Map
+import java.util.Set
 
 /**
  * @author tjhruska
  *
  */
-public class TableCreationRuleHelper implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private static final TableCreationRuleHelper tableCreationRuleHelper = new TableCreationRuleHelper();
+class TableCreationRuleHelper implements Serializable {
+    private static final long serialVersionUID = 1L
+    private static final TableCreationRuleHelper tableCreationRuleHelper = new TableCreationRuleHelper()
     
-    protected Map<Integer,Set<TableCreationRule>> idToTableCreationRule;
-    protected Map<String,Set<TableCreationRule>> nameToTableCreationRule;
-    protected Map<String,Set<TableCreationRule>> descriptionToTableCreationRule;
-    protected Map<Integer,Set<TableCreationRule>> sequenceToTableCreationRule;
+    protected Map<Integer,Set<TableCreationRule>> idToTableCreationRule
+    protected Map<String,Set<TableCreationRule>> nameToTableCreationRule
+    protected Map<String,Set<TableCreationRule>> descriptionToTableCreationRule
+    protected Map<Integer,Set<TableCreationRule>> sequenceToTableCreationRule
     /**
      * @return helper class used for doing lookups of TableCreationRule
      */
     protected static TableCreationRuleHelper getTableCreationRuleHelper(){
-        return tableCreationRuleHelper;
+        return tableCreationRuleHelper
     }
     
     private TableCreationRuleHelper(){
-        idToTableCreationRule = new HashMap<Integer,Set<TableCreationRule>>();
-        nameToTableCreationRule = new HashMap<String,Set<TableCreationRule>>();
-        descriptionToTableCreationRule = new HashMap<String,Set<TableCreationRule>>();
-        sequenceToTableCreationRule = new HashMap<Integer,Set<TableCreationRule>>();
+        idToTableCreationRule = new HashMap<Integer,Set<TableCreationRule>>()
+        nameToTableCreationRule = new HashMap<String,Set<TableCreationRule>>()
+        descriptionToTableCreationRule = new HashMap<String,Set<TableCreationRule>>()
+        sequenceToTableCreationRule = new HashMap<Integer,Set<TableCreationRule>>()
     }
     
     protected void loadTableCreationRule(TableCreationRule tableCreationRule, 
@@ -59,30 +59,30 @@ public class TableCreationRuleHelper implements Serializable {
         if (!idToTableCreationRule.containsKey(tableCreationRuleEvId))
             idToTableCreationRule.put(
                 tableCreationRuleEvId, 
-                new HashSet<TableCreationRule>(Arrays.asList(tableCreationRule)));
+                new HashSet<TableCreationRule>(Arrays.asList(tableCreationRule)))
         else
-            idToTableCreationRule.get(tableCreationRuleEvId).add(tableCreationRule);
+            idToTableCreationRule.get(tableCreationRuleEvId).add(tableCreationRule)
         
         if (!nameToTableCreationRule.containsKey(name))
             nameToTableCreationRule.put(
                 name, 
-                new HashSet<TableCreationRule>(Arrays.asList(tableCreationRule)));
+                new HashSet<TableCreationRule>(Arrays.asList(tableCreationRule)))
         else
-            nameToTableCreationRule.get(name).add(tableCreationRule);
+            nameToTableCreationRule.get(name).add(tableCreationRule)
         
         if (!descriptionToTableCreationRule.containsKey(description))
             descriptionToTableCreationRule.put(
                 description, 
-                new HashSet<TableCreationRule>(Arrays.asList(tableCreationRule)));
+                new HashSet<TableCreationRule>(Arrays.asList(tableCreationRule)))
         else
-            descriptionToTableCreationRule.get(description).add(tableCreationRule);
+            descriptionToTableCreationRule.get(description).add(tableCreationRule)
         
         if (!sequenceToTableCreationRule.containsKey(sequence))
             sequenceToTableCreationRule.put(
                 sequence, 
-                new HashSet<TableCreationRule>(Arrays.asList(tableCreationRule)));
+                new HashSet<TableCreationRule>(Arrays.asList(tableCreationRule)))
         else
-            sequenceToTableCreationRule.get(sequence).add(tableCreationRule);
+            sequenceToTableCreationRule.get(sequence).add(tableCreationRule)
 
 
     }

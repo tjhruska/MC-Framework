@@ -2,7 +2,7 @@
  *   Copyright (c) 2007-2015 Timothy James Hruska (tjhruska@yahoo.com)
  *
  *   com.tjhruska.mc.enums
- *   Datatype.java
+ *   Datatype.groovy
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the LGNU Lesser General Public License as 
@@ -17,19 +17,23 @@
  *   You should have received a copy of the LGNU Lesser General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.tjhruska.mc.enums;
+package com.tjhruska.mc.enums
 
-import java.util.HashSet;
-import java.util.Set;
+import groovy.transform.ToString
 
-import com.tjhruska.mc.enums.EnumerationNotUnique;
+import java.util.HashSet
+import java.util.Set
+
+import com.tjhruska.mc.enums.EnumerationNotUnique
 
 
 /**
  * @author tjhruska
  *
  */
-public enum Datatype {
+ 
+@ToString (includeNames = true, includePackage=false, includeFields=true)
+enum Datatype {
     BOOLEAN(1, "BOOLEAN", "Boolean", 0, "Boolean", "boolean", "boolean", "boolean"),
     INTEGER(2, "INTEGER", "Integer", 1, "Integer", "int", "integer", "integer"),
     STRING(3, "STRING", "String", 2, "String", null, "character varying", "string"),
@@ -45,67 +49,58 @@ public enum Datatype {
     DOUBLE_ARRAY(55, "DOUBLE_ARRAY", "Double[]", 12, "Double[]", "double[]", "float8[]", "com.tjhruska.mc.database.DoubleArrayUserType"),
     DOUBLE(56, "DOUBLE", "Double", 13, "Double", "double", "float8", "double"),
     DATE(57, "DATE", "Local Date", 14, "org.joda.time.LocalDate", null, "timestamp without time zone", "org.jadira.usertype.dateandtime.joda.PersistentLocalDate"),
-    JSON(58, "JSON", "Javascript Object Notation", 15, "java_class_dynamic", null, "json", "hibernate_dynamic");
+    JSON(58, "JSON", "Javascript Object Notation", 15, "java_class_dynamic", null, "json", "hibernate_dynamic")
 
-    public final static int enumerationId = 2;
-    public final static String idColumnName = "datatype_ev_id";
-    private final static DatatypeHelper datatypeHelper 
-        = DatatypeHelper.getDatatypeHelper();
+    final static int enumerationId = 2
+    final static String idColumnName = "datatype_ev_id"
+    final static DatatypeHelper datatypeHelper = DatatypeHelper.getDatatypeHelper()
     
-    private int datatypeEvId;
-    private String name;
-    private String description;
-    private Integer sequence;
-    private String javaClass;
-    private String javaPrimitive;
-    private String database;
-    private String hibernate;
+    final int datatypeEvId
+    final String name
+    final String description
+    final Integer sequence
+    final String javaClass
+    final String javaPrimitive
+    final String database
+    final String hibernate
     
     private Datatype(
         int datatypeEvId, String name, String description, Integer sequence
         , String javaClass, String javaPrimitive, String database, String hibernate)
     {
-        this.datatypeEvId = datatypeEvId;
-        this.name = name;
-        this.description = description;
-        this.sequence = sequence;
-        this.javaClass = javaClass;
-        this.javaPrimitive = javaPrimitive;
-        this.database = database;
-        this.hibernate = hibernate;
+        this.datatypeEvId = datatypeEvId
+        this.name = name
+        this.description = description
+        this.sequence = sequence
+        this.javaClass = javaClass
+        this.javaPrimitive = javaPrimitive
+        this.database = database
+        this.hibernate = hibernate
         DatatypeHelper.getDatatypeHelper().loadDatatype(
             this, datatypeEvId, name, description, sequence
-            , javaClass, javaPrimitive, database, hibernate);
+            , javaClass, javaPrimitive, database, hibernate)
     }
-    public int getDatatypeEvId(){return datatypeEvId;};
-    public String getName(){return name;};
-    public String getDescription(){return description;};
-    public Integer getSequence(){return sequence;};
-    public String getJavaClass(){return javaClass;}
-    public String getJavaPrimitive(){return javaPrimitive;}
-    public String getDatabase(){return database;}
-    public String getHibernate(){return hibernate;}
     
     /**
      * @param id
      * @return Datatype that is mapped to by the input parameter
      * @throws EnumerationNotUnique if the input parameter mapps to multiple values
      */
-    public static Datatype getDatatypeById(int id){
-        Set<Datatype> datatypes = datatypeHelper.idToDatatype.get(id);
-        if (datatypes == null) return null;
+    static Datatype getDatatypeById(int id){
+        Set<Datatype> datatypes = datatypeHelper.idToDatatype.get(id)
+        if (datatypes == null) return null
         if (datatypes.size() > 1)
             throw new EnumerationNotUnique("id " + id 
-                + " has " + datatypes.size() + " elements");
-        return datatypes.iterator().next();
+                + " has " + datatypes.size() + " elements")
+        return datatypes.iterator().next()
     }
     
     /**
      * @param id
      * @return Datatype that is mapped to by the input parameter
      */
-    public static Set<Datatype> getDatatypeSetById(int id){
-        return new HashSet<Datatype>(datatypeHelper.idToDatatype.get(id));
+    static Set<Datatype> getDatatypeSetById(int id){
+        return new HashSet<Datatype>(datatypeHelper.idToDatatype.get(id))
     }
     
     /**
@@ -113,22 +108,21 @@ public enum Datatype {
      * @return Datatype that is mapped to by the input parameter
      * @throws EnumerationNotUnique if the input parameter mapps to multiple values
      */
-    public static Datatype getDatatypeByName(String name){
-        Set<Datatype> datatypes 
-            = datatypeHelper.nameToDatatype.get(name);
-        if (datatypes == null) return null;
+    static Datatype getDatatypeByName(String name){
+        Set<Datatype> datatypes = datatypeHelper.nameToDatatype.get(name)
+        if (datatypes == null) return null
         if (datatypes.size() > 1)
             throw new EnumerationNotUnique("name " + name 
-                + " has " + datatypes.size() + " elements");
-        return datatypes.iterator().next();
+                + " has " + datatypes.size() + " elements")
+        return datatypes.iterator().next()
     }
     
     /**
      * @param name
      * @return Datatype that is mapped to by the input parameter
      */
-    public static Set<Datatype> getDatatypeSetByName(String name){
-        return new HashSet<Datatype>(datatypeHelper.nameToDatatype.get(name));
+    static Set<Datatype> getDatatypeSetByName(String name){
+        return new HashSet<Datatype>(datatypeHelper.nameToDatatype.get(name))
     }
     
     /**
@@ -136,22 +130,21 @@ public enum Datatype {
      * @return Datatype that is mapped to by the input parameter
      * @throws EnumerationNotUnique if the input parameter mapps to multiple values
      */
-    public static Datatype getDatatypeByDescription(String description){
-        Set<Datatype> datatypes 
-            = datatypeHelper.descriptionToDatatype.get(description);
-        if (datatypes == null) return null;
+    static Datatype getDatatypeByDescription(String description){
+        Set<Datatype> datatypes = datatypeHelper.descriptionToDatatype.get(description)
+        if (datatypes == null) return null
         if (datatypes.size() > 1)
             throw new EnumerationNotUnique("description " + description 
-                + " has " + datatypes.size() + " elements");
-        return datatypes.iterator().next();
+                + " has " + datatypes.size() + " elements")
+        return datatypes.iterator().next()
     }
     
     /**
      * @param description
      * @return Datatype that is mapped to by the input parameter
      */
-    public static Set<Datatype> getDatatypeSetByDescription(String description){
-        return new HashSet<Datatype>(datatypeHelper.descriptionToDatatype.get(description));
+    static Set<Datatype> getDatatypeSetByDescription(String description){
+        return new HashSet<Datatype>(datatypeHelper.descriptionToDatatype.get(description))
     }
     
     /**
@@ -159,123 +152,104 @@ public enum Datatype {
      * @return Datatype that is mapped to by the input parameter
      * @throws EnumerationNotUnique if the input parameter mapps to multiple values
      */
-    public static Datatype getDatatypeBySequence(Integer sequence){
-        Set<Datatype> datatypes 
-            = datatypeHelper.sequenceToDatatype.get(sequence);
-        if (datatypes == null) return null;
+    static Datatype getDatatypeBySequence(Integer sequence){
+        Set<Datatype> datatypes = datatypeHelper.sequenceToDatatype.get(sequence)
+        if (datatypes == null) return null
         if (datatypes.size() > 1)
             throw new EnumerationNotUnique("sequence " + sequence 
-                + " has " + datatypes.size() + " elements");
-        return datatypes.iterator().next();
+                + " has " + datatypes.size() + " elements")
+        return datatypes.iterator().next()
     }
     
     /**
      * @param sequence
      * @return Datatype that is mapped to by the input parameter
      */
-    public static Set<Datatype> getDatatypeSetBySequence(Integer sequence){
-        return new HashSet<Datatype>(datatypeHelper.sequenceToDatatype.get(sequence));
+    static Set<Datatype> getDatatypeSetBySequence(Integer sequence){
+        return new HashSet<Datatype>(datatypeHelper.sequenceToDatatype.get(sequence))
     }
     /**
      * @param javaClass
      * @return Datatype that is mapped to by the input parameter
      * @throws EnumerationNotUnique if the input parameter mapps to multiple values
      */
-    public static Datatype getDatatypeByJavaClass(String javaClass){
-        Set<Datatype> datatypes 
-            = datatypeHelper.javaClassToDatatype.get(javaClass);
-        if (datatypes == null) return null;
+    static Datatype getDatatypeByJavaClass(String javaClass){
+        Set<Datatype> datatypes = datatypeHelper.javaClassToDatatype.get(javaClass)
+        if (datatypes == null) return null
         if (datatypes.size() > 1)
             throw new EnumerationNotUnique("javaClass " + javaClass 
-                + " has " + datatypes.size() + " elements");
-        return datatypes.iterator().next();
+                + " has " + datatypes.size() + " elements")
+        return datatypes.iterator().next()
     }
     
     /**
      * @param javaClass
      * @return Datatype that is mapped to by the input parameter
      */
-    public static Set<Datatype> getDatatypeSetByJavaClass(String javaClass){
-        return new HashSet<Datatype>(datatypeHelper.javaClassToDatatype.get(javaClass));
+    static Set<Datatype> getDatatypeSetByJavaClass(String javaClass){
+        return new HashSet<Datatype>(datatypeHelper.javaClassToDatatype.get(javaClass))
     }
     /**
      * @param javaPrimitive
      * @return Datatype that is mapped to by the input parameter
      * @throws EnumerationNotUnique if the input parameter mapps to multiple values
      */
-    public static Datatype getDatatypeByJavaPrimitive(String javaPrimitive){
-        Set<Datatype> datatypes 
-            = datatypeHelper.javaPrimitiveToDatatype.get(javaPrimitive);
-        if (datatypes == null) return null;
+    static Datatype getDatatypeByJavaPrimitive(String javaPrimitive){
+        Set<Datatype> datatypes = datatypeHelper.javaPrimitiveToDatatype.get(javaPrimitive)
+        if (datatypes == null) return null
         if (datatypes.size() > 1)
             throw new EnumerationNotUnique("javaPrimitive " + javaPrimitive 
-                + " has " + datatypes.size() + " elements");
-        return datatypes.iterator().next();
+                + " has " + datatypes.size() + " elements")
+        return datatypes.iterator().next()
     }
     
     /**
      * @param javaPrimitive
      * @return Datatype that is mapped to by the input parameter
      */
-    public static Set<Datatype> getDatatypeSetByJavaPrimitive(String javaPrimitive){
-        return new HashSet<Datatype>(datatypeHelper.javaPrimitiveToDatatype.get(javaPrimitive));
+    static Set<Datatype> getDatatypeSetByJavaPrimitive(String javaPrimitive){
+        return new HashSet<Datatype>(datatypeHelper.javaPrimitiveToDatatype.get(javaPrimitive))
     }
     /**
      * @param database
      * @return Datatype that is mapped to by the input parameter
      * @throws EnumerationNotUnique if the input parameter mapps to multiple values
      */
-    public static Datatype getDatatypeByDatabase(String database){
-        Set<Datatype> datatypes 
-            = datatypeHelper.databaseToDatatype.get(database);
-        if (datatypes == null) return null;
+    static Datatype getDatatypeByDatabase(String database){
+        Set<Datatype> datatypes = datatypeHelper.databaseToDatatype.get(database)
+        if (datatypes == null) return null
         if (datatypes.size() > 1)
             throw new EnumerationNotUnique("database " + database 
-                + " has " + datatypes.size() + " elements");
-        return datatypes.iterator().next();
+                + " has " + datatypes.size() + " elements")
+        return datatypes.iterator().next()
     }
     
     /**
      * @param database
      * @return Datatype that is mapped to by the input parameter
      */
-    public static Set<Datatype> getDatatypeSetByDatabase(String database){
-        return new HashSet<Datatype>(datatypeHelper.databaseToDatatype.get(database));
+    static Set<Datatype> getDatatypeSetByDatabase(String database){
+        return new HashSet<Datatype>(datatypeHelper.databaseToDatatype.get(database))
     }
     /**
      * @param hibernate
      * @return Datatype that is mapped to by the input parameter
      * @throws EnumerationNotUnique if the input parameter mapps to multiple values
      */
-    public static Datatype getDatatypeByHibernate(String hibernate){
-        Set<Datatype> datatypes 
-            = datatypeHelper.hibernateToDatatype.get(hibernate);
-        if (datatypes == null) return null;
+    static Datatype getDatatypeByHibernate(String hibernate){
+        Set<Datatype> datatypes = datatypeHelper.hibernateToDatatype.get(hibernate)
+        if (datatypes == null) return null
         if (datatypes.size() > 1)
             throw new EnumerationNotUnique("hibernate " + hibernate 
-                + " has " + datatypes.size() + " elements");
-        return datatypes.iterator().next();
+                + " has " + datatypes.size() + " elements")
+        return datatypes.iterator().next()
     }
     
     /**
      * @param hibernate
      * @return Datatype that is mapped to by the input parameter
      */
-    public static Set<Datatype> getDatatypeSetByHibernate(String hibernate){
-        return new HashSet<Datatype>(datatypeHelper.hibernateToDatatype.get(hibernate));
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Enum#toString()
-     */
-    public String toString(){
-        String toString = "Datatype " + name + " (" + description + ")";
-        toString += "\\n\\tdatatypeEvId: " + datatypeEvId;
-        toString += "\\n\\tsequence: " + sequence;
-        toString += "\\n\\tjavaClass: " + javaClass;
-        toString += "\\n\\tjavaPrimitive: " + javaPrimitive;
-        toString += "\\n\\tdatabase: " + database;
-        toString += "\\n\\thibernate: " + hibernate;
-        return toString;
+    static Set<Datatype> getDatatypeSetByHibernate(String hibernate){
+        return new HashSet<Datatype>(datatypeHelper.hibernateToDatatype.get(hibernate))
     }
 }

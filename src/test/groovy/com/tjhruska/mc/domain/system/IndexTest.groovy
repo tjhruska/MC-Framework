@@ -61,7 +61,7 @@ class IndexTest extends GeneratedDomainAndDaoTest {
     if (columnTest != null) {
       columnTest.index = index
       (1..(10-number)).each { i ->
-      columns.add(columnTest.getTestObject(i, i-1))
+      columns.add(columnTest.getTestObject(i+(10*number), i-1))
       }
     }
     index.setColumns(columns)
@@ -74,6 +74,7 @@ class IndexTest extends GeneratedDomainAndDaoTest {
     Index source = getTestObject(number, 0)
     Index target = (Index)domain
     target.setTable(source.getTable())
+    target.table.indexes.clear()
     target.table.indexes.add(target)
     target.setIndex(source.getIndex())
     target.setIndexName(source.getIndexName())

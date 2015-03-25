@@ -9,11 +9,13 @@ import com.tjhruska.mc.enums.Datatype
 import com.tjhruska.mc.enums.DbIndex
 import java.util.ArrayList
 import java.util.List
-//import groovy.transform.EqualsAndHashCode
-import groovy.transform.ToString
 
-//@EqualsAndHashCode
-@ToString
+import groovy.transform.ToString
+import groovy.transform.Canonical
+
+
+@Canonical (excludes=['guardedColumns'])
+@ToString (includeNames = true, includeSuper=true, includePackage=false)
 public class Column extends BaseDomain {
 
   Table table

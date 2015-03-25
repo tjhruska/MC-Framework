@@ -10,11 +10,13 @@ import com.tjhruska.mc.enums.DbIndex
 import com.tjhruska.mc.enums.LinkCreationRule
 import java.util.ArrayList
 import java.util.List
-//import groovy.transform.EqualsAndHashCode
-import groovy.transform.ToString
 
-//@EqualsAndHashCode
-@ToString
+import groovy.transform.ToString
+import groovy.transform.Canonical
+
+
+@Canonical (excludes=['linkValues'])
+@ToString (includeNames = true, includeSuper=true, includePackage=false)
 public class EnumerationLink extends BaseDomain {
 
   LinkCreationRule linkCreationRule

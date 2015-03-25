@@ -37,7 +37,7 @@ class McInstaller extends BeanNameAwareRunnable {
     List<String> alreadyCompletedTasks = getAlreadyCompletedTasks()
 
     installTasks.eachWithIndex { task, i ->
-      def taskName = task.getBeanName()
+      def taskName = task.beanName
       def completedTask = (alreadyCompletedTasks.size > 0 ? alreadyCompletedTasks.remove(0): null)
 
       if (completedTask != null && completedTask.equals(taskName)) {

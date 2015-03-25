@@ -110,7 +110,7 @@ class EnumerationLinkTest extends GeneratedDomainAndDaoTest {
     if (enumerationLinkValueTest != null) {
       enumerationLinkValueTest.enumerationLink = enumerationLink
       (1..(10-number)).each { i ->
-      linkValues.add(enumerationLinkValueTest.getTestObject(i, i-1))
+      linkValues.add(enumerationLinkValueTest.getTestObject(i+(10*number), i-1))
       }
     }
     enumerationLink.setLinkValues(linkValues)
@@ -124,8 +124,10 @@ class EnumerationLinkTest extends GeneratedDomainAndDaoTest {
     EnumerationLink target = (EnumerationLink)domain
     target.setLinkCreationRule(source.getLinkCreationRule())
     target.setEnumerationA(source.getEnumerationA())
+    target.enumerationA.linksAsA.clear()
     target.enumerationA.linksAsA.add(target)
     target.setEnumerationB(source.getEnumerationB())
+    target.enumerationB.linksAsB.clear()
     target.enumerationB.linksAsB.add(target)
     target.setEnumerationAIndex(source.getEnumerationAIndex())
     target.setEnumerationBIndex(source.getEnumerationBIndex())

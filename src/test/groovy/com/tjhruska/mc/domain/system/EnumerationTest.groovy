@@ -37,12 +37,12 @@ class EnumerationTest extends GeneratedDomainAndDaoTest {
   DaoDomain<Enumeration> enumerationDao
 
   @Autowired
-  DaoDomain<EnumerationLink> enumerationLinkDao
-  EnumerationLinkTest enumerationLinkTest
-
-  @Autowired
   DaoDomain<EnumerationValue> enumerationValueDao
   EnumerationValueTest enumerationValueTest
+
+  @Autowired
+  DaoDomain<EnumerationLink> enumerationLinkDao
+  EnumerationLinkTest enumerationLinkTest
 
   @Before
   public void setup() {
@@ -107,7 +107,7 @@ class EnumerationTest extends GeneratedDomainAndDaoTest {
     if (enumerationValueTest != null) {
       enumerationValueTest.enumeration = enumeration
       (1..(10-number)).each { i ->
-      enumerationValues.add(enumerationValueTest.getTestObject(i, i-1))
+      enumerationValues.add(enumerationValueTest.getTestObject(i+(10*number), i-1))
       }
     }
     enumeration.setEnumerationValues(enumerationValues)
@@ -116,7 +116,7 @@ class EnumerationTest extends GeneratedDomainAndDaoTest {
     if (enumerationLinkTest != null) {
       enumerationLinkTest.enumerationA = enumeration
       (1..(10-number)).each { i ->
-      linksAsA.add(enumerationLinkTest.getTestObject(i, i-1))
+      linksAsA.add(enumerationLinkTest.getTestObject(i+(10*number), i-1))
       }
     }
     enumeration.setLinksAsA(linksAsA)
@@ -125,7 +125,7 @@ class EnumerationTest extends GeneratedDomainAndDaoTest {
     if (enumerationLinkTest != null) {
       enumerationLinkTest.enumerationB = enumeration
       (1..(10-number)).each { i ->
-      linksAsB.add(enumerationLinkTest.getTestObject(i, i-1))
+      linksAsB.add(enumerationLinkTest.getTestObject(i+(10*number), i-1))
       }
     }
     enumeration.setLinksAsB(linksAsB)

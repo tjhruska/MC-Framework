@@ -13,11 +13,13 @@ import java.util.ArrayList
 import java.util.HashSet
 import java.util.List
 import java.util.Set
-//import groovy.transform.EqualsAndHashCode
-import groovy.transform.ToString
 
-//@EqualsAndHashCode
-@ToString
+import groovy.transform.ToString
+import groovy.transform.Canonical
+
+
+@Canonical (excludes=['enumerationValues', 'linksAsA', 'linksAsB'])
+@ToString (includeNames = true, includeSuper=true, includePackage=false)
 public class Enumeration extends BaseDomain {
 
   String name

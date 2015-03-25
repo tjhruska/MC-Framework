@@ -86,7 +86,7 @@ class ColumnTest extends GeneratedDomainAndDaoTest {
     if (columnTest != null) {
       columnTest.guiFieldGroupGuardColumn = column
       (1..(10-number)).each { i ->
-      guardedColumns.add(columnTest.getTestObject(i, i-1))
+      guardedColumns.add(columnTest.getTestObject(i+(10*number), i-1))
       }
     }
     column.setGuardedColumns(guardedColumns)

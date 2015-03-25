@@ -10,11 +10,13 @@ import java.util.ArrayList
 import java.util.HashSet
 import java.util.List
 import java.util.Set
-//import groovy.transform.EqualsAndHashCode
-import groovy.transform.ToString
 
-//@EqualsAndHashCode
-@ToString
+import groovy.transform.ToString
+import groovy.transform.Canonical
+
+
+@Canonical (excludes=['columns', 'indexes'])
+@ToString (includeNames = true, includeSuper=true, includePackage=false)
 public class Table extends BaseDomain {
 
   Boolean systemNoModifyFlag

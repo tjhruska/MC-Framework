@@ -26,7 +26,7 @@ class McTableCreator extends BeanNameAwareRunnable {
       log.info("installProperty: ${key}, value: ${value}")
     }
 
-    log.info('Found {} query.', buildTableCreatorCommands.getBeanName())
+    log.info('Found {} query.', buildTableCreatorCommands.beanName)
 
     //prep the backupDirectory name to include our application name, and the datetime
     StringBuilder backupDirectory = buildBackupDirectoryName(installProperties.get('backupDirectory'))
@@ -40,7 +40,7 @@ class McTableCreator extends BeanNameAwareRunnable {
             }
           })
     } catch (Exception e){
-      log.error('Failed to retrieve list of exisitng tables and views using {}', getExistingTablesAndViews.getBeanName())
+      log.error('Failed to retrieve list of exisitng tables and views using {}', getExistingTablesAndViews.beanName)
       log.error('exception:', e)
       throw e
     }
@@ -63,7 +63,7 @@ class McTableCreator extends BeanNameAwareRunnable {
               return commandFragment
             }})
     } catch (Exception e){
-      log.error('Failed to retrieve command fragements using {}', buildTableCreatorCommands.getBeanName())
+      log.error('Failed to retrieve command fragements using {}', buildTableCreatorCommands.beanName)
       log.error('exception:', e)
       throw e
     }
@@ -111,7 +111,7 @@ class McTableCreator extends BeanNameAwareRunnable {
           combinedCommandSqlTemplate.jdbcQuery(installProperties)
           log.info('Finished running commands into database.')
         } catch (SQLException e) {
-          log.error('Failed to run command {} into database.', combinedCommandSqlTemplate.getBeanName())
+          log.error('Failed to run command {} into database.', combinedCommandSqlTemplate.beanName)
           log.error('With error {}', e)
           log.error('Using query: {}', combinedCommandSqlTemplate.applyTags(installProperties))
           throw e
