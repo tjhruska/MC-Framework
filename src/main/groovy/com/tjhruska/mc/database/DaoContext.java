@@ -1,6 +1,19 @@
 /**
- *
+Copyright 2011-2015 Timothy James Hruska (tjhruska@yahoo.com)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
  */
+
 package com.tjhruska.mc.database;
 
 import java.io.Serializable;
@@ -17,7 +30,7 @@ import com.tjhruska.mc.database.restrictions.Restriction;
  * reflection, or loading maps of local containers to doa for that container,
  * and implementing some type of dirty checking.) It does not handle composite
  * pks.
- * 
+ *
  * @author tjhruska
  *
  */
@@ -57,7 +70,7 @@ public class DaoContext<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.tjhruska.mc.database.DaoDomain#getDomainClass()
    */
   @Override
@@ -67,7 +80,7 @@ public class DaoContext<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * com.tjhruska.mc.database.DaoDomain#save(com.tjhruska.mc.database.BaseDomain
    * )
@@ -86,14 +99,13 @@ public class DaoContext<T extends BaseDomain> implements DaoDomain<T> {
     if (!isInStorageContainer)
       storageContainer.add(domainObject);
     else
-      throw new RuntimeException("id: " + id
-          + " is already in the store, call saveOrUpdate instead.");
+      throw new RuntimeException("id: " + id + " is already in the store, call saveOrUpdate instead.");
     return id;
   }
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * com.tjhruska.mc.database.DomainDao#saveOrUpdate(com.tjhruska.mc.database
    * .BaseDomain)
@@ -125,7 +137,7 @@ public class DaoContext<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * com.tjhruska.mc.database.DomainDao#delete(com.tjhruska.mc.database.BaseDomain
    * )
@@ -137,7 +149,7 @@ public class DaoContext<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.tjhruska.mc.database.DomainDao#findByPK(java.io.Serializable)
    */
   @Override
@@ -153,7 +165,7 @@ public class DaoContext<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.tjhruska.mc.database.DomainDao#findAll()
    */
   @Override
@@ -163,7 +175,7 @@ public class DaoContext<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * com.tjhruska.mc.database.DaoDomain#findByCriteria(com.tjhruska.mc.database
    * .restrictions.Restriction)
@@ -175,7 +187,7 @@ public class DaoContext<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * com.tjhruska.mc.database.DaoDomain#findByCriteria(com.tjhruska.mc.database
    * .restrictions.Restriction, Integer)
@@ -187,7 +199,7 @@ public class DaoContext<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.tjhruska.mc.database.DaoDomain#clearCache()
    */
   @Override
@@ -196,7 +208,7 @@ public class DaoContext<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.tjhruska.mc.database.DaoDomain#flush()
    */
   @Override
@@ -205,7 +217,7 @@ public class DaoContext<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * com.tjhruska.mc.database.DaoDomain#findOneByCriteria(com.tjhruska.mc.database
    * .restrictions.Restriction)

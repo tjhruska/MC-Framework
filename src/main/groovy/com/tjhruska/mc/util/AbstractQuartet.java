@@ -1,26 +1,22 @@
 /**
- *   Copyright  2007 Timothy James Hruska (tjhruska@yahoo.com)
- *
- *   com.tjhruska.util.container
- *   AbstractQuartet.java
- *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the LGNU Lesser General Public License as 
- *   published by the Free Software Foundation, either version 3 of the 
- *   License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   LGNU Lesser General Public License for more details.
- *
- *   You should have received a copy of the LGNU Lesser General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+Copyright 2007-2015 Timothy James Hruska (tjhruska@yahoo.com)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package com.tjhruska.mc.util;
 
 /**
- * @author tjhruska
  * @param <ONE> 
  * @param <TWO> 
  * @param <THREE> 
@@ -63,25 +59,6 @@ public class AbstractQuartet<ONE,TWO,THREE,FOUR>
 	public void setFour(FOUR four) {
 		this.four = four;
 	}
-
-//	/* (non-Javadoc)
-//	 * @see java.lang.Object#equals(java.lang.Object)
-//	 */
-//	@SuppressWarnings("unchecked")
-//	public boolean equals(Object object) {
-//		if (!(object instanceof Quartet)) return false;
-//		return this.equals((Quartet)object, true);
-//		FOUR objectFour = ((Quartet<ONE,TWO,THREE,FOUR>)object).getFour();
-//		return (
-//			(
-//				(four != null && four.equals(objectFour))
-//				|| 
-//				(four == null && objectFour == null)
-//			)
-//			&&
-//			super.equals(object)
-//		);
-//	}
 		
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
