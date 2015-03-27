@@ -22,7 +22,10 @@ select t.mc_table_id as id, 10.000 as sequence, '0.000' as sequence2, false as s
 <!DOCTYPE hibernate-mapping PUBLIC 
     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-        
+-={copyRightHeader:<!--
+-=[copyRightHeader]=-
+-->}=-
+
 <hibernate-mapping auto-import="false" package="' || max(t.java_package) || '">
 ' ||
   string_agg(distinct case when enum.enumeration_id is null then '' else '
@@ -97,6 +100,9 @@ select t.mc_table_id as id, 10.000 as sequence, '0.000' as sequence2, false as s
 ' as fragment
 from
   -=[schema_name]=-.mc_table as t
+    inner join 
+  -=[schema_name]=-.mc_table as copyright_table
+    on t.mc_table_id = copyright_table.mc_table_id
     inner join
   -=[schema_name]=-.mc_column as pk on t.mc_table_id = pk.mc_table_id and pk.pk_flag = true
     left outer join
@@ -117,7 +123,7 @@ from
 where
   t.create_orm_flag = true
 group by
-  t.mc_table_id
+  t.mc_table_id, copyright_table.add_date
 UNION
 -------------------------
 --Section 20 - list columns

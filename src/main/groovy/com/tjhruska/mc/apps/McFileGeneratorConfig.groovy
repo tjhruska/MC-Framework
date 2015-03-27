@@ -2,6 +2,7 @@ package com.tjhruska.mc.apps
 
 import javax.annotation.Resource
 
+import org.joda.time.DateTime
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -9,6 +10,8 @@ import org.springframework.context.annotation.ImportResource
 import org.springframework.context.annotation.Configuration
 
 import com.tjhruska.mc.util.tagReplacement.SQLTemplate
+import com.tjhruska.mc.util.tagReplacement.Template
+import com.tjhruska.mc.util.tagReplacement.TemplateImpl
 
 @ImportResource( [
   'classpath:conf/mcFileGenerator/sql/getOrmCodeFragments.tsql.xml',
@@ -20,6 +23,9 @@ class McFileGeneratorConfig {
 
   @Value('${mc.schemaName}')
   private String schemaName
+
+  @Value('${mc.copyRightHeader}')
+  private String copyRightHeader
 
   @Value('${mc.rootDirectory}')
   private String rootDirectory
@@ -63,6 +69,13 @@ class McFileGeneratorConfig {
 
     def installProperties = [:]
     installProperties['schema_name'] = schemaName
+
+    Map copyRightHeaderTemplateTags = [:]
+    copyRightHeaderTemplateTags['current_year'] = new DateTime().year.toString()
+    copyRightHeaderTemplateTags['create_year'] = "' || date_part('year', copyright_table.add_date) || '".toString()
+    Template copyRightHeaderTemplate = new TemplateImpl(copyRightHeader)
+    installProperties['copyRightHeader'] = copyRightHeaderTemplate.applyTags(copyRightHeaderTemplateTags).toString()
+
     installProperties['rootDirectory'] = rootDirectory
     installProperties['rootDirectory2'] = rootDirectory2
     installProperties['testDirectory'] = testDirectory

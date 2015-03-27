@@ -17,30 +17,11 @@ select
   t.mc_table_id as id, 10.000 as sequence, '0.000' as sequence2, t.suppress_pojo_changes_flag as suppress_changes_flag,
   case when t.src_folder_tag = 'rootDirectory' then 'testDirectory' else t.src_folder_tag end as folder_tag, 
   replace(t.java_package, '.', '/') as java_package, t.name_camel_case || 'Test.groovy' as fileName, null::varchar as fileName2,
-  null::varchar as fragment2, --'
---/**
--- *   Copyright (c) ' || date_part('year', t.add_date) 
---  || case when date_part('year', t.add_date) = date_part('year', now()) then '' else '-' || date_part('year', now()) end 
---  || ' Timothy James Hruska (tjhruska@yahoo.com)
--- *
--- *   ' || t.java_package || '
--- *   ' || t.name_camel_case || '.java
--- *
--- *   This program is free software: you can redistribute it and/or modify
--- *   it under the terms of the LGNU Lesser General Public License as 
--- *   published by the Free Software Foundation, either version 3 of the 
--- *   License, or (at your option) any later version.
--- *
--- *   This program is distributed in the hope that it will be useful,
--- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
--- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--- *   LGNU Lesser General Public License for more details.
--- *
--- *   You should have received a copy of the LGNU Lesser General Public License
--- *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
--- */
-'
-package ' || t.java_package || '
+  null::varchar as fragment2, '-={copyRightHeader:/**
+-=[copyRightHeader]=-
+*/
+  
+}=-package ' || t.java_package || '
 
 import org.springframework.beans.factory.annotation.Autowired
 import static org.junit.Assert.*
@@ -57,6 +38,9 @@ import com.tjhruska.mc.database.DaoDomain
 import -=[testAbstractBaseImport]=-' as fragment
 from
   -=[schema_name]=-.mc_table as t
+    inner join 
+  -=[schema_name]=-.mc_table as copyright_table
+    on t.mc_table_id = copyright_table.mc_table_id
 where
   t.create_pojo_flag = true
   
@@ -191,7 +175,8 @@ select
 //    (Extended class won\'t be wiped out on regeneration, and must continue to match database expectations.)
 @Ignore 
 '
-        else ''
+        else '
+'
      end) ||
 'class ' || max(t.name_camel_case) || 'Test extends -=[testAbstractBaseClass]=- {
   

@@ -10,6 +10,7 @@ hibernate.show_sql=false
 hibernate.jdbc.batch_size=50
 
 mc.schemaName               =mc
+mc.copyRightHeader          =Copyright -=[create_year]=---=[current_year]=- {copyright holder info}
 mc.typeOfPlainOldObject     =PlainOldGroovyObject
 mc.logDirectory             =/Volumes/Crypt/code_repo/mc-framework/logs
 mc.rootDirectory            =/Volumes/Crypt/code_repo/mc-framework/src/main/groovy

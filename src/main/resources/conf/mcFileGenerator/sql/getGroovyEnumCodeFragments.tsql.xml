@@ -21,28 +21,11 @@ select
 ------------------------------------------------------------------------------------------
 --first section of enum file
 ------------------------------------------------------------------------------------------
-'/**
- *   Copyright (c) ' || date_part('year', e.add_date) 
-  || case when date_part('year', e.add_date) = date_part('year', now()) then '' else '-' || date_part('year', now()) end 
-  || ' Timothy James Hruska (tjhruska@yahoo.com)
- *
- *   ' || e.java_package || '
- *   ' || e.tablename_camel_case || '.groovy' || '
- *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the LGNU Lesser General Public License as 
- *   published by the Free Software Foundation, either version 3 of the 
- *   License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   LGNU Lesser General Public License for more details.
- *
- *   You should have received a copy of the LGNU Lesser General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-package ' || e.java_package || '
+'-={copyRightHeader:/**
+-=[copyRightHeader]=-
+*/
+  
+}=-package ' || e.java_package || '
 
 import groovy.transform.ToString
 
@@ -52,37 +35,17 @@ import java.util.Set
 import com.tjhruska.mc.enums.EnumerationNotUnique
 
 
-/**
- * @author tjhruska
- *
- */
- 
 @ToString (includeNames = true, includePackage=false, includeFields=true)
 enum ' || e.tablename_camel_case || ' {' as fragment,
 
 ------------------------------------------------------------------------------------------
 --first section of helper file
 ------------------------------------------------------------------------------------------
-'/**
- *   Copyright (c) ' || date_part('year', e.add_date) || ' Timothy James Hruska (tjhruska@yahoo.com)
- *
- *   ' || e.java_package || '
- *   ' || e.tablename_camel_case || 'Helper.groovy' || '
- *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the LGNU Lesser General Public License as 
- *   published by the Free Software Foundation, either version 3 of the 
- *   License, or (at your option) any later version.
- *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   LGNU Lesser General Public License for more details.
- *
- *   You should have received a copy of the LGNU Lesser General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-package ' || e.java_package || '
+'-={copyRightHeader:/**
+-=[copyRightHeader]=-
+*/
+  
+}=-package ' || e.java_package || '
 
 import java.io.Serializable
 import java.util.Arrays
@@ -91,10 +54,7 @@ import java.util.HashSet
 import java.util.Map
 import java.util.Set
 
-/**
- * @author tjhruska
- *
- */
+
 class ' || e.tablename_camel_case || 'Helper implements Serializable {
     private static final long serialVersionUID = 1L
     private static final ' || e.tablename_camel_case || 'Helper ' || lower(substring(e.tablename_camel_case,1,1)) || substring(e.tablename_camel_case,2)  || 'Helper = new ' || e.tablename_camel_case || 'Helper()
@@ -251,6 +211,9 @@ class ' || e.tablename_camel_case || 'Helper implements Serializable {
 }' as fragment2 --, datatype_ev1.*
 
 from -=[schema_name]=-.enumeration e
+    inner join 
+  -=[schema_name]=-.enumeration as copyright_table
+    on e.enumeration_id = copyright_table.enumeration_id
     left outer join -=[schema_name]=-.enumeration_value datatype_ev1 on e.column1_datatype_ev_id = datatype_ev1.enumeration_value_id and datatype_ev1.enumeration_id = 2
     left outer join -=[schema_name]=-.enumeration_value datatype_ev2 on e.column2_datatype_ev_id = datatype_ev2.enumeration_value_id and datatype_ev2.enumeration_id = 2
     left outer join -=[schema_name]=-.enumeration_value datatype_ev3 on e.column3_datatype_ev_id = datatype_ev3.enumeration_value_id and datatype_ev3.enumeration_id = 2
