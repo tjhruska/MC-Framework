@@ -28,7 +28,7 @@ INSERT INTO -=[schema_name]=-.mc_table(
 select 
     e.mc_table_id, e.add_date, true as system_no_modify_flag, lower(e.name) || '_ev' as name, 'Enumeration of ' || tablename_camel_case || ' values' as description,
     e.tablename_camel_case as name_camel_case, 35 as table_creation_rule_ev_id, null as suppress_table_changes_flag,
-    null as create_iud_table_flag, null as schema_name, null as within_create_sql, null as post_create_sql,
+    null as create_iud_table_flag, e.schema_name as schema_name, null as within_create_sql, null as post_create_sql,
     false as create_pojo_flag, null as src_folder_tag, null as suppress_pojo_changes_flag,
     e.java_package as java_package, null as java_fq_superclass, null as constructor_from_field_flag,
     null as extra_java_code, null as create_orm_flag, null as suppress_orm_changes_flag, null as extra_orm_code,
