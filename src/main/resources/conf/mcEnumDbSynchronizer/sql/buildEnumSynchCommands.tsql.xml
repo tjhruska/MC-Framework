@@ -25,6 +25,7 @@
 ----------------------------------------------------------
 --FIRST SECTION = enumeration_id (synch the core child tables)
 --sequence  sequence2  new_sql
+--0  0  create needed schemas
 --1  0  drop child table (used for enum deletes and updates)
 --        drop insert function
 --        drop update function
@@ -113,6 +114,33 @@
 --15 0  update value iud for inserts and updates
 --16 0  update enum iud
 
+
+
+--sequence  sequence2  new_sql
+-------------------------------------------------------------
+--0  0  create needed schemas
+-------------------------------------------------------------
+select 'enumeration_id'::varchar as section, iud.enumeration_id as id, 0 as sequence, 0 as sequence2, E'
+--0  0  create needed schemas
+create or replace function create_schema() returns void as $$
+begin
+  create schema ' || enum.schema_name || E';
+exception
+  when duplicate_schema then raise notice \'Schema exists skipping command.\';
+end;
+$$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+ALTER FUNCTION create_schema() OWNER TO admin;
+select create_schema();
+drop function create_schema();
+    ' as new_sql
+from    -=[schema_name]=-.enumeration_iud iud, -=[schema_name]=-.enumeration enum
+where enum.child_table_synch_method_ev_id in (22, 23)
+    and iud.operation in ('D', 'U', 'I')
+    and iud.applied_flag = false
+    and iud.enumeration_id = enum.enumeration_id
+union
 
 --sequence  sequence2  new_sql
 -------------------------------------------------------------
