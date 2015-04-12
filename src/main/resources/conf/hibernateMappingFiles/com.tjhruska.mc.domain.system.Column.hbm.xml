@@ -61,6 +61,7 @@ limitations under the License.
         <property name="dbIndex" type="DbIndex" column="index_ev_id" not-null="false"/>
         <property name="primaryKeyFlag" type="boolean" column="pk_flag" not-null="true"/>
         <property name="foreignKeyFlag" type="boolean" column="fk_flag" not-null="true"/>
+        <property name="foreignIncludeInCanonicalFlag" type="boolean" column="fk_include_in_canonical_flag" not-null="true"/>
         <property name="foreignTableId" type="integer" column="fk_table_id" not-null="false"/>
         <property name="foreignPogoCollectionDatatype" type="Container" column="fk_pojo_collection_container_ev_id" not-null="false"/>
         <property name="foreignPojoCollectionNameCamelCase" type="string" column="fk_pojo_collection_name_camel_case" not-null="false"/>

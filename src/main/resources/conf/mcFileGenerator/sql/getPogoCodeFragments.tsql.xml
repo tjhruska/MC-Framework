@@ -147,11 +147,21 @@ import groovy.transform.Canonical
 
 
 @Canonical (excludes=[' || 
-  string_agg(case 
-    when collected.mc_column_id is not null
-    then E'\'' || collected.fk_pojo_collection_name_camel_case  || E'\''
-    else ''
-    end, ', ' order by collected.sequence) || '])
+  string_agg(distinct
+    case 
+      when c.fk_include_in_canonical_flag = false
+      then E'\'' || c.name_camel_case  || E'\''
+      when collected.mc_column_id is not null
+      then E'\'' || collected.fk_pojo_collection_name_camel_case  || E'\''
+      else ''
+    end, ', ' order by 
+    case 
+      when c.fk_include_in_canonical_flag = false
+      then E'\'' || c.name_camel_case  || E'\''
+      when collected.mc_column_id is not null
+      then E'\'' || collected.fk_pojo_collection_name_camel_case  || E'\''
+      else ''
+    end) || '])
 @ToString (includeNames = true, includeSuper=true, includePackage=false)
 public class ' || max(t.name_camel_case) || case 
   when max(t.java_fq_superclass) is null then '' 
@@ -187,7 +197,7 @@ public class ' || max(t.name_camel_case) || case
 from
   -=[schema_name]=-.mc_table as t 
     left outer join 
-  -=[schema_name]=-.mc_column as c on t.mc_table_id = c.mc_table_id and c.pojo_constructor_field_flag = true
+  -=[schema_name]=-.mc_column as c on t.mc_table_id = c.mc_table_id -- and c.pojo_constructor_field_flag = true
     left outer join
   -=[schema_name]=-.mc_table as fkt on c.fk_table_id = fkt.mc_table_id
     left outer join

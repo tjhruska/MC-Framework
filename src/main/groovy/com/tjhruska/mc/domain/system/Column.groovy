@@ -45,6 +45,7 @@ public class Column extends BaseDomain {
   DbIndex dbIndex
   Boolean primaryKeyFlag
   Boolean foreignKeyFlag
+  Boolean foreignIncludeInCanonicalFlag
   Integer foreignTableId
   Container foreignPogoCollectionDatatype
   String foreignPojoCollectionNameCamelCase

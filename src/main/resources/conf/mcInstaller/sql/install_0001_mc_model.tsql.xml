@@ -159,6 +159,7 @@ CREATE TABLE -=[schema_name]=-.mc_column
   pk_flag boolean NOT NULL,
   
   fk_flag boolean NOT NULL,
+  fk_include_in_canonical_flag boolean NOT NULL default true,
   fk_table_id integer,                                   --table to which we are linking
   fk_collected_table_pk_column_id integer,               --table to which we are bridging a link
   fk_pojo_collection_container_ev_id integer,            --type of collection on foreign table 

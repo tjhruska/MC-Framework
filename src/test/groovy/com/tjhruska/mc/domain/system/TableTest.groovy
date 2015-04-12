@@ -47,12 +47,12 @@ class TableTest extends GeneratedDomainAndDaoTest {
   DaoDomain<Table> tableDao
 
   @Autowired
-  DaoDomain<Index> indexDao
-  IndexTest indexTest
-
-  @Autowired
   DaoDomain<Column> columnDao
   ColumnTest columnTest
+
+  @Autowired
+  DaoDomain<Index> indexDao
+  IndexTest indexTest
 
   @Before
   public void setup() {
