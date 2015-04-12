@@ -89,8 +89,8 @@ CASE
 END),
   CONSTRAINT mc_table_create_table_field_requirements CHECK (
 CASE
-    WHEN table_creation_rule_ev_id <> 35 AND suppress_table_changes_flag IS NOT NULL AND create_iud_table_flag IS NOT NULL AND schema_name IS NOT NULL THEN true
-    WHEN table_creation_rule_ev_id = 35 AND suppress_table_changes_flag IS NULL AND create_iud_table_flag IS NULL AND schema_name IS NULL AND within_create_sql IS NULL AND create_orm_flag IS NULL AND create_gui_data_service_flag IS NULL THEN true
+    WHEN table_creation_rule_ev_id <> 35 AND suppress_table_changes_flag IS NOT NULL AND create_iud_table_flag IS NOT NULL THEN true
+    WHEN table_creation_rule_ev_id = 35 AND suppress_table_changes_flag IS NULL AND create_iud_table_flag IS NULL AND within_create_sql IS NULL AND create_orm_flag IS NULL AND create_gui_data_service_flag IS NULL THEN true
     ELSE false
 END),
   CONSTRAINT mc_table_gui_pagify_field_requirements CHECK (
