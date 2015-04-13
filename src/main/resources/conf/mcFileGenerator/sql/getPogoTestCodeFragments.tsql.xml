@@ -331,7 +331,14 @@ select
         case when c.name_camel_case <> 'id' and c.fk_flag = true and c.fk_orm_lazy_flag is null then 'Id' else '' end ||
         case 
           when c.fk_flag = true and c.fk_orm_lazy_flag is not null 
-          then case when c.mc_table_id = fkt.mc_table_id then '(null)' else '(new ' || fkt.name_camel_case || 'Test(' || lower(substring(fkt.name_camel_case, 1, 1)) || substring(fkt.name_camel_case, 2, length(fkt.name_camel_case)) || 'Dao : getDao()' || ').persistTestObject(number + ' || c.mc_column_id || '))' end
+          then 
+              case 
+                  when 
+                      c.mc_table_id = fkt.mc_table_id 
+                      or c.fk_include_in_canonical_flag = false -- avoid infinite looping possibilities here
+                  then '(null)' 
+                  else '(new ' || fkt.name_camel_case || 'Test(' || lower(substring(fkt.name_camel_case, 1, 1)) || substring(fkt.name_camel_case, 2, length(fkt.name_camel_case)) || 'Dao : getDao()' || ').persistTestObject(number + ' || c.mc_column_id || '))' 
+              end
           else '(number)' 
         end ||
         case
