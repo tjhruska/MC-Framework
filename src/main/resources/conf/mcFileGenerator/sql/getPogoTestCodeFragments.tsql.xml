@@ -599,6 +599,7 @@ select
 --          '()[i])
 --    }'
       when c.pk_flag = true then ''
+      when c.fk_include_in_canonical_flag = false then ''
       when c.fk_flag = true and c.fk_orm_lazy_flag is not null 
       then 'new ' || fkt.name_camel_case || 'Test().assertDomainUpdates(expectedD.get' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || '(), actualD.get' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || '())'
       else
