@@ -58,6 +58,7 @@ class ColumnTest extends GeneratedDomainAndDaoTest {
     
     if (table == null) {
       column.setTable(new TableTest(tableDao : getDao()).persistTestObject(number + 30))
+      column.table.columns.add(column)
     } else {
       column.setTable(table)
     }
@@ -93,6 +94,7 @@ class ColumnTest extends GeneratedDomainAndDaoTest {
     column.setGuiFieldGroupSequence((Short)(33 * number))
     if (guiFieldGroupGuardColumn == null) {
       column.setGuiFieldGroupGuardColumn(null)
+      column.guiFieldGroupGuardColumn.guardedColumns.add(column)
     } else {
       column.setGuiFieldGroupGuardColumn(guiFieldGroupGuardColumn)
     }

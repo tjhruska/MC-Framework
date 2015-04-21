@@ -52,12 +52,12 @@ class EnumerationTest extends GeneratedDomainAndDaoTest {
   DaoDomain<Enumeration> enumerationDao
 
   @Autowired
-  DaoDomain<EnumerationLink> enumerationLinkDao
-  EnumerationLinkTest enumerationLinkTest
-
-  @Autowired
   DaoDomain<EnumerationValue> enumerationValueDao
   EnumerationValueTest enumerationValueTest
+
+  @Autowired
+  DaoDomain<EnumerationLink> enumerationLinkDao
+  EnumerationLinkTest enumerationLinkTest
 
   @Before
   public void setup() {

@@ -342,7 +342,7 @@ select
           else '(number)' 
         end ||
         case
-          when c.fk_flag = true and c.fk_orm_lazy_flag is not null and c.fk_pojo_collection_container_ev_id in (8, 9) and c.fk_pojo_collection_name_camel_case is not null
+          when c.fk_flag = true and c.fk_orm_lazy_flag is not null and c.fk_pojo_collection_container_ev_id in (9, 10) and c.fk_pojo_collection_name_camel_case is not null
           then '
       ' || lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || 
         '.' || c.name_camel_case || '.' || c.fk_pojo_collection_name_camel_case || '.add(' || lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || ')'

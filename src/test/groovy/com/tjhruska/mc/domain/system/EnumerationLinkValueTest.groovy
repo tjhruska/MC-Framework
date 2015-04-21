@@ -50,6 +50,7 @@ class EnumerationLinkValueTest extends GeneratedDomainAndDaoTest {
     
     if (enumerationLink == null) {
       enumerationLinkValue.setEnumerationLink(new EnumerationLinkTest(enumerationLinkDao : getDao()).persistTestObject(number + 179))
+      enumerationLinkValue.enumerationLink.linkValues.add(enumerationLinkValue)
     } else {
       enumerationLinkValue.setEnumerationLink(enumerationLink)
     }
