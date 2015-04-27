@@ -12,12 +12,14 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
-  
+ */
+
 package com.tjhruska.mc.database;
 
 import java.io.Serializable;
 import java.util.List;
+
+import org.hibernate.criterion.Order;
 
 import com.tjhruska.mc.database.restrictions.Restriction;
 
@@ -77,6 +79,19 @@ public interface DaoDomain<T extends BaseDomain> {
    * @return list of T which extends BaseDomain filtered by criteria
    */
   public List<T> findByCriteria(Restriction restriction, Integer limit);
+
+  /**
+   * @param order
+   * @return list of T which extends BaseDomain filtered by criteria
+   */
+  public List<T> findByCriteria(Restriction restriction, Order order);
+
+  /**
+   * @param limit
+   * @param order
+   * @return list of T which extends BaseDomain filtered by criteria
+   */
+  public List<T> findByCriteria(Restriction restriction, Integer limit, Order order);
 
   /**
    * Evicts <T> from any internal caches
