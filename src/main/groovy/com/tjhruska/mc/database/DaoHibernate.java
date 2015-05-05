@@ -115,7 +115,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.tjhruska.mc.database.DaoDomain#getDomainClass()
    */
   @Override
@@ -125,7 +125,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * com.tjhruska.mc.database.DaoDomain#save(com.tjhruska.mc.database.BaseDomain
    * )
@@ -138,7 +138,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * com.tjhruska.mc.database.DaoDomain#saveOrUpdate(com.tjhruska.mc.database
    * .BaseDomain)
@@ -152,7 +152,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * com.tjhruska.mc.database.DaoDomain#delete(com.tjhruska.mc.database.BaseDomain
    * )
@@ -165,7 +165,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.tjhruska.mc.database.DaoDomain#findByPK(java.io.Serializable)
    */
   @Override
@@ -177,7 +177,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.tjhruska.mc.database.DaoDomain#findAll()
    */
   @Override
@@ -193,7 +193,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see
    * com.tjhruska.mc.database.DaoDomain#findOneByCriteria(com.tjhruska.mc.database
    * .restrictions.Restriction)
@@ -209,7 +209,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * com.tjhruska.mc.database.DaoDomain#findByCriteria(com.tjhruska.mc.database
    * .restrictions.Restriction)
@@ -222,7 +222,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * com.tjhruska.mc.database.DaoDomain#findByCriteria(com.tjhruska.mc.database
    * .restrictions.Restriction, java.lang.Integer)
@@ -235,7 +235,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * com.tjhruska.mc.database.DaoDomain#findByCriteria(com.tjhruska.mc.database
    * .restrictions.Restriction, org.hibernate.criterion.Order)
@@ -248,7 +248,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * com.tjhruska.mc.database.DaoDomain#findByCriteria(com.tjhruska.mc.database
    * .restrictions.Restriction, java.lang.Integer,
@@ -264,6 +264,10 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
     }
     restrictionHelper.buildCriterion(criteria, restriction);
     if (order != null) {
+      if (order.getPropertyName().contains(".")) {
+        String association = order.getPropertyName().substring(0, order.getPropertyName().indexOf("."));
+        criteria.createAlias(association, association);
+      }
       criteria.addOrder(order);
     }
     List<T> ts = criteria.list();
@@ -273,7 +277,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.tjhruska.mc.database.DaoDomain#clearCache()
    */
   @Override
@@ -283,7 +287,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see com.tjhruska.mc.database.DaoDomain#flush()
    */
   @Override
