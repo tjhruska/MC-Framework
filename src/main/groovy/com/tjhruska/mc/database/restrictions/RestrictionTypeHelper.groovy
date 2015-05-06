@@ -16,13 +16,20 @@
 
 package com.tjhruska.mc.database.restrictions
 
-public interface Restriction {
+import java.util.HashMap
+import java.util.Map
 
-  public RestrictionType getRestrictionType()
+public class RestrictionTypeHelper {
 
-  public Restriction and(Restriction restriction)
+  private static final RestrictionTypeHelper restrictionTypeHelper = new RestrictionTypeHelper()
 
-  public Restriction or(Restriction restriction)
+  protected Map<String,RestrictionType> lookupMap
 
-  public Restriction not()
+  private RestrictionTypeHelper(){
+    lookupMap = new HashMap<String, RestrictionType>()
+  }
+
+  protected static RestrictionTypeHelper getRestrictionTypeHelper() {
+    return restrictionTypeHelper
+  }
 }
