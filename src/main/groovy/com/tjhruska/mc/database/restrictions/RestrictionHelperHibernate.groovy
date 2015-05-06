@@ -16,12 +16,12 @@
 
 package com.tjhruska.mc.database.restrictions
 
-import java.util.Collection
-import java.util.Map
+import static com.tjhruska.mc.database.restrictions.RestrictionType.*
 
 import org.hibernate.Criteria
 import org.hibernate.criterion.Criterion
 import org.hibernate.criterion.Restrictions
+
 
 public class RestrictionHelperHibernate implements RestrictionHelper{
 
