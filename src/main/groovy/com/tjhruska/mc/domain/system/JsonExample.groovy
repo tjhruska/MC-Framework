@@ -30,6 +30,6 @@ import groovy.transform.Canonical
 public class JsonExample extends BaseDomain {
 
   List jsonFoo
-  Map jsonBar
+  Map<String,Integer> jsonBar
 
 }

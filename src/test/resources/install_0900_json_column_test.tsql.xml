@@ -50,13 +50,13 @@ true, 'now()', null, false,
 'Add Date', null, false, null, null, null, null),
 
 (503, 50, 3, 'json_foo', 'Json Field 1', 
-'jsonFoo', 58, 'java.util', 'List', 'new java.util.ArrayList()', 25, false, false, null, null, 
+'jsonFoo', 58, 'java.util.List', 'List', 'new java.util.ArrayList()', 25, false, false, null, null, 
 null,null,null,null,null,null,
 false,  null, null, false, 
 'JSON Foo', 'Test JSON Field 1 (Nullable)', false, null, null, null, null),
 
 (504, 50, 4, 'json_bar', 'Json Field 2', 
-'jsonBar', 58, 'java.util', 'Map', 'new java.util.HashMap()', 25, false, false, null, null, 
+'jsonBar', 58, 'java.util.Map', 'Map<String,Integer>', 'new java.util.HashMap<String,Integer>()', 25, false, false, null, null, 
 null,null,null,null,null,null,
 true, E'\'{}\'', null, false, 
 'JSON Bar', 'Test JSON Field 2 (Not Nullable)', false, null, null, null, null);

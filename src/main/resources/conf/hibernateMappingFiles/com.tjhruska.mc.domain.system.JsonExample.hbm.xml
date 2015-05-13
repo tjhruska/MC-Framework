@@ -21,12 +21,12 @@ limitations under the License.
 <hibernate-mapping auto-import="false" package="com.tjhruska.mc.domain.system">
 
 
-    <typedef name="List" class="com.tjhruska.mc.database.JsonToClassUserType">
-        <param name="mappedClass">java.util.List</param>
+    <typedef name="json_bar" class="com.tjhruska.mc.database.JsonToClassUserType">
+        <param name="mappedClass">java.util.Map</param>
     </typedef>
 
-    <typedef name="Map" class="com.tjhruska.mc.database.JsonToClassUserType">
-        <param name="mappedClass">java.util.Map</param>
+    <typedef name="json_foo" class="com.tjhruska.mc.database.JsonToClassUserType">
+        <param name="mappedClass">java.util.List</param>
     </typedef>
 
     <class name="JsonExample" table="json_example" schema="mc" dynamic-update="true">
@@ -39,7 +39,7 @@ limitations under the License.
         </id>
         <property name="addDate" type="org.jadira.usertype.dateandtime.joda.PersistentDateTime" not-null="true" column="add_date" insert="false" update="false" />
 
-        <property name="jsonFoo" type="List" column="json_foo" not-null="false"/>
-        <property name="jsonBar" type="Map" column="json_bar" not-null="true"/>
+        <property name="jsonFoo" type="json_foo" column="json_foo" not-null="false"/>
+        <property name="jsonBar" type="json_bar" column="json_bar" not-null="true"/>
     </class>    
 </hibernate-mapping>

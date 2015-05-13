@@ -41,7 +41,7 @@ class JsonExampleTest extends GeneratedDomainAndDaoTest {
     JsonExample jsonExample = new JsonExample()
     
     jsonExample.setJsonFoo(new java.util.ArrayList())
-    jsonExample.setJsonBar(new java.util.HashMap())
+    jsonExample.setJsonBar(new java.util.HashMap<String,Integer>())
     
     jsonExample
   }

@@ -115,12 +115,12 @@ where
 --id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
 select
   t.mc_table_id as id, 20.000 as sequence, 
-  'import ' || c.datatype_ref1 || '.' || c.datatype_ref2 as sequence2,
+  'import ' || c.datatype_ref1 as sequence2,
   t.suppress_pojo_changes_flag as suppress_changes_flag,
   t.src_folder_tag as folder_tag, replace(t.java_package, '.', '/') as java_package, t.name_camel_case || '.groovy' as fileName, null::varchar as fileName2,
   null::varchar as fragment2, 
 '
-import ' || c.datatype_ref1 || '.' || c.datatype_ref2 || ';'
+import ' || c.datatype_ref1 || ';'
  as fragment
 from
   -=[schema_name]=-.mc_table as t,
