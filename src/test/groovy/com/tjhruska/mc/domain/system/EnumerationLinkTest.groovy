@@ -69,13 +69,13 @@ class EnumerationLinkTest extends GeneratedDomainAndDaoTest {
     
     enumerationLink.setLinkCreationRule(LinkCreationRule.getLinkCreationRuleBySequence(1))
     if (enumerationA == null) {
-      enumerationLink.setEnumerationA(new EnumerationTest(enumerationDao : getDao()).persistTestObject(number + 136))
+      enumerationLink.setEnumerationA(new EnumerationTest(enumerationDao : getDao()).persistTestObject(number))
       enumerationLink.enumerationA.linksAsA.add(enumerationLink)
     } else {
       enumerationLink.setEnumerationA(enumerationA)
     }
     if (enumerationB == null) {
-      enumerationLink.setEnumerationB(new EnumerationTest(enumerationDao : getDao()).persistTestObject(number + 137))
+      enumerationLink.setEnumerationB(new EnumerationTest(enumerationDao : getDao()).persistTestObject(number))
       enumerationLink.enumerationB.linksAsB.add(enumerationLink)
     } else {
       enumerationLink.setEnumerationB(enumerationB)
@@ -124,7 +124,7 @@ class EnumerationLinkTest extends GeneratedDomainAndDaoTest {
     List<EnumerationLinkValue> linkValues = new ArrayList()
     if (enumerationLinkValueTest != null) {
       enumerationLinkValueTest.enumerationLink = enumerationLink
-      (1..(10-number)).each { i ->
+      (1..(number+2)).each { i ->
       linkValues.add(enumerationLinkValueTest.getTestObject(i+(10*number), i-1))
       }
     }

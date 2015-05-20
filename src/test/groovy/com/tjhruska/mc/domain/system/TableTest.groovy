@@ -103,7 +103,7 @@ class TableTest extends GeneratedDomainAndDaoTest {
     List<Column> columns = new ArrayList()
     if (columnTest != null) {
       columnTest.table = table
-      (1..(10-number)).each { i ->
+      (1..(number+2)).each { i ->
       columns.add(columnTest.getTestObject(i+(10*number), i-1))
       }
     }
@@ -112,7 +112,7 @@ class TableTest extends GeneratedDomainAndDaoTest {
     Set<Index> indexes = new HashSet()
     if (indexTest != null) {
       indexTest.table = table
-      (1..(10-number)).each { i ->
+      (1..(number+2)).each { i ->
       indexes.add(indexTest.getTestObject(i+(10*number), i-1))
       }
     }

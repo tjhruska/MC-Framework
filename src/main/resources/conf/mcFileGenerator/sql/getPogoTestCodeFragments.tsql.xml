@@ -333,7 +333,7 @@ select
                       c.mc_table_id = fkt.mc_table_id 
                       or c.fk_include_in_canonical_flag = false -- avoid infinite looping possibilities here
                   then '(null)' 
-                  else '(new ' || fkt.name_camel_case || 'Test(' || lower(substring(fkt.name_camel_case, 1, 1)) || substring(fkt.name_camel_case, 2, length(fkt.name_camel_case)) || 'Dao : getDao()' || ').persistTestObject(number + ' || c.mc_column_id || '))' 
+                  else '(new ' || fkt.name_camel_case || 'Test(' || lower(substring(fkt.name_camel_case, 1, 1)) || substring(fkt.name_camel_case, 2, length(fkt.name_camel_case)) || 'Dao : getDao()' || ').persistTestObject(number))' 
               end
           else '(number)' 
         end ||
@@ -387,7 +387,7 @@ select
     when d.datatype_ev_id in (52, 53, 54, 55) then --integer, short, big decimal, or double array
     '
     ' || d.java_class || ' ' || c.name_camel_case || ' = new ' || substring(d.java_class, 0, length(d.java_class)) || 'number' || ']
-    (0..(number - 1)).each { i ->
+    (0..(number)).each { i ->
       ' || c.name_camel_case || '[i] = ' || case when d.datatype_ev_id in (54, 55) then '1.001' else '1' end || ' * i
     }
     ' || lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || 
@@ -439,7 +439,7 @@ select
       ' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case)) || 'Test.'
       || c_with_fk.name_camel_case || ' = ' 
       || lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || '
-      (1..(10-number)).each { i ->
+      (1..(number+2)).each { i ->
       ' || c_with_fk.fk_pojo_collection_name_camel_case ||
       case
     when d.container_ev_id in (9, 10)

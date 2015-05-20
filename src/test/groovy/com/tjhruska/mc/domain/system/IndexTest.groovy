@@ -64,7 +64,7 @@ class IndexTest extends GeneratedDomainAndDaoTest {
     Index index = new Index()
     
     if (table == null) {
-      index.setTable(new TableTest(tableDao : getDao()).persistTestObject(number + 59))
+      index.setTable(new TableTest(tableDao : getDao()).persistTestObject(number))
       index.table.indexes.add(index)
     } else {
       index.setTable(table)
@@ -75,7 +75,7 @@ class IndexTest extends GeneratedDomainAndDaoTest {
     List<Column> columns = new ArrayList()
     if (columnTest != null) {
       columnTest.index = index
-      (1..(10-number)).each { i ->
+      (1..(number+2)).each { i ->
       columns.add(columnTest.getTestObject(i+(10*number), i-1))
       }
     }

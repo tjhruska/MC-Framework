@@ -121,7 +121,7 @@ class EnumerationTest extends GeneratedDomainAndDaoTest {
     List<EnumerationValue> enumerationValues = new ArrayList()
     if (enumerationValueTest != null) {
       enumerationValueTest.enumeration = enumeration
-      (1..(10-number)).each { i ->
+      (1..(number+2)).each { i ->
       enumerationValues.add(enumerationValueTest.getTestObject(i+(10*number), i-1))
       }
     }
@@ -130,7 +130,7 @@ class EnumerationTest extends GeneratedDomainAndDaoTest {
     Set<EnumerationLink> linksAsA = new HashSet()
     if (enumerationLinkTest != null) {
       enumerationLinkTest.enumerationA = enumeration
-      (1..(10-number)).each { i ->
+      (1..(number+2)).each { i ->
       linksAsA.add(enumerationLinkTest.getTestObject(i+(10*number), i-1))
       }
     }
@@ -139,7 +139,7 @@ class EnumerationTest extends GeneratedDomainAndDaoTest {
     Set<EnumerationLink> linksAsB = new HashSet()
     if (enumerationLinkTest != null) {
       enumerationLinkTest.enumerationB = enumeration
-      (1..(10-number)).each { i ->
+      (1..(number+2)).each { i ->
       linksAsB.add(enumerationLinkTest.getTestObject(i+(10*number), i-1))
       }
     }

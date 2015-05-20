@@ -49,7 +49,7 @@ class EnumerationValueTest extends GeneratedDomainAndDaoTest {
     EnumerationValue enumerationValue = new EnumerationValue()
     
     if (enumeration == null) {
-      enumerationValue.setEnumeration(new EnumerationTest(enumerationDao : getDao()).persistTestObject(number + 123))
+      enumerationValue.setEnumeration(new EnumerationTest(enumerationDao : getDao()).persistTestObject(number))
       enumerationValue.enumeration.enumerationValues.add(enumerationValue)
     } else {
       enumerationValue.setEnumeration(enumeration)
