@@ -308,7 +308,7 @@ select
     when d.datatype_ev_id = 1 then --boolean
       lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || 
         '.set' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || 
-        '(' || c.sequence || '%number == 0)'
+        '(number == 0 || ' || c.sequence || '%number == 0)'
     when c.name_camel_case = 'sequence' then --special handling for sequence fields
       lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || 
         '.setSequence(' || case when d.datatype_ev_id = 44 then '(Short)' else '' end || 'sequence)'
@@ -386,7 +386,7 @@ select
         '((new BigDecimal("3.14")).multiply(number))'
     when d.datatype_ev_id in (52, 53, 54, 55) then --integer, short, big decimal, or double array
     '
-    ' || d.java_class || ' ' || c.name_camel_case || ' = new ' || substring(d.java_class, 0, length(d.java_class)) || 'number' || ']
+    ' || d.java_class || ' ' || c.name_camel_case || ' = new ' || substring(d.java_class, 0, length(d.java_class)) || 'number + 1' || ']
     (0..(number)).each { i ->
       ' || c.name_camel_case || '[i] = ' || case when d.datatype_ev_id in (54, 55) then '1.001' else '1' end || ' * i
     }
