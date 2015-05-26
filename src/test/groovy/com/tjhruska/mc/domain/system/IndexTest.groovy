@@ -135,7 +135,6 @@ class IndexTest extends GeneratedDomainAndDaoTest {
       columnTest.deleteObject(it)
     }
     target?.columns.clear()
-    indexDao.delete(target)
     indexDao.flush()
     indexDao.evict(target)
   }

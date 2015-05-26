@@ -123,7 +123,6 @@ class EnumerationLinkValueTest extends GeneratedDomainAndDaoTest {
     EnumerationLinkValue target = (EnumerationLinkValue)domain
 
     enumerationLinkTest.deleteObject(target.enumerationLink)
-    enumerationLinkValueDao.delete(target)
     enumerationLinkValueDao.flush()
     enumerationLinkValueDao.evict(target)
   }

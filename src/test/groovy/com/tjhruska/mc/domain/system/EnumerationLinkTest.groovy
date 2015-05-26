@@ -263,7 +263,6 @@ class EnumerationLinkTest extends GeneratedDomainAndDaoTest {
 
     enumerationTest.deleteObject(target.enumerationA)
     enumerationTest.deleteObject(target.enumerationB)
-    enumerationLinkDao.delete(target)
     enumerationLinkDao.flush()
     enumerationLinkDao.evict(target)
   }

@@ -117,7 +117,6 @@ class EnumerationValueTest extends GeneratedDomainAndDaoTest {
     EnumerationValue target = (EnumerationValue)domain
 
     enumerationTest.deleteObject(target.enumeration)
-    enumerationValueDao.delete(target)
     enumerationValueDao.flush()
     enumerationValueDao.evict(target)
   }

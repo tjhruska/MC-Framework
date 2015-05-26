@@ -233,7 +233,6 @@ class ColumnTest extends GeneratedDomainAndDaoTest {
       columnTest.deleteObject(it)
     }
     target?.guardedColumns.clear()
-    columnDao.delete(target)
     columnDao.flush()
     columnDao.evict(target)
   }
