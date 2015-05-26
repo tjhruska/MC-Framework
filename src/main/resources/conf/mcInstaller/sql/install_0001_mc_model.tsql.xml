@@ -165,6 +165,7 @@ CREATE TABLE -=[schema_name]=-.mc_column
   fk_pojo_collection_container_ev_id integer,            --type of collection on foreign table 
   fk_pojo_collection_name_camel_case character varying,  --name of collection on foreign table
   fk_pojo_collection_local_key_column_id integer,        --if map/list the column on current table is the key/index
+  fk_pojo_collection_orm_cascade character varying,      --cascade style to use from parent side of collection
   fk_orm_lazy_flag boolean,                              --should collection on foreign table be lazy loaded
   fk_orm_link_thru_to_table_id integer,                  --is current table linking table only? if so point to referenced table
   fk_orm_inverse_flag boolean,                           --true on side of link that iis responsible for persistance; true = local, false = foreign
@@ -201,7 +202,7 @@ END),
   CONSTRAINT mc_column_fk_pojo_collection CHECK (
 CASE
     WHEN fk_pojo_collection_container_ev_id IS NULL THEN true
-    WHEN fk_orm_lazy_flag is null or fk_orm_inverse_flag is null THEN false
+    WHEN fk_orm_lazy_flag is null or fk_orm_inverse_flag is null or fk_pojo_collection_name_camel_case is null or fk_pojo_collection_orm_cascade is null THEN false
     ELSE true
 END), 
   CONSTRAINT mc_column_gui_field_group_field_requirements CHECK (

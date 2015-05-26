@@ -37,6 +37,17 @@ class EnumerationLinkValueTest extends GeneratedDomainAndDaoTest {
   @Autowired
   DaoDomain<EnumerationLinkValue> enumerationLinkValueDao
 
+  @Autowired
+  DaoDomain<EnumerationLink> enumerationLinkDao
+  EnumerationLinkTest enumerationLinkTest
+
+  @Before
+  public void setup() {
+
+    enumerationLinkTest = new EnumerationLinkTest()
+    enumerationLinkTest.enumerationLinkDao = enumerationLinkDao
+  }
+
   @Override
   public DaoDomain getDao() {
     enumerationLinkValueDao
@@ -49,7 +60,7 @@ class EnumerationLinkValueTest extends GeneratedDomainAndDaoTest {
     EnumerationLinkValue enumerationLinkValue = new EnumerationLinkValue()
     
     if (enumerationLink == null) {
-      enumerationLinkValue.setEnumerationLink(new EnumerationLinkTest(enumerationLinkDao : getDao()).persistTestObject(number))
+      enumerationLinkValue.setEnumerationLink(enumerationLinkTest.persistTestObject(number))
       enumerationLinkValue.enumerationLink.linkValues.add(enumerationLinkValue)
     } else {
       enumerationLinkValue.setEnumerationLink(enumerationLink)
@@ -91,7 +102,7 @@ class EnumerationLinkValueTest extends GeneratedDomainAndDaoTest {
   public void assertDomainUpdates(BaseDomain expected, BaseDomain actual) {
     EnumerationLinkValue expectedD = (EnumerationLinkValue)expected
     EnumerationLinkValue actualD = (EnumerationLinkValue)actual
-    new EnumerationLinkTest().assertDomainUpdates(expectedD.getEnumerationLink(), actualD.getEnumerationLink())
+    enumerationLinkTest.assertDomainUpdates(expectedD.getEnumerationLink(), actualD.getEnumerationLink())
     assertEquals("enumerationValueA is different than expected", expectedD.getEnumerationValueAId(), actualD.getEnumerationValueAId())
     assertEquals("enumerationValueB is different than expected", expectedD.getEnumerationValueBId(), actualD.getEnumerationValueBId())
     assertEquals("name is different than expected", expectedD.getName(), actualD.getName())
@@ -103,9 +114,17 @@ class EnumerationLinkValueTest extends GeneratedDomainAndDaoTest {
     assertEquals("column4Value is different than expected", expectedD.getColumn4Value(), actualD.getColumn4Value())
     assertEquals("column5Value is different than expected", expectedD.getColumn5Value(), actualD.getColumn5Value())
   }
-
+  
   @Override
-  public void deleteChildrenIfNeeded(BaseDomain domain) {
+  void deleteObject(BaseDomain domain) {
+    if (domain == null) {
+      return
+    }
     EnumerationLinkValue target = (EnumerationLinkValue)domain
+
+    enumerationLinkTest.deleteObject(target.enumerationLink)
+    enumerationLinkValueDao.delete(target)
+    enumerationLinkValueDao.flush()
+    enumerationLinkValueDao.evict(target)
   }
 }

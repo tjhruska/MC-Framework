@@ -182,7 +182,7 @@ select t.mc_table_id as id, 30.000 as sequence, '0.000' as sequence2, false as s
   string_agg(case
         when d.container_ev_id = 9 then '
         <set name="' || c_with_fk.fk_pojo_collection_name_camel_case || '" lazy="' 
-            || c_with_fk.fk_orm_lazy_flag || '" cascade="all-delete-orphan" fetch="subselect" inverse="' 
+            || c_with_fk.fk_orm_lazy_flag || '" cascade="' || c_with_fk.fk_pojo_collection_orm_cascade || '" fetch="subselect" inverse="' 
             || c_with_fk.fk_orm_inverse_flag || '">
             <key column="' || c_with_fk.name || '"/>
             <one-to-many class="' || collected_table.java_package || '.' || collected_table.name_camel_case || '"/>
@@ -191,7 +191,7 @@ select t.mc_table_id as id, 30.000 as sequence, '0.000' as sequence2, false as s
         <list name="' || c_with_fk.fk_pojo_collection_name_camel_case || '" schema="' || link_table.schema_name || '" table="' || link_table.name 
             || '" fetch="subselect" inverse="' 
             || c_with_fk.fk_orm_inverse_flag || '" lazy="' -- where="xxx_id not in (15, 36, 29)"
-            || c_with_fk.fk_orm_lazy_flag || '" cascade="save-update" >
+            || c_with_fk.fk_orm_lazy_flag || '" cascade="' || c_with_fk.fk_pojo_collection_orm_cascade || '" >
             <key column="' || c_with_fk.name || '" />' || --property-ref="participantSet" />
             '
             <list-index column="' || key_column.name || '" />' || 
@@ -204,7 +204,7 @@ select t.mc_table_id as id, 30.000 as sequence, '0.000' as sequence2, false as s
         when d.container_ev_id = 11 then '
         <map name="' || c_with_fk.fk_pojo_collection_name_camel_case || '" schema="' || link_table.schema_name || '" table="' || link_table.name || '" lazy="' 
             || c_with_fk.fk_orm_lazy_flag || '" inverse="' 
-            || c_with_fk.fk_orm_inverse_flag || '" cascade="save-update" fetch="subselect">
+            || c_with_fk.fk_orm_inverse_flag || '" cascade="' || c_with_fk.fk_pojo_collection_orm_cascade || '" fetch="subselect">
             <key column="' || c_with_fk.name || '" unique="true" /> 
             <map-key column="' || key_column.name || '" type="' || key_datatype.hibernate || '" />
             <one-to-many class="' || collected_table.java_package || '.' || collected_table.name_camel_case || '" />

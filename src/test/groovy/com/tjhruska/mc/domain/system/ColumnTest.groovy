@@ -44,6 +44,22 @@ class ColumnTest extends GeneratedDomainAndDaoTest {
   @Autowired
   DaoDomain<Column> columnDao
 
+  ColumnTest columnTest
+
+  @Autowired
+  DaoDomain<Table> tableDao
+  TableTest tableTest
+
+  @Before
+  public void setup() {
+
+    columnTest = new ColumnTest()
+    columnTest.columnDao = columnDao
+
+    tableTest = new TableTest()
+    tableTest.tableDao = tableDao
+  }
+
   @Override
   public DaoDomain getDao() {
     columnDao
@@ -57,7 +73,7 @@ class ColumnTest extends GeneratedDomainAndDaoTest {
     Column column = new Column()
     
     if (table == null) {
-      column.setTable(new TableTest(tableDao : getDao()).persistTestObject(number))
+      column.setTable(tableTest.persistTestObject(number))
       column.table.columns.add(column)
     } else {
       column.setTable(table)
@@ -71,34 +87,35 @@ class ColumnTest extends GeneratedDomainAndDaoTest {
     column.setDatatypeRef2("datatype_ref2${number}")
     column.setDatatypeRef3("datatype_ref3${number}")
     column.setDbIndex(DbIndex.getDbIndexBySequence(1))
-    column.setPrimaryKeyFlag(13%number == 0)
-    column.setForeignKeyFlag(14%number == 0)
-    column.setForeignIncludeInCanonicalFlag(15%number == 0)
+    column.setPrimaryKeyFlag(number == 0 || 13%number == 0)
+    column.setForeignKeyFlag(number == 0 || 14%number == 0)
+    column.setForeignIncludeInCanonicalFlag(number == 0 || 15%number == 0)
     column.setForeignTableId(number)
     column.setForeignPogoCollectionDatatype(Container.getContainerBySequence(1))
     column.setForeignPojoCollectionNameCamelCase("fk_pojo_collection_name_camel_case${number}")
     column.setForeignPojoCollectionLocalKeyColumnId(number)
-    column.setForeignOrmLazyFlag(20%number == 0)
+    column.setForeignPojoCollectionORMCascade("fk_pojo_collection_orm_cascade${number}")
+    column.setForeignOrmLazyFlag(number == 0 || 21%number == 0)
     column.setForeignKeyLinkThruToTableId(number)
-    column.setForeignKeyOrmInverseFlag(22%number == 0)
+    column.setForeignKeyOrmInverseFlag(number == 0 || 23%number == 0)
     column.setFkGuiColumnFilterForeign("fk_gui_column_filter_foreign${number}")
     column.setFkGuiColumnFilterLocal("fk_gui_column_filter_local${number}")
-    column.setNotNullFlag(25%number == 0)
+    column.setNotNullFlag(number == 0 || 26%number == 0)
     column.setDefaultValue("default_value${number}")
     column.setConstraintSQL("constraint_sql${number}")
-    column.setPojoConstructorFieldFlag(28%number == 0)
+    column.setPojoConstructorFieldFlag(number == 0 || 29%number == 0)
     column.setGuiHeader("gui_header${number}")
     column.setGuiToolTip("gui_tool_tip${number}")
-    column.setGuiSortableFlag(31%number == 0)
+    column.setGuiSortableFlag(number == 0 || 32%number == 0)
     column.setGuiFieldGroupName("gui_field_group_name${number}")
-    column.setGuiFieldGroupSequence((Short)(33 * number))
+    column.setGuiFieldGroupSequence((Short)(34 * number))
     if (guiFieldGroupGuardColumn == null) {
       column.setGuiFieldGroupGuardColumn(null)
       column.guiFieldGroupGuardColumn.guardedColumns.add(column)
     } else {
       column.setGuiFieldGroupGuardColumn(guiFieldGroupGuardColumn)
     }
-    column.setGuiFieldGroupFieldRequiredFlag(35%number == 0)
+    column.setGuiFieldGroupFieldRequiredFlag(number == 0 || 36%number == 0)
     
     List<Column> guardedColumns = new ArrayList()
     if (columnTest != null) {
@@ -133,6 +150,7 @@ class ColumnTest extends GeneratedDomainAndDaoTest {
     target.setForeignPogoCollectionDatatype(source.getForeignPogoCollectionDatatype())
     target.setForeignPojoCollectionNameCamelCase(source.getForeignPojoCollectionNameCamelCase())
     target.setForeignPojoCollectionLocalKeyColumnId(source.getForeignPojoCollectionLocalKeyColumnId())
+    target.setForeignPojoCollectionORMCascade(source.getForeignPojoCollectionORMCascade())
     target.setForeignOrmLazyFlag(source.getForeignOrmLazyFlag())
     target.setForeignKeyLinkThruToTableId(source.getForeignKeyLinkThruToTableId())
     target.setForeignKeyOrmInverseFlag(source.getForeignKeyOrmInverseFlag())
@@ -166,7 +184,7 @@ class ColumnTest extends GeneratedDomainAndDaoTest {
   public void assertDomainUpdates(BaseDomain expected, BaseDomain actual) {
     Column expectedD = (Column)expected
     Column actualD = (Column)actual
-    new TableTest().assertDomainUpdates(expectedD.getTable(), actualD.getTable())
+    tableTest.assertDomainUpdates(expectedD.getTable(), actualD.getTable())
     assertEquals("sequence is different than expected", expectedD.getSequence(), actualD.getSequence())
     assertEquals("name is different than expected", expectedD.getName(), actualD.getName())
     assertEquals("description is different than expected", expectedD.getDescription(), actualD.getDescription())
@@ -183,6 +201,7 @@ class ColumnTest extends GeneratedDomainAndDaoTest {
     assertEquals("foreignPogoCollectionDatatype is different than expected", expectedD.getForeignPogoCollectionDatatype(), actualD.getForeignPogoCollectionDatatype())
     assertEquals("foreignPojoCollectionNameCamelCase is different than expected", expectedD.getForeignPojoCollectionNameCamelCase(), actualD.getForeignPojoCollectionNameCamelCase())
     assertEquals("foreignPojoCollectionLocalKeyColumn is different than expected", expectedD.getForeignPojoCollectionLocalKeyColumnId(), actualD.getForeignPojoCollectionLocalKeyColumnId())
+    assertEquals("foreignPojoCollectionORMCascade is different than expected", expectedD.getForeignPojoCollectionORMCascade(), actualD.getForeignPojoCollectionORMCascade())
     assertEquals("foreignOrmLazyFlag is different than expected", expectedD.getForeignOrmLazyFlag(), actualD.getForeignOrmLazyFlag())
     assertEquals("foreignKeyLinkThruToTable is different than expected", expectedD.getForeignKeyLinkThruToTableId(), actualD.getForeignKeyLinkThruToTableId())
     assertEquals("foreignKeyOrmInverseFlag is different than expected", expectedD.getForeignKeyOrmInverseFlag(), actualD.getForeignKeyOrmInverseFlag())
@@ -197,16 +216,25 @@ class ColumnTest extends GeneratedDomainAndDaoTest {
     assertEquals("guiSortableFlag is different than expected", expectedD.getGuiSortableFlag(), actualD.getGuiSortableFlag())
     assertEquals("guiFieldGroupName is different than expected", expectedD.getGuiFieldGroupName(), actualD.getGuiFieldGroupName())
     assertEquals("guiFieldGroupSequence is different than expected", expectedD.getGuiFieldGroupSequence(), actualD.getGuiFieldGroupSequence())
-    new ColumnTest().assertDomainUpdates(expectedD.getGuiFieldGroupGuardColumn(), actualD.getGuiFieldGroupGuardColumn())
+    columnTest.assertDomainUpdates(expectedD.getGuiFieldGroupGuardColumn(), actualD.getGuiFieldGroupGuardColumn())
     assertEquals("guiFieldGroupFieldRequiredFlag is different than expected", expectedD.getGuiFieldGroupFieldRequiredFlag(), actualD.getGuiFieldGroupFieldRequiredFlag())
     assertEquals("size of guardedColumns is different than expected", expectedD.guardedColumns.size(), actualD.guardedColumns.size())
   }
-
+  
   @Override
-  public void deleteChildrenIfNeeded(BaseDomain domain) {
-    Column target = (Column)domain
-    target.guardedColumns.each {
-      columnTest.getDao().delete(it)
+  void deleteObject(BaseDomain domain) {
+    if (domain == null) {
+      return
     }
+    Column target = (Column)domain
+
+    tableTest.deleteObject(target.table)
+    target?.guardedColumns.each {
+      columnTest.deleteObject(it)
+    }
+    target?.guardedColumns.clear()
+    columnDao.delete(target)
+    columnDao.flush()
+    columnDao.evict(target)
   }
 }

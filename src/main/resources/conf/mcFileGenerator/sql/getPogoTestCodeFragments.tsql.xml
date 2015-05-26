@@ -197,10 +197,10 @@ group by
   t.mc_table_id, t.suppress_pojo_changes_flag, t.constructor_from_field_flag
 UNION
 -------------------------
---Section 34 - autowire dao objects
+--Section 35 - autowire dao objects   --  THIS IS PURPOSELY THE SAME SEQUENCE AS NEXT SECTION SO ONLY UNIUQE VALUES COME THROUGH
 --id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
 select
-  t.mc_table_id as id, 34.000 as sequence, collected_table.name_camel_case as sequence2, t.suppress_pojo_changes_flag as suppress_changes_flag,
+  t.mc_table_id as id, 35.000 as sequence, collected_table.name_camel_case as sequence2, t.suppress_pojo_changes_flag as suppress_changes_flag,
   case when t.src_folder_tag = 'rootDirectory' then 'testDirectory' else t.src_folder_tag end as folder_tag, 
   replace(t.java_package, '.', '/') as java_package, t.name_camel_case || 'Test.groovy' as fileName, null::varchar as fileName2,
   null::varchar as fragment2, '
@@ -229,7 +229,34 @@ where
   and t.mc_table_id <> c_with_fk.mc_table_id
 UNION
 -------------------------
---Section 36 - write setup() method
+--Section 35 - autowire dao objects for properties
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select
+  t.mc_table_id as id, 35.000 as sequence, fk.name_camel_case as sequence2, t.suppress_pojo_changes_flag as suppress_changes_flag,
+  case when t.src_folder_tag = 'rootDirectory' then 'testDirectory' else t.src_folder_tag end as folder_tag, 
+  replace(t.java_package, '.', '/') as java_package, t.name_camel_case || 'Test.groovy' as fileName, null::varchar as fileName2,
+  null::varchar as fragment2, 
+  case when t.mc_table_id = c_with_fk.fk_table_id then '' else '
+  @Autowired
+  DaoDomain<' || fk.name_camel_case || '> ' 
+      || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
+      || 'Dao' end || '
+  ' || fk.name_camel_case || 'Test ' 
+      || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
+      || 'Test
+' as fragment
+from
+  -=[schema_name]=-.mc_table as t join
+  -=[schema_name]=-.mc_column as c_with_fk on t.mc_table_id = c_with_fk.mc_table_id join
+  -=[schema_name]=-.mc_table as fk on c_with_fk.fk_table_id = fk.mc_table_id
+where
+  t.create_pojo_flag = true
+  
+  and c_with_fk.fk_table_id is not null
+  and c_with_fk.fk_orm_lazy_flag is not null
+UNION
+-------------------------
+--Section 36 - begin setup() method
 --id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
 select
   t.mc_table_id as id, 36.000 as sequence, '0.000' as sequence2, t.suppress_pojo_changes_flag as suppress_changes_flag,
@@ -239,6 +266,7 @@ select
   @Before
   public void setup() {'
   ||
+  coalesce(
   string_agg(distinct '
     ' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case))
     || 'Test = new ' || collected_table.name_camel_case || 'Test()
@@ -253,25 +281,72 @@ select
     || 'Test.' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case))
     || 'Dao = ' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case))
     || 'Dao'
-  )
+  ), '')
+  || '
+' as fragment
+from
+  -=[schema_name]=-.mc_table as t 
+    left outer join
+  -=[schema_name]=-.mc_column as c_with_fk 
+    on t.mc_table_id = c_with_fk.fk_table_id 
+    and t.mc_table_id <> c_with_fk.mc_table_id
+    left outer join
+  -=[schema_name]=-.mc_column as collected_column 
+    on c_with_fk.fk_collected_table_pk_column_id = collected_column.mc_column_id 
+    left outer join
+  -=[schema_name]=-.mc_table as collected_table 
+    on (collected_column.pk_flag = true and collected_column.mc_table_id = collected_table.mc_table_id)
+    or (collected_column.fk_flag = true and collected_column.fk_table_id = collected_table.mc_table_id) 
+    left outer join
+  -=[schema_name]=-.container_ev d 
+    on c_with_fk.fk_pojo_collection_container_ev_id = d.container_ev_id
+    left outer join
+  -=[schema_name]=-.mc_column as key_column 
+    on (c_with_fk.fk_pojo_collection_local_key_column_id = key_column.mc_column_id)
+    left outer join
+  -=[schema_name]=-.datatype_ev as key_datatype 
+    on (key_column.datatype_ev_id = key_datatype.datatype_ev_id)
+where
+  t.create_pojo_flag = true
+group by t.mc_table_id, t.suppress_pojo_changes_flag
+UNION
+-------------------------
+--Section 37 - complete setup() method
+select
+  t.mc_table_id as id, 37.000 as sequence, '0.000' as sequence2, t.suppress_pojo_changes_flag as suppress_changes_flag,
+  max(case when t.src_folder_tag = 'rootDirectory' then 'testDirectory' else t.src_folder_tag end) as folder_tag, 
+  max(replace(t.java_package, '.', '/')) as java_package, max(t.name_camel_case || 'Test.groovy') as fileName, null::varchar as fileName2,
+  null::varchar as fragment2, coalesce(
+  string_agg(distinct '
+    ' || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
+    || 'Test = new ' || fk.name_camel_case || 'Test()
+    ' || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
+    || 'Test.' || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
+    || 'Dao = ' || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
+    || 'Dao', '
+' order by '
+    ' || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
+    || 'Test = new ' || fk.name_camel_case || 'Test()
+    ' || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
+    || 'Test.' || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
+    || 'Dao = ' || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
+    || 'Dao'
+  ), '')
   || '
   }
 ' as fragment
 from
-  -=[schema_name]=-.mc_table as t join
-  -=[schema_name]=-.mc_column as c_with_fk on t.mc_table_id = c_with_fk.fk_table_id join
-  -=[schema_name]=-.mc_column as collected_column on c_with_fk.fk_collected_table_pk_column_id = collected_column.mc_column_id join
-  -=[schema_name]=-.mc_table as collected_table 
-    on (collected_column.pk_flag = true and collected_column.mc_table_id = collected_table.mc_table_id)
-    or (collected_column.fk_flag = true and collected_column.fk_table_id = collected_table.mc_table_id) join
-  -=[schema_name]=-.container_ev d on c_with_fk.fk_pojo_collection_container_ev_id = d.container_ev_id
+  -=[schema_name]=-.mc_table as t 
     left outer join
-  -=[schema_name]=-.mc_column as key_column on (c_with_fk.fk_pojo_collection_local_key_column_id = key_column.mc_column_id)
+  -=[schema_name]=-.mc_column as c_with_fk 
+    on t.mc_table_id = c_with_fk.mc_table_id 
+    and c_with_fk.fk_table_id is not null
+   and c_with_fk.fk_orm_lazy_flag is not null
     left outer join
-  -=[schema_name]=-.datatype_ev as key_datatype on (key_column.datatype_ev_id = key_datatype.datatype_ev_id)
+  -=[schema_name]=-.mc_table as fk 
+    on c_with_fk.fk_table_id = fk.mc_table_id
 where
   t.create_pojo_flag = true
-  and t.mc_table_id <> c_with_fk.mc_table_id
 group by t.mc_table_id, t.suppress_pojo_changes_flag
 UNION
 -------------------------
@@ -333,7 +408,7 @@ select
                       c.mc_table_id = fkt.mc_table_id 
                       or c.fk_include_in_canonical_flag = false -- avoid infinite looping possibilities here
                   then '(null)' 
-                  else '(new ' || fkt.name_camel_case || 'Test(' || lower(substring(fkt.name_camel_case, 1, 1)) || substring(fkt.name_camel_case, 2, length(fkt.name_camel_case)) || 'Dao : getDao()' || ').persistTestObject(number))' 
+                  else '(' || lower(substring(fkt.name_camel_case, 1, 1)) || substring(fkt.name_camel_case, 2, length(fkt.name_camel_case)) || 'Test.persistTestObject(number))' 
               end
           else '(number)' 
         end ||
@@ -597,7 +672,7 @@ select
       when c.pk_flag = true then ''
       when c.fk_include_in_canonical_flag = false then ''
       when c.fk_flag = true and c.fk_orm_lazy_flag is not null 
-      then 'new ' || fkt.name_camel_case || 'Test().assertDomainUpdates(expectedD.get' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || '(), actualD.get' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || '())'
+      then lower(substring(fkt.name_camel_case, 1, 1)) || substring(fkt.name_camel_case, 2, length(fkt.name_camel_case)) || 'Test.assertDomainUpdates(expectedD.get' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || '(), actualD.get' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || '())'
       else
         'assertEquals("' || c.name_camel_case || ' is different than expected", expectedD.get' ||
           upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || 
@@ -655,46 +730,71 @@ group by
   t.mc_table_id, t.suppress_pojo_changes_flag
 UNION
 -------------------------
---Section 90 - finish up assertDomainUpdates method definition and begin deleteChildrenIfNeeded method definition
+--Section 85 - finish up assertDomainUpdates method definition and begin deleteObject definition
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select
+  t.mc_table_id as id, 82.000 as sequence, '0.000' as sequence2, t.suppress_pojo_changes_flag as suppress_changes_flag,
+  case when t.src_folder_tag = 'rootDirectory' then 'testDirectory' else t.src_folder_tag end as folder_tag, 
+  replace(t.java_package, '.', '/') as java_package, t.name_camel_case || 'Test.groovy' as fileName, null::varchar as fileName2,
+  null::varchar as fragment2, '
+  }
+  
+  @Override
+  void deleteObject(BaseDomain domain) {
+    if (domain == null) {
+      return
+    }
+    ' || t.name_camel_case || ' target = (' || t.name_camel_case || ')domain
+' as fragment
+from
+  -=[schema_name]=-.mc_table as t 
+where
+  t.create_pojo_flag = true
+UNION
+-------------------------
+--Section 90 - cascade deleteObject calls to properites as needed
 --id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
 select
   t.mc_table_id as id, 90.000 as sequence, '0.000' as sequence2, t.suppress_pojo_changes_flag as suppress_changes_flag,
   max(case when t.src_folder_tag = 'rootDirectory' then 'testDirectory' else t.src_folder_tag end) as folder_tag, 
   max(replace(t.java_package, '.', '/')) as java_package, max(t.name_camel_case || 'Test.groovy') as fileName, null::varchar as fileName2,
   null::varchar as fragment2, '
-  }
-
-  @Override
-  public void deleteChildrenIfNeeded(BaseDomain domain) {
-    ' || max(t.name_camel_case) || ' target = (' || max(t.name_camel_case) || ')domain' as fragment
+' ||
+  string_agg(distinct
+'    ' || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
+    || 'Test.deleteObject(target.' || c_with_fk.name_camel_case || ')' , '
+' order by 
+'    ' || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
+    || 'Test.deleteObject(target.' || c_with_fk.name_camel_case || ')'
+  ) as fragment
 from
-  -=[schema_name]=-.mc_table as t 
-    left outer join 
-  -=[schema_name]=-.mc_column as c on t.mc_table_id = c.mc_table_id
-    left outer join
-  -=[schema_name]=-.mc_table as fkt on c.fk_table_id = fkt.mc_table_id
-    left outer join
-  -=[schema_name]=-.datatype_ev as d on c.datatype_ev_id = d.datatype_ev_id
-    left outer join
-  -=[schema_name]=-.enumeration as e on fkt.mc_table_id = e.mc_table_id
+  -=[schema_name]=-.mc_table as t join
+  -=[schema_name]=-.mc_column as c_with_fk on t.mc_table_id = c_with_fk.mc_table_id join
+  -=[schema_name]=-.mc_table as fk on c_with_fk.fk_table_id = fk.mc_table_id
 where
   t.create_pojo_flag = true
-  and c.datatype_ev_id <> 45 -- id auto generated by db, so we mustn't put in test
-  and c.name <> 'add_date'
-group by
-  t.mc_table_id, t.suppress_pojo_changes_flag, t.constructor_from_field_flag
+  and t.mc_table_id <> c_with_fk.fk_table_id
+  and c_with_fk.fk_table_id is not null
+  and c_with_fk.fk_orm_lazy_flag is not null
+group by t.mc_table_id, t.suppress_pojo_changes_flag
 UNION
 -------------------------
---Section 100 - delete items from collections for deleteChildrenIfNeeded method
+--Section 100 - delete items from collections for deleteObject method
 --id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
 select
   t.mc_table_id as id, 100.000 as sequence, '0.000' as sequence2, t.suppress_pojo_changes_flag as suppress_changes_flag,
   max(case when t.src_folder_tag = 'rootDirectory' then 'testDirectory' else t.src_folder_tag end) as folder_tag, 
   max(replace(t.java_package, '.', '/')) as java_package, max(t.name_camel_case || 'Test.groovy') as fileName, null::varchar as fileName2,
-  null::varchar as fragment2, string_agg('
-    target.' || c_with_fk.fk_pojo_collection_name_camel_case || '.each {
-      ' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case)) || 'Test.getDao().delete(it)
-    }', '' order by c_with_fk.sequence, c_with_fk.fk_pojo_collection_name_camel_case) as fragment
+  null::varchar as fragment2, string_agg(
+  case 
+    when c_with_fk.fk_pojo_collection_orm_cascade not in ('delete', 'delete-orphan', 'all', 'all-delete-orphan') then '
+    target?.' || c_with_fk.fk_pojo_collection_name_camel_case || '.each {
+      ' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case)) 
+      || 'Test.deleteObject(it)
+    }
+    target?.' || c_with_fk.fk_pojo_collection_name_camel_case || '.clear()'
+    else ''
+  end, '' order by c_with_fk.sequence, c_with_fk.fk_pojo_collection_name_camel_case) as fragment
 from
   -=[schema_name]=-.mc_table as t join
   -=[schema_name]=-.mc_column as c_with_fk on t.mc_table_id = c_with_fk.fk_table_id join
@@ -713,31 +813,25 @@ group by
   t.mc_table_id, t.suppress_pojo_changes_flag
 UNION
 -------------------------
---Section 110 - finish up deleteChildrenIfNeeded method and close class definition
+--Section 110 - finish up deleteObject and close class definitioin
 --id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
 select
   t.mc_table_id as id, 110.000 as sequence, '0.000' as sequence2, t.suppress_pojo_changes_flag as suppress_changes_flag,
-  max(case when t.src_folder_tag = 'rootDirectory' then 'testDirectory' else t.src_folder_tag end) as folder_tag, 
-  max(replace(t.java_package, '.', '/')) as java_package, max(t.name_camel_case || 'Test.groovy') as fileName, null::varchar as fileName2,
+  case when t.src_folder_tag = 'rootDirectory' then 'testDirectory' else t.src_folder_tag end as folder_tag, 
+  replace(t.java_package, '.', '/') as java_package, t.name_camel_case || 'Test.groovy' as fileName, null::varchar as fileName2,
   null::varchar as fragment2, '
+    ' || lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))
+    || 'Dao.delete(target)
+    ' || lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))
+    || 'Dao.flush()
+    ' || lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))
+    || 'Dao.evict(target)' || '
   }
 }' as fragment
 from
   -=[schema_name]=-.mc_table as t 
-    left outer join 
-  -=[schema_name]=-.mc_column as c on t.mc_table_id = c.mc_table_id
-    left outer join
-  -=[schema_name]=-.mc_table as fkt on c.fk_table_id = fkt.mc_table_id
-    left outer join
-  -=[schema_name]=-.datatype_ev as d on c.datatype_ev_id = d.datatype_ev_id
-    left outer join
-  -=[schema_name]=-.enumeration as e on fkt.mc_table_id = e.mc_table_id
 where
   t.create_pojo_flag = true
-  and c.datatype_ev_id <> 45 -- id auto generated by db, so we mustn't put in test
-  and c.name <> 'add_date'
-group by
-  t.mc_table_id, t.suppress_pojo_changes_flag, t.constructor_from_field_flag
 order by id, sequence, sequence2
 ]]></value>
         </property> 

@@ -61,6 +61,7 @@ class TableTest extends GeneratedDomainAndDaoTest {
 
     indexTest = new IndexTest()
     indexTest.indexDao = indexDao
+
   }
 
   @Override
@@ -73,30 +74,30 @@ class TableTest extends GeneratedDomainAndDaoTest {
   public BaseDomain getTestObject(Integer number, Integer sequence) {
     Table table = new Table()
     
-    table.setSystemNoModifyFlag(3%number == 0)
+    table.setSystemNoModifyFlag(number == 0 || 3%number == 0)
     table.setName("name${number}")
     table.setDescription("description${number}")
     table.setNameCamelCase("name_camel_case${number}")
     table.setTableCreationRule(TableCreationRule.getTableCreationRuleBySequence(1))
-    table.setSuppressTableChangesFlag(8%number == 0)
-    table.setCreateIUDTableFlag(9%number == 0)
+    table.setSuppressTableChangesFlag(number == 0 || 8%number == 0)
+    table.setCreateIUDTableFlag(number == 0 || 9%number == 0)
     table.setSchemaName("schema_name${number}")
     table.setWithinCreateSQL("within_create_sql${number}")
     table.setPostCreateSQL("post_create_sql${number}")
-    table.setCreatePOJOFlag(13%number == 0)
+    table.setCreatePOJOFlag(number == 0 || 13%number == 0)
     table.setSrcFolderTag("src_folder_tag${number}")
-    table.setSuppressPOJOChangesFlag(15%number == 0)
+    table.setSuppressPOJOChangesFlag(number == 0 || 15%number == 0)
     table.setJavaPackage("java_package${number}")
     table.setJavaFullyQualifiedSuperClass("java_fq_superclass${number}")
-    table.setConstructorFromFieldsFlag(18%number == 0)
+    table.setConstructorFromFieldsFlag(number == 0 || 18%number == 0)
     table.setExtraJavaCode("extra_java_code${number}")
-    table.setCreateORMFlag(20%number == 0)
-    table.setSuppressORMChangesFlag(21%number == 0)
+    table.setCreateORMFlag(number == 0 || 20%number == 0)
+    table.setSuppressORMChangesFlag(number == 0 || 21%number == 0)
     table.setExtraORMCode("extra_orm_code${number}")
     table.setOrmDiscriminatorColumnId(number)
-    table.setCreateGUIDataServiceFlag(24%number == 0)
-    table.setSuppressGUIDataServiceChangesFlag(25%number == 0)
-    table.setGuiPagifyFlag(26%number == 0)
+    table.setCreateGUIDataServiceFlag(number == 0 || 24%number == 0)
+    table.setSuppressGUIDataServiceChangesFlag(number == 0 || 25%number == 0)
+    table.setGuiPagifyFlag(number == 0 || 26%number == 0)
     table.setGuiRecordsPerPage((Short)(27 * number))
     table.setGuiPickerDescriptionColumnId(number)
     
@@ -205,15 +206,16 @@ class TableTest extends GeneratedDomainAndDaoTest {
     assertEquals("size of columns is different than expected", expectedD.columns.size(), actualD.columns.size())
     assertEquals("size of indexes is different than expected", expectedD.indexes.size(), actualD.indexes.size())
   }
-
+  
   @Override
-  public void deleteChildrenIfNeeded(BaseDomain domain) {
+  void deleteObject(BaseDomain domain) {
+    if (domain == null) {
+      return
+    }
     Table target = (Table)domain
-    target.columns.each {
-      columnTest.getDao().delete(it)
-    }
-    target.indexes.each {
-      indexTest.getDao().delete(it)
-    }
+
+    tableDao.delete(target)
+    tableDao.flush()
+    tableDao.evict(target)
   }
 }

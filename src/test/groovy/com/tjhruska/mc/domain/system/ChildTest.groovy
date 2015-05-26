@@ -30,6 +30,11 @@ class ChildTest extends GeneratedDomainAndDaoTest {
   @Autowired
   DaoDomain<Child> childDao
 
+  @Before
+  public void setup() {
+
+  }
+
   @Override
   public DaoDomain getDao() {
     childDao
@@ -45,7 +50,7 @@ class ChildTest extends GeneratedDomainAndDaoTest {
     child.setDescription("description${number}")
     child.setNameCamelCase("name_camel_case${number}")
     child.setOrmDiscriminatorValue("orm_discriminator_value${number}")
-    child.setCreateConstraintUsingDiscriminatorFlag(8%number == 0)
+    child.setCreateConstraintUsingDiscriminatorFlag(number == 0 || 8%number == 0)
     child.setExtraJavaCode("extra_java_code${number}")
     child.setExtraORMCode("extra_orm_code${number}")
     
@@ -81,9 +86,16 @@ class ChildTest extends GeneratedDomainAndDaoTest {
     assertEquals("extraJavaCode is different than expected", expectedD.getExtraJavaCode(), actualD.getExtraJavaCode())
     assertEquals("extraORMCode is different than expected", expectedD.getExtraORMCode(), actualD.getExtraORMCode())
   }
-
+  
   @Override
-  public void deleteChildrenIfNeeded(BaseDomain domain) {
+  void deleteObject(BaseDomain domain) {
+    if (domain == null) {
+      return
+    }
     Child target = (Child)domain
+
+    childDao.delete(target)
+    childDao.flush()
+    childDao.evict(target)
   }
 }

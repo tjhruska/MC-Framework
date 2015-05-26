@@ -66,6 +66,7 @@ class EnumerationTest extends GeneratedDomainAndDaoTest {
 
     enumerationValueTest = new EnumerationValueTest()
     enumerationValueTest.enumerationValueDao = enumerationValueDao
+
   }
 
   @Override
@@ -91,31 +92,31 @@ class EnumerationTest extends GeneratedDomainAndDaoTest {
     enumeration.setColumn1NameCamelCase("column1_name_camel_case${number}")
     enumeration.setColumn1DataType(Datatype.getDatatypeBySequence(1))
     enumeration.setColumn1DbIndex(DbIndex.getDbIndexBySequence(1))
-    enumeration.setColumn1NotNullFlag(16%number == 0)
+    enumeration.setColumn1NotNullFlag(number == 0 || 16%number == 0)
     enumeration.setColumn1Default("column1_default${number}")
     enumeration.setColumn2Name("column2_name${number}")
     enumeration.setColumn2NameCamelCase("column2_name_camel_case${number}")
     enumeration.setColumn2DataType(Datatype.getDatatypeBySequence(1))
     enumeration.setColumn2DBIndex(DbIndex.getDbIndexBySequence(1))
-    enumeration.setColumn2NotNullFlag(22%number == 0)
+    enumeration.setColumn2NotNullFlag(number == 0 || 22%number == 0)
     enumeration.setColumn2Default("column2_default${number}")
     enumeration.setColumn3Name("column3_name${number}")
     enumeration.setColumn3NameCamelCase("column3_name_camel_case${number}")
     enumeration.setColumn3DataType(Datatype.getDatatypeBySequence(1))
     enumeration.setColumn3DBIndex(DbIndex.getDbIndexBySequence(1))
-    enumeration.setColumn3NotNullFlag(28%number == 0)
+    enumeration.setColumn3NotNullFlag(number == 0 || 28%number == 0)
     enumeration.setColumn3Default("column3_default${number}")
     enumeration.setColumn4Name("column4_name${number}")
     enumeration.setColumn4NameCamelCase("column4_name_camel_case${number}")
     enumeration.setColumn4DataType(Datatype.getDatatypeBySequence(1))
     enumeration.setColumn4DBIndex(DbIndex.getDbIndexBySequence(1))
-    enumeration.setColumn4NotNullFlag(34%number == 0)
+    enumeration.setColumn4NotNullFlag(number == 0 || 34%number == 0)
     enumeration.setColumn4Default("column4_default${number}")
     enumeration.setColumn5Name("column5_name${number}")
     enumeration.setColumn5NameCamelCase("column5_name_camel_case${number}")
     enumeration.setColumn5DataType(Datatype.getDatatypeBySequence(1))
     enumeration.setColumn5DBIndex(DbIndex.getDbIndexBySequence(1))
-    enumeration.setColumn5NotNullFlag(40%number == 0)
+    enumeration.setColumn5NotNullFlag(number == 0 || 40%number == 0)
     enumeration.setColumn5Default("column5_default${number}")
     
     List<EnumerationValue> enumerationValues = new ArrayList()
@@ -267,18 +268,16 @@ class EnumerationTest extends GeneratedDomainAndDaoTest {
     assertEquals("size of linksAsA is different than expected", expectedD.linksAsA.size(), actualD.linksAsA.size())
     assertEquals("size of linksAsB is different than expected", expectedD.linksAsB.size(), actualD.linksAsB.size())
   }
-
+  
   @Override
-  public void deleteChildrenIfNeeded(BaseDomain domain) {
+  void deleteObject(BaseDomain domain) {
+    if (domain == null) {
+      return
+    }
     Enumeration target = (Enumeration)domain
-    target.enumerationValues.each {
-      enumerationValueTest.getDao().delete(it)
-    }
-    target.linksAsA.each {
-      enumerationLinkTest.getDao().delete(it)
-    }
-    target.linksAsB.each {
-      enumerationLinkTest.getDao().delete(it)
-    }
+
+    enumerationDao.delete(target)
+    enumerationDao.flush()
+    enumerationDao.evict(target)
   }
 }

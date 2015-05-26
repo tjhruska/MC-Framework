@@ -66,6 +66,7 @@ limitations under the License.
         <property name="foreignPogoCollectionDatatype" type="Container" column="fk_pojo_collection_container_ev_id" not-null="false"/>
         <property name="foreignPojoCollectionNameCamelCase" type="string" column="fk_pojo_collection_name_camel_case" not-null="false"/>
         <property name="foreignPojoCollectionLocalKeyColumnId" type="integer" column="fk_pojo_collection_local_key_column_id" not-null="false"/>
+        <property name="foreignPojoCollectionORMCascade" type="string" column="fk_pojo_collection_orm_cascade" not-null="false"/>
         <property name="foreignOrmLazyFlag" type="boolean" column="fk_orm_lazy_flag" not-null="false"/>
         <property name="foreignKeyLinkThruToTableId" type="integer" column="fk_orm_link_thru_to_table_id" not-null="false"/>
         <property name="foreignKeyOrmInverseFlag" type="boolean" column="fk_orm_inverse_flag" not-null="false"/>

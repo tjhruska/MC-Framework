@@ -94,7 +94,7 @@ limitations under the License.
         <property name="column5DBIndex" type="DbIndex" column="column5_index_ev_id" not-null="false"/>
         <property name="column5NotNullFlag" type="boolean" column="column5_not_null_flag" not-null="false"/>
         <property name="column5Default" type="string" column="column5_default" not-null="false"/>
-        <list name="enumerationValues" schema="mc" table="enumeration_value" fetch="subselect" inverse="false" lazy="false" cascade="save-update" >
+        <list name="enumerationValues" schema="mc" table="enumeration_value" fetch="subselect" inverse="false" lazy="false" cascade="all-delete-orphan" >
             <key column="enumeration_id" />
             <list-index column="sequence" /><one-to-many class="com.tjhruska.mc.domain.system.EnumerationValue" />
         </list>

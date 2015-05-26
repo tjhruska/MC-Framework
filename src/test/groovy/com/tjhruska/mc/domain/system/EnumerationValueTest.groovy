@@ -37,6 +37,17 @@ class EnumerationValueTest extends GeneratedDomainAndDaoTest {
   @Autowired
   DaoDomain<EnumerationValue> enumerationValueDao
 
+  @Autowired
+  DaoDomain<Enumeration> enumerationDao
+  EnumerationTest enumerationTest
+
+  @Before
+  public void setup() {
+
+    enumerationTest = new EnumerationTest()
+    enumerationTest.enumerationDao = enumerationDao
+  }
+
   @Override
   public DaoDomain getDao() {
     enumerationValueDao
@@ -49,7 +60,7 @@ class EnumerationValueTest extends GeneratedDomainAndDaoTest {
     EnumerationValue enumerationValue = new EnumerationValue()
     
     if (enumeration == null) {
-      enumerationValue.setEnumeration(new EnumerationTest(enumerationDao : getDao()).persistTestObject(number))
+      enumerationValue.setEnumeration(enumerationTest.persistTestObject(number))
       enumerationValue.enumeration.enumerationValues.add(enumerationValue)
     } else {
       enumerationValue.setEnumeration(enumeration)
@@ -87,7 +98,7 @@ class EnumerationValueTest extends GeneratedDomainAndDaoTest {
   public void assertDomainUpdates(BaseDomain expected, BaseDomain actual) {
     EnumerationValue expectedD = (EnumerationValue)expected
     EnumerationValue actualD = (EnumerationValue)actual
-    new EnumerationTest().assertDomainUpdates(expectedD.getEnumeration(), actualD.getEnumeration())
+    enumerationTest.assertDomainUpdates(expectedD.getEnumeration(), actualD.getEnumeration())
     assertEquals("name is different than expected", expectedD.getName(), actualD.getName())
     assertEquals("description is different than expected", expectedD.getDescription(), actualD.getDescription())
     assertEquals("sequence is different than expected", expectedD.getSequence(), actualD.getSequence())
@@ -97,9 +108,17 @@ class EnumerationValueTest extends GeneratedDomainAndDaoTest {
     assertEquals("column4Value is different than expected", expectedD.getColumn4Value(), actualD.getColumn4Value())
     assertEquals("column5Value is different than expected", expectedD.getColumn5Value(), actualD.getColumn5Value())
   }
-
+  
   @Override
-  public void deleteChildrenIfNeeded(BaseDomain domain) {
+  void deleteObject(BaseDomain domain) {
+    if (domain == null) {
+      return
+    }
     EnumerationValue target = (EnumerationValue)domain
+
+    enumerationTest.deleteObject(target.enumeration)
+    enumerationValueDao.delete(target)
+    enumerationValueDao.flush()
+    enumerationValueDao.evict(target)
   }
 }

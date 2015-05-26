@@ -270,6 +270,8 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_field_group_field_required_flag, fk_gui_column_filter_local, fk_gui_column_filter_foreign)
 VALUES (191, 1, 28, 'gui_picker_description_column_id', 'Field to use as a unique descripter for record within containers like comboboxes.', 'guiPickerDescriptionColumn', 2, 25, false, true, 2, null, null,null,null,null,null,null,false, null, null, false, 'GUI Descriptor Column', 'Will use descriptor column to build dropdown list boxes and uniquely identify records within lookups', false, 
   'GUI', 5, 26, false, 'id', 'tableId');
+  
+  
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -298,8 +300,9 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   constraint_sql, pojo_constructor_field_flag, gui_header, 
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
-  gui_field_group_field_required_flag)
-VALUES (30, 2, 3, 'mc_table_id', 'Table to which this Column entry belongs.', 'table', 2, 25, false, true, 1, 28, 10,'columns',31,false,null,false,true, null, null, false, 'Table', null, true, null, null, null, null);
+  gui_field_group_field_required_flag, fk_pojo_collection_orm_cascade)
+VALUES (30, 2, 3, 'mc_table_id', 'Table to which this Column entry belongs.', 'table', 2, 25, false, true, 1, 28, 10,'columns',31,false,null,false,true, null, null, false, 'Table', null, true, null, null, null, 
+  null, 'all-delete-orphan');
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -490,7 +493,7 @@ VALUES (41, 2, 18, 'fk_pojo_collection_name_camel_case', 'Name of collection on 
   'CONSTRAINT mc_column_fk_pojo_collection CHECK (
 CASE
     WHEN fk_pojo_collection_container_ev_id IS NULL THEN true
-    WHEN fk_orm_lazy_flag is null or fk_orm_inverse_flag is null THEN false
+    WHEN fk_orm_lazy_flag is null or fk_orm_inverse_flag is null or fk_pojo_collection_name_camel_case is null or fk_pojo_collection_orm_cascade is null THEN false
     ELSE true
 END)', 
   false, 'Collection Name', 'Name of collection used to hold this object type on foreign object.', false, 'Collection Link/Foreign Key', 3, 41, true);
@@ -504,6 +507,8 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag, fk_gui_column_filter_local, fk_gui_column_filter_foreign)
 VALUES (42, 2, 19, 'fk_pojo_collection_local_key_column_id', 'If map/list the column on current table is the key/index', 'foreignPojoCollectionLocalKeyColumn', 2, 25, false, true, 2, null, null,null,null,null,null,null,false, null, null, false, 'Key Column if Map/List', 'If foreign collection is a map or list which column on this object will be the key or index.', false, 'Collection Link/Foreign Key', 4, 41, false, 'tableId', 'tableId');
+
+
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -511,28 +516,16 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   not_null_flag, default_value, 
   constraint_sql, pojo_constructor_field_flag, gui_header, 
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
-  gui_field_group_sequence, gui_field_group_guard_column_id, 
-  gui_field_group_field_required_flag)
-VALUES (43, 2, 20, 'fk_orm_lazy_flag', 'Should collection on foreign table be lazy loaded', 'foreignOrmLazyFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Lazy load collection', null, false, 'Collection Link/Foreign Key', 5, 41, true);
-INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
-  name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
-  fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
-  fk_orm_lazy_flag, fk_orm_link_thru_to_table_id, fk_orm_inverse_flag,
-  not_null_flag, default_value, 
-  constraint_sql, pojo_constructor_field_flag, gui_header, 
-  gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
-  gui_field_group_sequence, gui_field_group_guard_column_id, 
-  gui_field_group_field_required_flag)
-VALUES (44, 2, 21, 'fk_orm_link_thru_to_table_id', 'Is current table linking table only? if so point to referenced table', 'foreignKeyLinkThruToTable', 2, 25, false, true, 1, null, null,null,null,null,null,null,false, null, null, false, 'Link thru to table', 'If this table is a pure linking table define which object type should be stored in collection on indicated foreign object.', false, 'Collection Link/Foreign Key', 6, 41, false); INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
-  name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
-  fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
-  fk_orm_lazy_flag, fk_orm_link_thru_to_table_id, fk_orm_inverse_flag,
-  not_null_flag, default_value, 
-  constraint_sql, pojo_constructor_field_flag, gui_header, 
-  gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
-  gui_field_group_sequence, gui_field_group_guard_column_id, 
-  gui_field_group_field_required_flag)
-VALUES (45, 2, 22, 'fk_orm_inverse_flag', 'True on side of link that is responsible for persistance; true = local, false = foreign', 'foreignKeyOrmInverseFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Owns persistance relationship', 'If this object is responsible for orm persistance, true, else false.', false, 'Collection Link/Foreign Key', 7, 41, true);
+  gui_field_group_sequence, gui_field_group_guard_column_id, gui_field_group_field_required_flag)
+VALUES (198, 2, 20, 'fk_pojo_collection_orm_cascade', 'cascade style to use from parent side of collection', 
+  'foreignPojoCollectionORMCascade', 3, 25, false, false, null, null, 
+  null,null,null,
+  null,null,null,
+  false, null, 
+  null, false, 'Cascade if collected by parent.', 
+  'ORM Cascade for foreign collection.', false, 'Collection ORM Cascade', 
+  4, 41, false);
+
 
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
@@ -543,7 +536,37 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (193, 2, 23, 'fk_gui_column_filter_foreign', 'Foreign column to use for URL filter to limit drop down list results in GUI.', 
+VALUES (43, 2, 21, 'fk_orm_lazy_flag', 'Should collection on foreign table be lazy loaded', 'foreignOrmLazyFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Lazy load collection', null, false, 'Collection Link/Foreign Key', 5, 41, true);
+INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
+  name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
+  fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
+  fk_orm_lazy_flag, fk_orm_link_thru_to_table_id, fk_orm_inverse_flag,
+  not_null_flag, default_value, 
+  constraint_sql, pojo_constructor_field_flag, gui_header, 
+  gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
+  gui_field_group_sequence, gui_field_group_guard_column_id, 
+  gui_field_group_field_required_flag)
+VALUES (44, 2, 22, 'fk_orm_link_thru_to_table_id', 'Is current table linking table only? if so point to referenced table', 'foreignKeyLinkThruToTable', 2, 25, false, true, 1, null, null,null,null,null,null,null,false, null, null, false, 'Link thru to table', 'If this table is a pure linking table define which object type should be stored in collection on indicated foreign object.', false, 'Collection Link/Foreign Key', 6, 41, false); INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
+  name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
+  fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
+  fk_orm_lazy_flag, fk_orm_link_thru_to_table_id, fk_orm_inverse_flag,
+  not_null_flag, default_value, 
+  constraint_sql, pojo_constructor_field_flag, gui_header, 
+  gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
+  gui_field_group_sequence, gui_field_group_guard_column_id, 
+  gui_field_group_field_required_flag)
+VALUES (45, 2, 23, 'fk_orm_inverse_flag', 'True on side of link that is responsible for persistance; true = local, false = foreign', 'foreignKeyOrmInverseFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Owns persistance relationship', 'If this object is responsible for orm persistance, true, else false.', false, 'Collection Link/Foreign Key', 7, 41, true);
+
+INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
+  name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
+  fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
+  fk_orm_lazy_flag, fk_orm_link_thru_to_table_id, fk_orm_inverse_flag,
+  not_null_flag, default_value, 
+  constraint_sql, pojo_constructor_field_flag, gui_header, 
+  gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
+  gui_field_group_sequence, gui_field_group_guard_column_id, 
+  gui_field_group_field_required_flag)
+VALUES (193, 2, 24, 'fk_gui_column_filter_foreign', 'Foreign column to use for URL filter to limit drop down list results in GUI.', 
   'fkGuiColumnFilterForeign', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 
   'GUI URL Filter - foreign', 'CAMELCASEFIELDNAME/filter', 
   false, 'Collection Link/Foreign Key', 8, 41, false);
@@ -557,7 +580,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (192, 2, 24, 'fk_gui_column_filter_local', 'Local Id or filter test to use for URL filter to limit drop down list results in GUI.', 
+VALUES (192, 2, 25, 'fk_gui_column_filter_local', 'Local Id or filter test to use for URL filter to limit drop down list results in GUI.', 
   'fkGuiColumnFilterLocal', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 
   'GUI URL Filter - local', 'camelCaseFieldName/[LOCALCOLUMN|[operator]value] where operator = [=|!=|<|<=|>|>=|(|isNull|isNotNull] inclause ex: id/(1,2,3', 
   false, 'Collection Link/Foreign Key', 9, 41, false);
@@ -571,7 +594,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (46, 2, 25, 'not_null_flag', 'Whether nulls will be allowed for this Table.Column field.', 'notNullFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,true, null, null, false, 'Not Null', null, true, null, null, null, null);
+VALUES (46, 2, 26, 'not_null_flag', 'Whether nulls will be allowed for this Table.Column field.', 'notNullFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,true, null, null, false, 'Not Null', null, true, null, null, null, null);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -581,7 +604,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (47, 2, 26, 'default_value', 'Default value for this column', 'defaultValue', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Default', 'Quote strings', false, null, null, null, null);
+VALUES (47, 2, 27, 'default_value', 'Default value for this column', 'defaultValue', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Default', 'Quote strings', false, null, null, null, null);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -591,7 +614,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (48, 2, 27, 'constraint_sql', 'This constraint code will be within the create table syntax during table creation.', 'constraintSQL', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Constraint SQL', 'Will be added after the column within the create statement, or separately as an alter.', false, null, null, null, null);
+VALUES (48, 2, 28, 'constraint_sql', 'This constraint code will be within the create table syntax during table creation.', 'constraintSQL', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Constraint SQL', 'Will be added after the column within the create statement, or separately as an alter.', false, null, null, null, null);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -601,7 +624,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (49, 2, 28, 'pojo_constructor_field_flag', 'Put this field into the POJO constructor list if indicated on by Table.ConstructorFromFieldFlag.', 'pojoConstructorFieldFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Add to POJO Constructor', 'Will be added to the POJO as a parameter based upon sequence order.', true, 'POJO', 1, 43, true);
+VALUES (49, 2, 29, 'pojo_constructor_field_flag', 'Put this field into the POJO constructor list if indicated on by Table.ConstructorFromFieldFlag.', 'pojoConstructorFieldFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Add to POJO Constructor', 'Will be added to the POJO as a parameter based upon sequence order.', true, 'POJO', 1, 43, true);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -611,7 +634,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (50, 2, 29, 'gui_header', 'Name of this field that should appear in a GUI editor as either a Column Header, or Field Name.', 'guiHeader', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Field Name', 'Column name within a grid, or field name in a single record editor.', true, 'GUI', 1, 44, true);
+VALUES (50, 2, 30, 'gui_header', 'Name of this field that should appear in a GUI editor as either a Column Header, or Field Name.', 'guiHeader', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Field Name', 'Column name within a grid, or field name in a single record editor.', true, 'GUI', 1, 44, true);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -621,7 +644,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (51, 2, 30, 'gui_tool_tip', 'Helpful data that shall appear within a tooltip upon mouse hover/click for this field.', 'guiToolTip', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Tool Tip', 'Pop up / mouse over tool-tip (like this one…)', false, 'GUI', 2, 44, false);
+VALUES (51, 2, 31, 'gui_tool_tip', 'Helpful data that shall appear within a tooltip upon mouse hover/click for this field.', 'guiToolTip', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Tool Tip', 'Pop up / mouse over tool-tip (like this one…)', false, 'GUI', 2, 44, false);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -631,7 +654,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (52, 2, 31, 'gui_sortable_flag', 'Whether this field can be used to sort the table in a grid view.', 'guiSortableFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Sortable', 'This column will be enabled to sort a grid.', true, 'GUI', 3, 44, true);
+VALUES (52, 2, 32, 'gui_sortable_flag', 'Whether this field can be used to sort the table in a grid view.', 'guiSortableFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Sortable', 'This column will be enabled to sort a grid.', true, 'GUI', 3, 44, true);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -641,7 +664,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (53, 2, 32, 'gui_field_group_name', 'Name of the field group that this column belongs to in editor, can be null if not part of a group.', 'guiFieldGroupName', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, 'CONSTRAINT mc_column_gui_field_group_field_requirements CHECK (
+VALUES (53, 2, 33, 'gui_field_group_name', 'Name of the field group that this column belongs to in editor, can be null if not part of a group.', 'guiFieldGroupName', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, 'CONSTRAINT mc_column_gui_field_group_field_requirements CHECK (
 CASE
     WHEN gui_field_group_name IS NOT NULL AND gui_field_group_sequence IS NOT NULL AND gui_field_group_guard_column_id IS NOT NULL AND gui_field_group_field_required_flag IS NOT NULL THEN true
     WHEN gui_field_group_name IS NULL AND gui_field_group_sequence IS NULL AND gui_field_group_guard_column_id IS NULL AND gui_field_group_field_required_flag IS NULL THEN true
@@ -656,7 +679,17 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (54, 2, 33, 'gui_field_group_sequence', 'Sequence in which this field should appear withing group.', 'guiFieldGroupSequence', 44, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Group Sequence', 'Order of fields within grouping in an editor.', true, 'GUI Grouping', 2, 47, true);
+VALUES (54, 2, 34, 'gui_field_group_sequence', 'Sequence in which this field should appear withing group.', 'guiFieldGroupSequence', 44, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Group Sequence', 'Order of fields within grouping in an editor.', true, 'GUI Grouping', 2, 47, true);
+INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
+  name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
+  fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
+  fk_orm_lazy_flag, fk_orm_link_thru_to_table_id, fk_orm_inverse_flag,
+  not_null_flag, default_value, 
+  constraint_sql, pojo_constructor_field_flag, gui_header, 
+  gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
+  gui_field_group_sequence, gui_field_group_guard_column_id, 
+  gui_field_group_field_required_flag, fk_pojo_collection_orm_cascade)
+VALUES (55, 2, 35, 'gui_field_group_guard_column_id', 'Column which activates/deactivates this group.  (I know this is currently not 3rd Normal Form…)', 'guiFieldGroupGuardColumn', 2, 25, false, true, 2, 28, 10,'guardedColumns',54,false,null,true,false, null, null, false, 'Group Activation Column', 'Inactivate this column unless the activation column has a value.  (Requires that the activation column point to itself.)', true, 'GUI Grouping', 3, 47, true, 'save-update');
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -666,17 +699,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (55, 2, 34, 'gui_field_group_guard_column_id', 'Column which activates/deactivates this group.  (I know this is currently not 3rd Normal Form…)', 'guiFieldGroupGuardColumn', 2, 25, false, true, 2, 28, 10,'guardedColumns',54,false,null,true,false, null, null, false, 'Group Activation Column', 'Inactivate this column unless the activation column has a value.  (Requires that the activation column point to itself.)', true, 'GUI Grouping', 3, 47, true);
-INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
-  name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
-  fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
-  fk_orm_lazy_flag, fk_orm_link_thru_to_table_id, fk_orm_inverse_flag,
-  not_null_flag, default_value, 
-  constraint_sql, pojo_constructor_field_flag, gui_header, 
-  gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
-  gui_field_group_sequence, gui_field_group_guard_column_id, 
-  gui_field_group_field_required_flag)
-VALUES (56, 2, 35, 'gui_field_group_field_required_flag', 'If this field is Not Null when the group is active.', 'guiFieldGroupFieldRequiredFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Required if Group Active', 'This field is required if the group is active.', false, 'GUI Grouping', 4, 47, true);
+VALUES (56, 2, 36, 'gui_field_group_field_required_flag', 'If this field is Not Null when the group is active.', 'guiFieldGroupFieldRequiredFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Required if Group Active', 'This field is required if the group is active.', false, 'GUI Grouping', 4, 47, true);
 
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
@@ -706,8 +729,8 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   constraint_sql, pojo_constructor_field_flag, gui_header, 
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
-  gui_field_group_field_required_flag)
-VALUES (59, 6, 3, 'mc_table_id', 'Table/POJO on which to create the index/lookup.', 'table', 2, 25, false, true, 1, 57, 9,'indexes',null,false,null,false,true, null, null, false, 'Table', null, true, null, null, null, null);
+  gui_field_group_field_required_flag, fk_pojo_collection_orm_cascade)
+VALUES (59, 6, 3, 'mc_table_id', 'Table/POJO on which to create the index/lookup.', 'table', 2, 25, false, true, 1, 57, 9,'indexes',null,false,null,false,true, null, null, false, 'Table', null, true, null, null, null, null, 'all-delete-orphan');
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -762,8 +785,8 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   constraint_sql, pojo_constructor_field_flag, gui_header, 
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
-  gui_field_group_field_required_flag)
-VALUES (64, 7, 3, 'mc_index_id', 'Index for which this record lists a column.', 'index', 2, 25, false, true, 6, 65, 10,'columns',66,false,null,false,true, null, null, false, 'Index', null, true, null, null, null, null);
+  gui_field_group_field_required_flag, fk_pojo_collection_orm_cascade)
+VALUES (64, 7, 3, 'mc_index_id', 'Index for which this record lists a column.', 'index', 2, 25, false, true, 6, 65, 10,'columns',66,false,null,false,true, null, null, false, 'Index', null, true, null, null, null, null, 'save-update');
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -1111,44 +1134,44 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   constraint_sql, pojo_constructor_field_flag, gui_header, 
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
-  gui_field_group_field_required_flag)
+  gui_field_group_field_required_flag, fk_pojo_collection_orm_cascade)
 VALUES (122, 8, 1, 'enumeration_value_id', 'Artificial ID', 'id', 45, 25, true, false, 
   null, null, null,null,null,null,null,null,true, null, 
-  null, false, 'Id', null, true, null, null, null, null),
+  null, false, 'Id', null, true, null, null, null, null, null),
 (123, 8, 2, 'enumeration_id', 'Link back to parent enumeration definition.', 'enumeration', 2, 25, false, true, 
   3, 122, 10,'enumerationValues',127,false,null,false,true, null, 
-  null, false, 'Enumeration', null, true, null, null, null, null),
+  null, false, 'Enumeration', null, true, null, null, null, null, 'all-delete-orphan'),
 (124, 8, 3, 'add_date', 'Add Date of Record.', 'addDate', 46, 25, false, false, 
   null, null, null,null,null,null,null,null,false, 'now()', 
-  null, false, 'Add Date', null, true, null, null, null, null),
+  null, false, 'Add Date', null, true, null, null, null, null, null),
 (125, 8, 4, 'name', 'Name of the enumeration instance for this value.', 'name', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,true, null, 
   E'
     CONSTRAINT name_upper_format CHECK (case when name is null then true when "substring"(name::text, \'[A-Z_]{1}[A-Z_0-9]*\'::text) = name::text then true else false end),
     CONSTRAINT enumeration_enumeration_value_unq_name UNIQUE (enumeration_id, name)', 
-  false, 'Name', null, true, null, null, null, null),
+  false, 'Name', null, true, null, null, null, null, null),
 (126, 8, 5, 'description', 'Description for this value.', 'description', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,true, null, 
-  null, false, 'Description', null, true, null, null, null, null),
+  null, false, 'Description', null, true, null, null, null, null, null),
 (127, 8, 6, 'sequence', 'Sequence within the enuemration/class for this value.', 'sequence', 44, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
   'CONSTRAINT enumeration_enumeration_value_unq_sequence UNIQUE (enumeration_id, "sequence")', 
-  false, 'Sequence', null, true, null, null, null, null),
+  false, 'Sequence', null, true, null, null, null, null, null),
 (128, 8, 7, 'column1_value', 'Value for column/field.', 'column1Value', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Value 1', null, true, 'Column/Field Values', 1, 128, false),
+  null, false, 'Value 1', null, true, 'Column/Field Values', 1, 128, false, null),
 (129, 8, 8, 'column2_value', 'Value for column/field.', 'column2Value', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Value 2', null, true, 'Column/Field Values', 2, 129, false),
+  null, false, 'Value 2', null, true, 'Column/Field Values', 2, 129, false, null),
 (130, 8, 9, 'column3_value', 'Value for column/field.', 'column3Value', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Value 3', null, true, 'Column/Field Values', 3, 130, false),
+  null, false, 'Value 3', null, true, 'Column/Field Values', 3, 130, false, null),
 (131, 8, 10, 'column4_value', 'Value for column/field.', 'column4Value', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Value 4', null, true, 'Column/Field Values', 4, 131, false),
+  null, false, 'Value 4', null, true, 'Column/Field Values', 4, 131, false, null),
 (132, 8, 11, 'column5_value', 'Value for column/field.', 'column5Value', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Value 5', null, true, 'Column/Field Values', 5, 132, false);
+  null, false, 'Value 5', null, true, 'Column/Field Values', 5, 132, false, null);
   
   
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
@@ -1159,44 +1182,44 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   constraint_sql, pojo_constructor_field_flag, gui_header, 
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
-  gui_field_group_field_required_flag)
+  gui_field_group_field_required_flag, fk_pojo_collection_orm_cascade)
 VALUES (133, 9, 1, 'enumeration_link_id', 'Artificial ID', 'id', 45, 25, true, false, 
   null, null, null,null,null,null,null,null,true, null, 
   '
     CONSTRAINT enumeration_enumeration_link_columns_only_valid_with_linking_tables CHECK (case when link_creation_rule_ev_id <> 29 and column1_name is not null or column2_name is not null or column3_name is not null or column4_name is not null or column5_name is not null then false else true end),
     CONSTRAINT enumeration_enumeration_link_column_names_unique CHECK(case when column1_name = column2_name then false when column1_name = column3_name then false when column1_name = column4_name then false when column1_name = column5_name then false when column2_name = column3_name then false when column2_name = column4_name then false when column2_name = column5_name then false when column3_name = column4_name then false when column3_name = column5_name then false when column4_name = column5_name then false else true end),
     CONSTRAINT enumeration_enumeration_link_column_names_camel_case_unique CHECK(case when column1_name_camel_case = column2_name_camel_case then false when column1_name_camel_case = column3_name_camel_case then false when column1_name_camel_case = column4_name_camel_case then false when column1_name_camel_case = column5_name_camel_case then false when column2_name_camel_case = column3_name_camel_case then false when column2_name_camel_case = column4_name_camel_case then false when column2_name_camel_case = column5_name_camel_case then false when column3_name_camel_case = column4_name_camel_case then false when column3_name_camel_case = column5_name_camel_case then false when column4_name_camel_case = column5_name_camel_case then false else true end)', 
-  false, 'Id', null, true, null, null, null, null),
+  false, 'Id', null, true, null, null, null, null, null),
 (134, 9, 2, 'add_date', 'Add Date of Record.', 'addDate', 46, 25, false, false, 
   null, null, null,null,null,null,null,null,true, 'now()', 
-  null, false, 'Add Date', null, true, null, null, null, null),
+  null, false, 'Add Date', null, true, null, null, null, null, null),
 (135, 9, 3, 'link_creation_rule_ev_id', 'Type of link to create, and which table holds the linking column.', 'linkCreationRule', 2, 25, false, true, 
   17, null, null,null,null,null,null,null,true, null, 
-  null, false, 'Link Creation Rule', null, true, null, null, null, null),
+  null, false, 'Link Creation Rule', null, true, null, null, null, null, null),
 (136, 9, 4, 'enumeration_a_id', 'Table that is part of the link.', 'enumerationA', 2, 25, false, true, 
   3, 133, 9,'linksAsA',133,true,null,true,true, null, 
-  null, false, 'Enumeration', null, true, 'Link A', 1, 136, true),
+  null, false, 'Enumeration', null, true, 'Link A', 1, 136, true, 'all-delete-orphan'),
 (137, 9, 5, 'enumeration_b_id', 'Table that is part of the link.', 'enumerationB', 2, 25, false, true, 
   3, 133, 9,'linksAsB',133,true,null,true,true, null, 
-  null, false, 'Enumeration', null, true, 'Link B', 1, 137, true),
+  null, false, 'Enumeration', null, true, 'Link B', 1, 137, true, 'all-delete-orphan'),
 (138, 9, 6, 'enumeration_a_index_ev_id', 'Index to create on the table to speed look up on this link.', 'enumerationAIndex', 2, 25, false, true, 
   16, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Index Type', null, true, 'Link A', 2, 136, false),
+  null, false, 'Index Type', null, true, 'Link A', 2, 136, false, null),
 (139, 9, 7, 'enumeration_b_index_ev_id', 'Index to create on the table to speed look up on this link.', 'enumerationBIndex', 2, 25, false, true, 
   16, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Index Type', null, true, 'Link B', 2, 137, false),
+  null, false, 'Index Type', null, true, 'Link B', 2, 137, false, null),
 (140, 9, 8, 'unique_flag', 'indicates if instances of this link are unique.', 'uniqueFlag', 1, 25, false, false, 
   null, null, null,null,null,null,null,null,true, null, 
-  null, false, 'Unique', null, true, null, null, null, null),
+  null, false, 'Unique', null, true, null, null, null, null, null),
 (141, 9, 9, 'not_null_flag', 'Indicates if a fk whether or not it can be null.', 'notNullFlag', 1, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Not Null', null, true, null, null, null, null),
+  null, false, 'Not Null', null, true, null, null, null, null, null),
 (142, 9, 10, 'name', 'Name of the link.', 'name', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,true, null, 
   E'
     CONSTRAINT enumeration_enumeration_link_name_unique UNIQUE (name),
     CONSTRAINT enumeration_enumeration_link_name_upper_format CHECK ( case when name is null then true when "substring"(name::text, \'[A-Z_]{1}[A-Z_0-9]*\'::text) = name::text then true else false end)', 
-  false, 'Name', null, true, null, null, null, null),
+  false, 'Name', null, true, null, null, null, null, null),
 (143, 9, 11, 'tablename', 'Name of the linking table if a table is created.', 'tableName', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,true, null, 
   E'
@@ -1204,132 +1227,132 @@ VALUES (133, 9, 1, 'enumeration_link_id', 'Artificial ID', 'id', 45, 25, true, f
     CONSTRAINT enumeration_enumeration_link_tablename_lower_format CHECK ( case when tablename is null then true when "substring"(tablename::text, \'[a-z_]{1}[a-z_0-9]*\'::text) = tablename::text then true else false end),
     CONSTRAINT enumeration_enumeration_link_tablename_camel_case_unique UNIQUE (tablename_camel_case),
     CONSTRAINT enumeration_enumeration_link_tablename_camel_case_format CHECK ( case when tablename_camel_case is null then true when "substring"(tablename_camel_case::text, \'[A-Z]{1}[A-Za-z0-9]*\'::text) = tablename_camel_case::text then true else false end)', 
-  false, 'Name', null, true, 'Table', 2, 143, true),
+  false, 'Name', null, true, 'Table', 2, 143, true, null),
 (144, 9, 12, 'tablename_camel_case', 'Name of the link if created within java.', 'tableNameCamelCase', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,true, null, 
-  null, false, 'Camel Case Name', null, true, null, null, null, null),
+  null, false, 'Camel Case Name', null, true, null, null, null, null, null),
 (145, 9, 13, 'schema_name', 'Name of schema in database to create table.', 'schemaName', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
   E'
     CONSTRAINT enumeration_enumeration_link_schema_name_lower_format CHECK ( case when schema_name is null then true when "substring"(schema_name::text, \'[a-z_]{1}[a-z_0-9]*\'::text) = schema_name::text then true else false end),
     CONSTRAINT enumeration_enumeration_link_schema_name_completeness_check CHECK ((child_table_synch_method_ev_id = 22 and schema_name is not null) or child_table_synch_method_ev_id <> 22)', 
-  false, 'Schema Name', null, true, 'Table', 1, 143, true),
+  false, 'Schema Name', null, true, 'Table', 1, 143, true, null),
 (146, 9, 14, 'post_create_sql', 'SQL to run after table creation.', 'postCreateSQL', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Extra SQL for post Create', null, true, 'Table', 3, 143, false),
+  null, false, 'Extra SQL for post Create', null, true, 'Table', 3, 143, false, null),
 (147, 9, 15, 'child_table_synch_method_ev_id', 'Rules to follow on when to synchronize to child tables.', 'childTableSynchMethod', 2, 25, false, false, 
   null, null, null,null,null,null,null,null,true, null, 
-  null, false, 'Synchronization Rule', null, true, 'Table', 4, 143, true),
+  null, false, 'Synchronization Rule', null, true, 'Table', 4, 143, true, null),
 (148, 9, 16, 'column1_name', 'Column Name on the Table.', 'column1Name', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
   E'
     CONSTRAINT enumeration_enumeration_link_column1_completeness_check CHECK ((column1_name IS NULL AND column1_name_camel_case IS NULL AND column1_datatype_ev_id IS NULL AND column1_index_ev_id is NULL AND column1_not_null_flag IS NULL) OR (column1_name IS NOT NULL AND column1_name_camel_case IS NOT NULL AND column1_datatype_ev_id IS NOT NULL AND column1_index_ev_id IS NOT NULL AND column1_not_null_flag IS NOT NULL)),
     CONSTRAINT enumeration_enumeration_link_column1_upper_format CHECK ( case when column1_name is null then true when "substring"(column1_name::text, \'[A-Z_]{1}[A-Z_0-9]*\'::text) = column1_name::text then true else false end),
     CONSTRAINT enumeration_enumeration_link_column1_camel_case_format CHECK ( case when column1_name_camel_case is null then true when "substring"(column1_name_camel_case::text, \'[A-Z]{1}[A-Za-z0-9]*\'::text) = column1_name_camel_case::text then true else false end)', 
-  false, 'Name', null, true, 'Column/Field 1', 1, 148, true),
+  false, 'Name', null, true, 'Column/Field 1', 1, 148, true, null),
 (149, 9, 17, 'column1_name_camel_case', 'Field name within class/enumeration.', 'column1NameCamelCase', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Camel Case Name', null, true, 'Column/Field 1', 2, 148, true),
+  null, false, 'Camel Case Name', null, true, 'Column/Field 1', 2, 148, true, null),
 (150, 9, 18, 'column1_datatype_ev_id', 'Data type of the column, withing the database, java, orm, and js.', 'column1DataType', 2, 25, false, true, 
   12, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Data Type', null, true, 'Column/Field 1', 3, 148, true),
+  null, false, 'Data Type', null, true, 'Column/Field 1', 3, 148, true, null),
 (151, 9, 19, 'column1_index_ev_id', 'Index to create on the table to speed look up on this column.', 'column1DBIndex', 2, 25, false, true, 
   16, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Index', null, true, 'Column/Field 1', 4, 148, true),
+  null, false, 'Index', null, true, 'Column/Field 1', 4, 148, true, null),
 (152, 9, 20, 'column1_not_null_flag', 'Nullness rule on this column.', 'column1NotNullFlag', 1, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Not Null', null, true, 'Column/Field 1', 5, 148, true),
+  null, false, 'Not Null', null, true, 'Column/Field 1', 5, 148, true, null),
 (153, 9, 21, 'column1_default', 'Default value for this column', 'column1Default', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Default', null, true, 'Column/Field 1', 6, 148, false),
+  null, false, 'Default', null, true, 'Column/Field 1', 6, 148, false, null),
 (154, 9, 22, 'column2_name', 'Column Name on the Table.', 'column2Name', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
   E'
     CONSTRAINT enumeration_enumeration_link_column2_completeness_check CHECK ((column2_name IS NULL AND column2_name_camel_case IS NULL AND column2_datatype_ev_id IS NULL AND column2_index_ev_id is NULL AND column2_not_null_flag IS NULL) OR (column2_name IS NOT NULL AND column2_name_camel_case IS NOT NULL AND column2_datatype_ev_id IS NOT NULL AND column2_index_ev_id IS NOT NULL AND column2_not_null_flag IS NOT NULL)),
     CONSTRAINT enumeration_enumeration_link_column2_upper_format CHECK ( case when column2_name is null then true when "substring"(column2_name::text, \'[A-Z_]{1}[A-Z_0-9]*\'::text) = column2_name::text then true else false end),
     CONSTRAINT enumeration_enumeration_link_column2_camel_case_format CHECK ( case when column2_name_camel_case is null then true when "substring"(column2_name_camel_case::text, \'[A-Z]{1}[A-Za-z0-9]*\'::text) = column2_name_camel_case::text then true else false end)', 
-  false, 'Name', null, true, 'Column/Field 2', 1, 154, true),
+  false, 'Name', null, true, 'Column/Field 2', 1, 154, true, null),
 (155, 9, 23, 'column2_name_camel_case', 'Field name within class/enumeration.', 'column2NameCamelCase', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Camel Case Name', null, true, 'Column/Field 2', 2, 154, true),
+  null, false, 'Camel Case Name', null, true, 'Column/Field 2', 2, 154, true, null),
 (156, 9, 24, 'column2_datatype_ev_id', 'Data type of the column, withing the database, java, orm, and js.', 'column2DataType', 2, 25, false, true, 
   12, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Data Type', null, true, 'Column/Field 2', 3, 154, true),
+  null, false, 'Data Type', null, true, 'Column/Field 2', 3, 154, true, null),
 (157, 9, 25, 'column2_index_ev_id', 'Index to create on the table to speed look up on this column.', 'column2DBIndex', 2, 25, false, true, 
   16, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Index', null, true, 'Column/Field 2', 4, 154, true),
+  null, false, 'Index', null, true, 'Column/Field 2', 4, 154, true, null),
 (158, 9, 26, 'column2_not_null_flag', 'Nullness rule on this column.', 'column2NotNullFlag', 1, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Not Null', null, true, 'Column/Field 2', 5, 154, true),
+  null, false, 'Not Null', null, true, 'Column/Field 2', 5, 154, true, null),
 (159, 9, 27, 'column2_default', 'Default value for this column', 'column2Default', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Default', null, true, 'Column/Field 2', 6, 154, false),
+  null, false, 'Default', null, true, 'Column/Field 2', 6, 154, false, null),
 (160, 9, 28, 'column3_name', 'Column Name on the Table.', 'column3Name', 3, 25, false, false, null, null, 
   null,null,null,null,null,null,false, null, 
   E'
     CONSTRAINT enumeration_enumeration_link_column3_completeness_check CHECK ((column3_name IS NULL AND column3_name_camel_case IS NULL AND column3_datatype_ev_id IS NULL AND column3_index_ev_id is NULL AND column3_not_null_flag IS NULL) OR (column3_name IS NOT NULL AND column3_name_camel_case IS NOT NULL AND column3_datatype_ev_id IS NOT NULL AND column3_index_ev_id IS NOT NULL AND column3_not_null_flag IS NOT NULL)),
     CONSTRAINT enumeration_enumeration_link_column3_upper_format CHECK ( case when column3_name is null then true when "substring"(column3_name::text, \'[A-Z_]{1}[A-Z_0-9]*\'::text) = column3_name::text then true else false end),
     CONSTRAINT enumeration_enumeration_link_column3_camel_case_format CHECK ( case when column3_name_camel_case is null then true when "substring"(column3_name_camel_case::text, \'[A-Z]{1}[A-Za-z0-9]*\'::text) = column3_name_camel_case::text then true else false end)', 
-  false, 'Name', null, true, 'Column/Field 3', 1, 160, true),
+  false, 'Name', null, true, 'Column/Field 3', 1, 160, true, null),
 (161, 9, 29, 'column3_name_camel_case', 'Field name within class/enumeration.', 'column3NameCamelCase', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Camel Case Name', null, true, 'Column/Field 3', 2, 160, true),
+  null, false, 'Camel Case Name', null, true, 'Column/Field 3', 2, 160, true, null),
 (162, 9, 30, 'column3_datatype_ev_id', 'Data type of the column, withing the database, java, orm, and js.', 'column3DataType', 2, 25, false, true, 
   12, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Data Type', null, true, 'Column/Field 3', 3, 160, true),
+  null, false, 'Data Type', null, true, 'Column/Field 3', 3, 160, true, null),
 (163, 9, 31, 'column3_index_ev_id', 'Index to create on the table to speed look up on this column.', 'column3DBIndex', 2, 25, false, true, 
   16, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Index', null, true, 'Column/Field 3', 4, 160, true),
+  null, false, 'Index', null, true, 'Column/Field 3', 4, 160, true, null),
 (164, 9, 32, 'column3_not_null_flag', 'Nullness rule on this column.', 'column3NotNullFlag', 1, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Not Null', null, true, 'Column/Field 3', 5, 160, true),
+  null, false, 'Not Null', null, true, 'Column/Field 3', 5, 160, true, null),
 (165, 9, 33, 'column3_default', 'Default value for this column', 'column3Default', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Default', null, true, 'Column/Field 3', 6, 160, false),
+  null, false, 'Default', null, true, 'Column/Field 3', 6, 160, false, null),
 (166, 9, 34, 'column4_name', 'Column Name on the Table.', 'column4Name', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
   E'
     CONSTRAINT enumeration_enumeration_link_column4_completeness_check CHECK ((column4_name IS NULL AND column4_name_camel_case IS NULL AND column4_datatype_ev_id IS NULL AND column4_index_ev_id is NULL AND column4_not_null_flag IS NULL) OR (column4_name IS NOT NULL AND column4_name_camel_case IS NOT NULL AND column4_datatype_ev_id IS NOT NULL AND column4_index_ev_id IS NOT NULL AND column4_not_null_flag IS NOT NULL)),
     CONSTRAINT enumeration_enumeration_link_column4_upper_format CHECK ( case when column4_name is null then true when "substring"(column4_name::text, \'[A-Z_]{1}[A-Z_0-9]*\'::text) = column4_name::text then true else false end),
     CONSTRAINT enumeration_enumeration_link_column4_camel_case_format CHECK ( case when column4_name_camel_case is null then true when "substring"(column4_name_camel_case::text, \'[A-Z]{1}[A-Za-z0-9]*\'::text) = column4_name_camel_case::text then true else false end)', 
-  false, 'Name', null, true, 'Column/Field 4', 1, 166, true),
+  false, 'Name', null, true, 'Column/Field 4', 1, 166, true, null),
 (167, 9, 35, 'column4_name_camel_case', 'Field name within class/enumeration.', 'column4NameCamelCase', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Camel Case Name', null, true, 'Column/Field 4', 2, 166, true),
+  null, false, 'Camel Case Name', null, true, 'Column/Field 4', 2, 166, true, null),
 (168, 9, 36, 'column4_datatype_ev_id', 'Data type of the column, withing the database, java, orm, and js.', 'column4DataType', 2, 25, false, true, 
   12, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Data Type', null, true, 'Column/Field 4', 3, 166, true),
+  null, false, 'Data Type', null, true, 'Column/Field 4', 3, 166, true, null),
 (169, 9, 37, 'column4_index_ev_id', 'Index to create on the table to speed look up on this column.', 'column4DBIndex', 2, 25, false, true, 
   16, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Index', null, true, 'Column/Field 4', 4, 166, true),
+  null, false, 'Index', null, true, 'Column/Field 4', 4, 166, true, null),
 (170, 9, 38, 'column4_not_null_flag', 'Nullness rule on this column.', 'column4NotNullFlag', 1, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Not Null', null, true, 'Column/Field 4', 5, 166, true),
+  null, false, 'Not Null', null, true, 'Column/Field 4', 5, 166, true, null),
 (171, 9, 39, 'column4_default', 'Default value for this column', 'column4Default', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Default', null, true, 'Column/Field 4', 6, 166, false),
+  null, false, 'Default', null, true, 'Column/Field 4', 6, 166, false, null),
 (172, 9, 40, 'column5_name', 'Column Name on the Table.', 'column5Name', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
   E'
     CONSTRAINT enumeration_enumeration_link_column5_completeness_check CHECK ((column5_name IS NULL AND column5_name_camel_case IS NULL AND column5_datatype_ev_id IS NULL AND column5_index_ev_id is NULL AND column5_not_null_flag IS NULL) OR (column5_name IS NOT NULL AND column5_name_camel_case IS NOT NULL AND column5_datatype_ev_id IS NOT NULL AND column5_index_ev_id IS NOT NULL AND column5_not_null_flag IS NOT NULL)),
     CONSTRAINT enumeration_enumeration_link_column5_upper_format CHECK ( case when column5_name is null then true when "substring"(column5_name::text, \'[A-Z_]{1}[A-Z_0-9]*\'::text) = column5_name::text then true else false end),
     CONSTRAINT enumeration_enumeration_link_column5_camel_case_format CHECK ( case when column5_name_camel_case is null then true when "substring"(column5_name_camel_case::text, \'[A-Z]{1}[A-Za-z0-9]*\'::text) = column5_name_camel_case::text then true else false end)', 
-  false, 'Name', null, true, 'Column/Field 5', 1, 172, true),
+  false, 'Name', null, true, 'Column/Field 5', 1, 172, true, null),
 (173, 9, 41, 'column5_name_camel_case', 'Field name within class/enumeration.', 'column5NameCamelCase', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Camel Case Name', null, true, 'Column/Field 5', 2, 172, true),
+  null, false, 'Camel Case Name', null, true, 'Column/Field 5', 2, 172, true, null),
 (174, 9, 42, 'column5_datatype_ev_id', 'Data type of the column, withing the database, java, orm, and js.', 'column5DataType', 2, 25, false, true, 
   12, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Data Type', null, true, 'Column/Field 5', 3, 172, true),
+  null, false, 'Data Type', null, true, 'Column/Field 5', 3, 172, true, null),
 (175, 9, 43, 'column5_index_ev_id', 'Index to create on the table to speed look up on this column.', 'column5DBIndex', 2, 25, false, true, 
   16, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Index', null, true, 'Column/Field 5', 4, 172, true),
+  null, false, 'Index', null, true, 'Column/Field 5', 4, 172, true, null),
 (176, 9, 44, 'column5_not_null_flag', 'Nullness rule on this column.', 'column5NotNullFlag', 1, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Not Null', null, true, 'Column/Field 5', 5, 172, true),
+  null, false, 'Not Null', null, true, 'Column/Field 5', 5, 172, true, null),
 (177, 9, 45, 'column5_default', 'Default value for this column', 'column5Default', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Default', null, true, 'Column/Field 5', 6, 172, false);
+  null, false, 'Default', null, true, 'Column/Field 5', 6, 172, false, null);
 
 
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
@@ -1340,51 +1363,51 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   constraint_sql, pojo_constructor_field_flag, gui_header, 
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
-  gui_field_group_field_required_flag)
+  gui_field_group_field_required_flag, fk_pojo_collection_orm_cascade)
 VALUES (178, 10, 1, 'enumeration_link_value_id', 'Artificial ID', 'id', 45, 25, true, false, 
   null, null, null,null,null,null,null,null,true, null, 
-  null, false, 'Id', null, true, null, null, null, null),
+  null, false, 'Id', null, true, null, null, null, null, null),
 (179, 10, 2, 'enumeration_link_id', 'Link back to parent enumeration link definition.', 'enumerationLink', 2, 25, false, true, 
   9, 178, 10,'linkValues',185,false,null,FALSE,true, null, 
-  null, false, 'Enumeration Link', null, true, null, null, null, null),
+  null, false, 'Enumeration Link', null, true, null, null, null, null, 'all-delete-orphan'),
 (180, 10, 3, 'add_date', 'Add Date of Record.', 'addDate', 46, 25, false, false, 
   null, null, null,null,null,null,null,null,false, 'now()', 
-  null, false, 'Add Date', null, true, null, null, null, null),
+  null, false, 'Add Date', null, true, null, null, null, null, null),
 (181, 10, 4, 'enumeration_value_a_id', 'Instance of an enumeration value being linked to another enumeration value.', 'enumerationValueA', 2, 25, false, true, 
   8, null, null,null,null,null,null,null,true, null, 
-  null, false, 'Value A', null, true, 'Enumeration Values', 1, 181, true),
+  null, false, 'Value A', null, true, 'Enumeration Values', 1, 181, true, null),
 (182, 10, 5, 'enumeration_value_b_id', 'Instance of an enumeration value being linked to another enumeration value.', 'enumerationValueB', 2, 25, false, true, 
   8, null, null,null,null,null,null,null,true, null, 
-  null, false, 'Value B', null, true, 'Enumeration Values', 2, 182, true),
+  null, false, 'Value B', null, true, 'Enumeration Values', 2, 182, true, null),
 (183, 10, 6, 'name', 'Name giving to this instance of the linking', 'name', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,true, null, 
   E'
     CONSTRAINT name_upper_format CHECK (case when name is null then true when "substring"(name::text, \'[A-Z_]{1}[A-Z_0-9]*\'::text) = name::text then true else false end),
     CONSTRAINT enumeration_enumeration_link_value_unq_name UNIQUE (enumeration_link_id, name)', 
-  false, 'Name', null, true, null, null, null, null),
+  false, 'Name', null, true, null, null, null, null, null),
 (184, 10, 7, 'description', 'Description of this link', 'description', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,true, null, 
-  null, false, 'Description', null, true, null, null, null, null),
+  null, false, 'Description', null, true, null, null, null, null, null),
 (185, 10, 8, 'sequence', 'Sequence for use in collections if needed.', 'sequence', 44, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
   '
     CONSTRAINT enumeration_enumeration_link_value_unq_sequence UNIQUE (enumeration_link_id, "sequence")', 
-  false, 'Sequence', null, true, null, null, null, null),
+  false, 'Sequence', null, true, null, null, null, null, null),
 (186, 10, 9, 'column1_value', 'Value for column/field.', 'column1Value', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Value 1', null, true, 'Column/Field Values', 1, 186, false),
+  null, false, 'Value 1', null, true, 'Column/Field Values', 1, 186, false, null),
 (187, 10, 10, 'column2_value', 'Value for column/field.', 'column2Value', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Value 2', null, true, 'Column/Field Values', 2, 187, false),
+  null, false, 'Value 2', null, true, 'Column/Field Values', 2, 187, false, null),
 (188, 10, 11, 'column3_value', 'Value for column/field.', 'column3Value', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Value 3', null, true, 'Column/Field Values', 3, 188, false),
+  null, false, 'Value 3', null, true, 'Column/Field Values', 3, 188, false, null),
 (189, 10, 12, 'column4_value', 'Value for column/field.', 'column4Value', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Value 4', null, true, 'Column/Field Values', 4, 189, false),
+  null, false, 'Value 4', null, true, 'Column/Field Values', 4, 189, false, null),
 (190, 10, 13, 'column5_value', 'Value for column/field.', 'column5Value', 3, 25, false, false, 
   null, null, null,null,null,null,null,null,false, null, 
-  null, false, 'Value 5', null, true, 'Column/Field Values', 5, 190, false);
+  null, false, 'Value 5', null, true, 'Column/Field Values', 5, 190, false, null);
 
 
 update -=[schema_name]=-.mc_table set gui_picker_description_column_id = 4 where mc_table_id = 1;

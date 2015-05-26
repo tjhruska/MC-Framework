@@ -63,7 +63,7 @@ limitations under the License.
         <property name="guiPagifyFlag" type="boolean" column="gui_pagify_flag" not-null="false"/>
         <property name="guiRecordsPerPage" type="short" column="gui_records_per_page" not-null="false"/>
         <property name="guiPickerDescriptionColumnId" type="integer" column="gui_picker_description_column_id" not-null="false"/>
-        <list name="columns" schema="mc" table="mc_column" fetch="subselect" inverse="false" lazy="false" cascade="save-update" >
+        <list name="columns" schema="mc" table="mc_column" fetch="subselect" inverse="false" lazy="false" cascade="all-delete-orphan" >
             <key column="mc_table_id" />
             <list-index column="sequence" /><one-to-many class="com.tjhruska.mc.domain.system.Column" />
         </list>

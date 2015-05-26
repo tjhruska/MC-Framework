@@ -46,10 +46,17 @@ class IndexTest extends GeneratedDomainAndDaoTest {
   DaoDomain<Column> columnDao
   ColumnTest columnTest
 
+  @Autowired
+  DaoDomain<Table> tableDao
+  TableTest tableTest
+
   @Before
   public void setup() {
     columnTest = new ColumnTest()
     columnTest.columnDao = columnDao
+
+    tableTest = new TableTest()
+    tableTest.tableDao = tableDao
   }
 
   @Override
@@ -64,7 +71,7 @@ class IndexTest extends GeneratedDomainAndDaoTest {
     Index index = new Index()
     
     if (table == null) {
-      index.setTable(new TableTest(tableDao : getDao()).persistTestObject(number))
+      index.setTable(tableTest.persistTestObject(number))
       index.table.indexes.add(index)
     } else {
       index.setTable(table)
@@ -110,17 +117,26 @@ class IndexTest extends GeneratedDomainAndDaoTest {
   public void assertDomainUpdates(BaseDomain expected, BaseDomain actual) {
     Index expectedD = (Index)expected
     Index actualD = (Index)actual
-    new TableTest().assertDomainUpdates(expectedD.getTable(), actualD.getTable())
+    tableTest.assertDomainUpdates(expectedD.getTable(), actualD.getTable())
     assertEquals("index is different than expected", expectedD.getIndex(), actualD.getIndex())
     assertEquals("indexName is different than expected", expectedD.getIndexName(), actualD.getIndexName())
     assertEquals("size of columns is different than expected", expectedD.columns.size(), actualD.columns.size())
   }
-
+  
   @Override
-  public void deleteChildrenIfNeeded(BaseDomain domain) {
-    Index target = (Index)domain
-    target.columns.each {
-      columnTest.getDao().delete(it)
+  void deleteObject(BaseDomain domain) {
+    if (domain == null) {
+      return
     }
+    Index target = (Index)domain
+
+    tableTest.deleteObject(target.table)
+    target?.columns.each {
+      columnTest.deleteObject(it)
+    }
+    target?.columns.clear()
+    indexDao.delete(target)
+    indexDao.flush()
+    indexDao.evict(target)
   }
 }

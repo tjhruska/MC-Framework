@@ -30,6 +30,11 @@ class JsonExampleTest extends GeneratedDomainAndDaoTest {
   @Autowired
   DaoDomain<JsonExample> jsonExampleDao
 
+  @Before
+  public void setup() {
+
+  }
+
   @Override
   public DaoDomain getDao() {
     jsonExampleDao
@@ -63,9 +68,16 @@ class JsonExampleTest extends GeneratedDomainAndDaoTest {
     assertEquals("jsonFoo is different than expected", expectedD.getJsonFoo(), actualD.getJsonFoo())
     assertEquals("jsonBar is different than expected", expectedD.getJsonBar(), actualD.getJsonBar())
   }
-
+  
   @Override
-  public void deleteChildrenIfNeeded(BaseDomain domain) {
+  void deleteObject(BaseDomain domain) {
+    if (domain == null) {
+      return
+    }
     JsonExample target = (JsonExample)domain
+
+    jsonExampleDao.delete(target)
+    jsonExampleDao.flush()
+    jsonExampleDao.evict(target)
   }
 }

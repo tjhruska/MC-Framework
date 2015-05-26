@@ -50,6 +50,7 @@ public class Column extends BaseDomain {
   Container foreignPogoCollectionDatatype
   String foreignPojoCollectionNameCamelCase
   Integer foreignPojoCollectionLocalKeyColumnId
+  String foreignPojoCollectionORMCascade
   Boolean foreignOrmLazyFlag
   Integer foreignKeyLinkThruToTableId
   Boolean foreignKeyOrmInverseFlag

@@ -46,6 +46,10 @@ class EnumerationLinkTest extends GeneratedDomainAndDaoTest {
   DaoDomain<EnumerationLink> enumerationLinkDao
 
   @Autowired
+  DaoDomain<Enumeration> enumerationDao
+  EnumerationTest enumerationTest
+
+  @Autowired
   DaoDomain<EnumerationLinkValue> enumerationLinkValueDao
   EnumerationLinkValueTest enumerationLinkValueTest
 
@@ -53,6 +57,9 @@ class EnumerationLinkTest extends GeneratedDomainAndDaoTest {
   public void setup() {
     enumerationLinkValueTest = new EnumerationLinkValueTest()
     enumerationLinkValueTest.enumerationLinkValueDao = enumerationLinkValueDao
+
+    enumerationTest = new EnumerationTest()
+    enumerationTest.enumerationDao = enumerationDao
   }
 
   @Override
@@ -69,21 +76,21 @@ class EnumerationLinkTest extends GeneratedDomainAndDaoTest {
     
     enumerationLink.setLinkCreationRule(LinkCreationRule.getLinkCreationRuleBySequence(1))
     if (enumerationA == null) {
-      enumerationLink.setEnumerationA(new EnumerationTest(enumerationDao : getDao()).persistTestObject(number))
+      enumerationLink.setEnumerationA(enumerationTest.persistTestObject(number))
       enumerationLink.enumerationA.linksAsA.add(enumerationLink)
     } else {
       enumerationLink.setEnumerationA(enumerationA)
     }
     if (enumerationB == null) {
-      enumerationLink.setEnumerationB(new EnumerationTest(enumerationDao : getDao()).persistTestObject(number))
+      enumerationLink.setEnumerationB(enumerationTest.persistTestObject(number))
       enumerationLink.enumerationB.linksAsB.add(enumerationLink)
     } else {
       enumerationLink.setEnumerationB(enumerationB)
     }
     enumerationLink.setEnumerationAIndex(DbIndex.getDbIndexBySequence(1))
     enumerationLink.setEnumerationBIndex(DbIndex.getDbIndexBySequence(1))
-    enumerationLink.setUniqueFlag(8%number == 0)
-    enumerationLink.setNotNullFlag(9%number == 0)
+    enumerationLink.setUniqueFlag(number == 0 || 8%number == 0)
+    enumerationLink.setNotNullFlag(number == 0 || 9%number == 0)
     enumerationLink.setName("name${number}")
     enumerationLink.setTableName("tablename${number}")
     enumerationLink.setTableNameCamelCase("tablename_camel_case${number}")
@@ -94,31 +101,31 @@ class EnumerationLinkTest extends GeneratedDomainAndDaoTest {
     enumerationLink.setColumn1NameCamelCase("column1_name_camel_case${number}")
     enumerationLink.setColumn1DataType(Datatype.getDatatypeBySequence(1))
     enumerationLink.setColumn1DBIndex(DbIndex.getDbIndexBySequence(1))
-    enumerationLink.setColumn1NotNullFlag(20%number == 0)
+    enumerationLink.setColumn1NotNullFlag(number == 0 || 20%number == 0)
     enumerationLink.setColumn1Default("column1_default${number}")
     enumerationLink.setColumn2Name("column2_name${number}")
     enumerationLink.setColumn2NameCamelCase("column2_name_camel_case${number}")
     enumerationLink.setColumn2DataType(Datatype.getDatatypeBySequence(1))
     enumerationLink.setColumn2DBIndex(DbIndex.getDbIndexBySequence(1))
-    enumerationLink.setColumn2NotNullFlag(26%number == 0)
+    enumerationLink.setColumn2NotNullFlag(number == 0 || 26%number == 0)
     enumerationLink.setColumn2Default("column2_default${number}")
     enumerationLink.setColumn3Name("column3_name${number}")
     enumerationLink.setColumn3NameCamelCase("column3_name_camel_case${number}")
     enumerationLink.setColumn3DataType(Datatype.getDatatypeBySequence(1))
     enumerationLink.setColumn3DBIndex(DbIndex.getDbIndexBySequence(1))
-    enumerationLink.setColumn3NotNullFlag(32%number == 0)
+    enumerationLink.setColumn3NotNullFlag(number == 0 || 32%number == 0)
     enumerationLink.setColumn3Default("column3_default${number}")
     enumerationLink.setColumn4Name("column4_name${number}")
     enumerationLink.setColumn4NameCamelCase("column4_name_camel_case${number}")
     enumerationLink.setColumn4DataType(Datatype.getDatatypeBySequence(1))
     enumerationLink.setColumn4DBIndex(DbIndex.getDbIndexBySequence(1))
-    enumerationLink.setColumn4NotNullFlag(38%number == 0)
+    enumerationLink.setColumn4NotNullFlag(number == 0 || 38%number == 0)
     enumerationLink.setColumn4Default("column4_default${number}")
     enumerationLink.setColumn5Name("column5_name${number}")
     enumerationLink.setColumn5NameCamelCase("column5_name_camel_case${number}")
     enumerationLink.setColumn5DataType(Datatype.getDatatypeBySequence(1))
     enumerationLink.setColumn5DBIndex(DbIndex.getDbIndexBySequence(1))
-    enumerationLink.setColumn5NotNullFlag(44%number == 0)
+    enumerationLink.setColumn5NotNullFlag(number == 0 || 44%number == 0)
     enumerationLink.setColumn5Default("column5_default${number}")
     
     List<EnumerationLinkValue> linkValues = new ArrayList()
@@ -202,8 +209,8 @@ class EnumerationLinkTest extends GeneratedDomainAndDaoTest {
     EnumerationLink expectedD = (EnumerationLink)expected
     EnumerationLink actualD = (EnumerationLink)actual
     assertEquals("linkCreationRule is different than expected", expectedD.getLinkCreationRule(), actualD.getLinkCreationRule())
-    new EnumerationTest().assertDomainUpdates(expectedD.getEnumerationA(), actualD.getEnumerationA())
-    new EnumerationTest().assertDomainUpdates(expectedD.getEnumerationB(), actualD.getEnumerationB())
+    enumerationTest.assertDomainUpdates(expectedD.getEnumerationA(), actualD.getEnumerationA())
+    enumerationTest.assertDomainUpdates(expectedD.getEnumerationB(), actualD.getEnumerationB())
     assertEquals("enumerationAIndex is different than expected", expectedD.getEnumerationAIndex(), actualD.getEnumerationAIndex())
     assertEquals("enumerationBIndex is different than expected", expectedD.getEnumerationBIndex(), actualD.getEnumerationBIndex())
     assertEquals("uniqueFlag is different than expected", expectedD.getUniqueFlag(), actualD.getUniqueFlag())
@@ -246,12 +253,18 @@ class EnumerationLinkTest extends GeneratedDomainAndDaoTest {
     assertEquals("column5Default is different than expected", expectedD.getColumn5Default(), actualD.getColumn5Default())
     assertEquals("size of linkValues is different than expected", expectedD.linkValues.size(), actualD.linkValues.size())
   }
-
+  
   @Override
-  public void deleteChildrenIfNeeded(BaseDomain domain) {
-    EnumerationLink target = (EnumerationLink)domain
-    target.linkValues.each {
-      enumerationLinkValueTest.getDao().delete(it)
+  void deleteObject(BaseDomain domain) {
+    if (domain == null) {
+      return
     }
+    EnumerationLink target = (EnumerationLink)domain
+
+    enumerationTest.deleteObject(target.enumerationA)
+    enumerationTest.deleteObject(target.enumerationB)
+    enumerationLinkDao.delete(target)
+    enumerationLinkDao.flush()
+    enumerationLinkDao.evict(target)
   }
 }
