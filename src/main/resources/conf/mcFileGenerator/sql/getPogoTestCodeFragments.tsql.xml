@@ -105,7 +105,7 @@ select
   case when t.src_folder_tag = 'rootDirectory' then 'testDirectory' else t.src_folder_tag end as folder_tag, 
   replace(t.java_package, '.', '/') as java_package, t.name_camel_case || 'TestImpl.groovy' as fileName, t.name_camel_case || 'Test.groovy' as fileName2,
   case when e.enumeration_id is not null then '' else '
-import ' || fkt.java_package || '.' || fkt.name_camel_case || 'Test' end as fragment2, 
+import ' || fkt.java_package || '.' || fkt.name_camel_case end as fragment2, 
 '
 import ' || fkt.java_package || '.' || fkt.name_camel_case ||
 case when e.mc_table_id is not null then '' else '

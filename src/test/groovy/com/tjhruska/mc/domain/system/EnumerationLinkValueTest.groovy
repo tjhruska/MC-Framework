@@ -17,7 +17,7 @@ limitations under the License.
 package com.tjhruska.mc.domain.system
 
 import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTestIface
-import com.tjhruska.mc.domain.system.EnumerationLinkTest
+import com.tjhruska.mc.domain.system.EnumerationLink
 
   
 interface EnumerationLinkValueTest extends GeneratedDomainAndDaoTestIface {

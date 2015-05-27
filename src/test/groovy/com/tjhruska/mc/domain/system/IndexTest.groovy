@@ -17,7 +17,7 @@ limitations under the License.
 package com.tjhruska.mc.domain.system
 
 import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTestIface
-import com.tjhruska.mc.domain.system.TableTest
+import com.tjhruska.mc.domain.system.Table
 
   
 interface IndexTest extends GeneratedDomainAndDaoTestIface {

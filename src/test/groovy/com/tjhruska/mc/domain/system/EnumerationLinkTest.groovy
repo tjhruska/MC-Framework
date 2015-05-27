@@ -17,12 +17,12 @@ limitations under the License.
 package com.tjhruska.mc.domain.system
 
 import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTestIface
-import com.tjhruska.mc.domain.system.EnumerationTest
+import com.tjhruska.mc.domain.system.Enumeration
 
   
 interface EnumerationLinkTest extends GeneratedDomainAndDaoTestIface {
-  Enumeration getEnumerationA()
-  void setEnumerationA(Enumeration enumerationA)
   Enumeration getEnumerationB()
   void setEnumerationB(Enumeration enumerationB)
+  Enumeration getEnumerationA()
+  void setEnumerationA(Enumeration enumerationA)
 }
