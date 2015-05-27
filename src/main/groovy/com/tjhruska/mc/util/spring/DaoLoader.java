@@ -71,7 +71,7 @@ public class DaoLoader implements BeanFactoryPostProcessor, ApplicationContextAw
         throw new RuntimeException("Failed to find list of hibernate mapping files", e);
       }
 	  } else {
-	    log.info("hibernateMappingDirectory not provided to DaoLoader so requesting sessionFactory bean.  (May have issues as this is a BeanFactoryPostProcessor).");
+	    log.info("hibernateMappingDirectory not provided to GeneratedDomainAndDaoTestLoader so requesting sessionFactory bean.  (May have issues as this is a BeanFactoryPostProcessor).");
 	    SessionFactory sessionFactory = (SessionFactory) applicationContext.getBean("sessionFactory");
 	    Map<String, ClassMetadata> mappedDtoClasses = sessionFactory.getAllClassMetadata();
 	    log.info("found {} mappedDtoClasses using sessionFactory.", mappedDtoClasses.size());

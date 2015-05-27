@@ -69,5 +69,5 @@
 	<bean id="restrictionHelper" class="com.tjhruska.mc.database.restrictions.RestrictionHelperHibernate"/>
 	
 	<bean id="daoLoader" class="com.tjhruska.mc.util.spring.DaoLoader" />
-	
+    
 </beans>

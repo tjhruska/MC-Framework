@@ -31,7 +31,7 @@ import com.tjhruska.mc.database.DaoDomain
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration()
-abstract class GeneratedDomainAndDaoTest {
+abstract class GeneratedDomainAndDaoTest implements GeneratedDomainAndDaoTestIface {
 
   abstract DaoDomain getDao()
 

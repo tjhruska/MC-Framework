@@ -31,4 +31,6 @@
 
     <context:annotation-config/>
 
+    <bean id="generatedDomainAndDaoTestLoader" class="com.tjhruska.mc.database.test.GeneratedDomainAndDaoTestLoader">
+    </bean>
 </beans>
