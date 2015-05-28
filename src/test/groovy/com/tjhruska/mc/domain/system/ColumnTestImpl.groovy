@@ -47,6 +47,7 @@ class ColumnTestImpl extends GeneratedDomainAndDaoTest implements ColumnTest {
   @Autowired
   DaoDomain<Column> columnDao
 
+  ColumnTest columnTest = this
   @Autowired
   @Lazy
   TableTest tableTest
