@@ -56,12 +56,7 @@ public class GeneratedDomainAndDaoTestLoader implements BeanFactoryPostProcessor
         File directory = hibernateMappingDirectory.getFile()
         File[] fList = directory.listFiles()
         for (File file : fList){
-          String className = file.getName().substring(0, file.getName().length() - 8) + 'Test'
-          int index = className.lastIndexOf('.') + 1
-          String beanId = className.substring(index, index + 1).toLowerCase() + className.substring(index + 1)
-          className += 'Impl'
-          log.info("{} for mapping {}", beanId, className)
-          testClassNames.add(new Duo<String,Class>(beanId, Class.forName(className)))
+          addTestClassName(file.getName().substring(0, file.getName().length() - 8), testClassNames)
         }
       } catch (Exception e) {
         throw new RuntimeException("Failed to find list of hibernate mapping files", e)
@@ -72,19 +67,28 @@ public class GeneratedDomainAndDaoTestLoader implements BeanFactoryPostProcessor
       Map<String, ClassMetadata> mappedDtoClasses = sessionFactory.getAllClassMetadata()
       log.info("found {} mappedDtoClasses using sessionFactory.", mappedDtoClasses.size())
       for (String key : mappedDtoClasses.keySet()){
-        String className = key + 'Test'
-        int index = key.lastIndexOf('.') + 1
-        String beanId = className.substring(index, index + 1).toLowerCase() + className.substring(index + 1)
-        className += 'Impl'
-        log.info("{} for mapping {}", beanId, className)
-        try {
-          testClassNames.add(new Duo<String,Class>(beanId, Class.forName(className)))
-        } catch (ClassNotFoundException e) {
-          throw new RuntimeException("Failed to convert class name to Class object", e)
-        }
+        addTestClassName(key, testClassNames)
       }
     }
     return testClassNames
+  }
+
+  void addTestClassName(String baseName, List<Duo<String,Class>> testClassNames) {
+    int index = baseName.lastIndexOf('.') + 1
+    String beanId = baseName.substring(index, index + 1).toLowerCase() + baseName.substring(index + 1) + 'Test'
+    try {
+      String className = baseName + 'TestImplExtended'
+      testClassNames.add(new Duo<String,Class>(beanId, Class.forName(className)))
+      log.info("{} for mapping {}", beanId, className)
+    } catch (ClassNotFoundException e) {
+      String className = baseName + 'TestImpl'
+      try {
+        testClassNames.add(new Duo<String,Class>(beanId, Class.forName(className)))
+        log.info("{} for mapping {}", beanId, className)
+      } catch (ClassNotFoundException e2) {
+        throw new RuntimeException("Failed to convert class name to Class object", e2)
+      }
+    }
   }
 
   /* (non-Javadoc)
