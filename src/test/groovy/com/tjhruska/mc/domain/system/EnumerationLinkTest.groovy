@@ -21,8 +21,8 @@ import com.tjhruska.mc.domain.system.Enumeration
 
   
 interface EnumerationLinkTest extends GeneratedDomainAndDaoTestIface {
-  Enumeration getEnumerationB()
-  void setEnumerationB(Enumeration enumerationB)
   Enumeration getEnumerationA()
   void setEnumerationA(Enumeration enumerationA)
+  Enumeration getEnumerationB()
+  void setEnumerationB(Enumeration enumerationB)
 }

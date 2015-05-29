@@ -69,7 +69,7 @@ class EnumerationTestImpl extends GeneratedDomainAndDaoTest implements Enumerati
 
 
   @Override
-  public BaseDomain getTestObject(Integer number, Integer sequence) {
+  public BaseDomain getTestObject(Integer number, Integer sequence, Boolean addChildrenFlag) {
     Enumeration enumeration = new Enumeration()
     
     enumeration.setName("name${number}")
@@ -113,7 +113,7 @@ class EnumerationTestImpl extends GeneratedDomainAndDaoTest implements Enumerati
     enumeration.setColumn5Default("column5_default${number}")
     
     List<EnumerationValue> enumerationValues = new ArrayList()
-    if (enumerationValueTest != null) {
+    if (addChildrenFlag && enumerationValueTest != null) {
       enumerationValueTest.enumeration = enumeration
       (1..(number+2)).each { i ->
       enumerationValues.add(enumerationValueTest.getTestObject(i+(10*number), i-1))
@@ -122,7 +122,7 @@ class EnumerationTestImpl extends GeneratedDomainAndDaoTest implements Enumerati
     enumeration.setEnumerationValues(enumerationValues)
 
     Set<EnumerationLink> linksAsA = new HashSet()
-    if (enumerationLinkTest != null) {
+    if (addChildrenFlag && enumerationLinkTest != null) {
       enumerationLinkTest.enumerationA = enumeration
       (1..(number+2)).each { i ->
       linksAsA.add(enumerationLinkTest.getTestObject(i+(10*number), i-1))
@@ -131,7 +131,7 @@ class EnumerationTestImpl extends GeneratedDomainAndDaoTest implements Enumerati
     enumeration.setLinksAsA(linksAsA)
 
     Set<EnumerationLink> linksAsB = new HashSet()
-    if (enumerationLinkTest != null) {
+    if (addChildrenFlag && enumerationLinkTest != null) {
       enumerationLinkTest.enumerationB = enumeration
       (1..(number+2)).each { i ->
       linksAsB.add(enumerationLinkTest.getTestObject(i+(10*number), i-1))

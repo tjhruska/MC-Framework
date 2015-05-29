@@ -52,7 +52,7 @@ class EnumerationValueTestImpl extends GeneratedDomainAndDaoTest implements Enum
   Enumeration enumeration
 
   @Override
-  public BaseDomain getTestObject(Integer number, Integer sequence) {
+  public BaseDomain getTestObject(Integer number, Integer sequence, Boolean addChildrenFlag) {
     EnumerationValue enumerationValue = new EnumerationValue()
     
     if (enumeration == null) {

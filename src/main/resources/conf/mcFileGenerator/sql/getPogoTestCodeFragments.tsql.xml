@@ -312,7 +312,7 @@ select
     '' order by c.sequence) || '
 
   @Override
-  public BaseDomain getTestObject(Integer number, Integer sequence) {
+  public BaseDomain getTestObject(Integer number, Integer sequence, Boolean addChildrenFlag) {
     ' || max(t.name_camel_case) || ' ' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || ' = new ' || max(t.name_camel_case) || '()
     
     ' || string_agg(case
@@ -450,7 +450,7 @@ select
         then key_datatype.java_class || ', ' 
         else ''
       end || collected_table.name_camel_case || '> ' || c_with_fk.fk_pojo_collection_name_camel_case || ' = new ' || d.java_implementation || '()
-    if (' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case)) || 'Test != null) {
+    if (addChildrenFlag && ' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case)) || 'Test != null) {
       ' || lower(substring(collected_table.name_camel_case, 1, 1)) || substring(collected_table.name_camel_case, 2, length(collected_table.name_camel_case)) || 'Test.'
       || c_with_fk.name_camel_case || ' = ' 
       || lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || '

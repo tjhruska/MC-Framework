@@ -61,7 +61,7 @@ class IndexTestImpl extends GeneratedDomainAndDaoTest implements IndexTest {
   Table table
 
   @Override
-  public BaseDomain getTestObject(Integer number, Integer sequence) {
+  public BaseDomain getTestObject(Integer number, Integer sequence, Boolean addChildrenFlag) {
     Index index = new Index()
     
     if (table == null) {
@@ -74,7 +74,7 @@ class IndexTestImpl extends GeneratedDomainAndDaoTest implements IndexTest {
     index.setIndexName("index_name${number}")
     
     List<Column> columns = new ArrayList()
-    if (columnTest != null) {
+    if (addChildrenFlag && columnTest != null) {
       columnTest.index = index
       (1..(number+2)).each { i ->
       columns.add(columnTest.getTestObject(i+(10*number), i-1))

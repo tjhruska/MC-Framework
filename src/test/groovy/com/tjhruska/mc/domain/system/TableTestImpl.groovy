@@ -64,7 +64,7 @@ class TableTestImpl extends GeneratedDomainAndDaoTest implements TableTest {
 
 
   @Override
-  public BaseDomain getTestObject(Integer number, Integer sequence) {
+  public BaseDomain getTestObject(Integer number, Integer sequence, Boolean addChildrenFlag) {
     Table table = new Table()
     
     table.setSystemNoModifyFlag(number == 0 || 3%number == 0)
@@ -95,7 +95,7 @@ class TableTestImpl extends GeneratedDomainAndDaoTest implements TableTest {
     table.setGuiPickerDescriptionColumnId(number)
     
     List<Column> columns = new ArrayList()
-    if (columnTest != null) {
+    if (addChildrenFlag && columnTest != null) {
       columnTest.table = table
       (1..(number+2)).each { i ->
       columns.add(columnTest.getTestObject(i+(10*number), i-1))
@@ -104,7 +104,7 @@ class TableTestImpl extends GeneratedDomainAndDaoTest implements TableTest {
     table.setColumns(columns)
 
     Set<Index> indexes = new HashSet()
-    if (indexTest != null) {
+    if (addChildrenFlag && indexTest != null) {
       indexTest.table = table
       (1..(number+2)).each { i ->
       indexes.add(indexTest.getTestObject(i+(10*number), i-1))

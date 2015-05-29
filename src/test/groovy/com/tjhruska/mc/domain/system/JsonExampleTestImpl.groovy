@@ -40,7 +40,7 @@ class JsonExampleTestImpl extends GeneratedDomainAndDaoTest implements JsonExamp
 
 
   @Override
-  public BaseDomain getTestObject(Integer number, Integer sequence) {
+  public BaseDomain getTestObject(Integer number, Integer sequence, Boolean addChildrenFlag) {
     JsonExample jsonExample = new JsonExample()
     
     jsonExample.setJsonFoo(new java.util.ArrayList())

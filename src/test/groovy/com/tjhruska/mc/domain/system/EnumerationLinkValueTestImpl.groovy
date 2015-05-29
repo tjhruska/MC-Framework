@@ -52,7 +52,7 @@ class EnumerationLinkValueTestImpl extends GeneratedDomainAndDaoTest implements 
   EnumerationLink enumerationLink
 
   @Override
-  public BaseDomain getTestObject(Integer number, Integer sequence) {
+  public BaseDomain getTestObject(Integer number, Integer sequence, Boolean addChildrenFlag) {
     EnumerationLinkValue enumerationLinkValue = new EnumerationLinkValue()
     
     if (enumerationLink == null) {

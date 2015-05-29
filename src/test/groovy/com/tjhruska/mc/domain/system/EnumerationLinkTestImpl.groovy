@@ -65,7 +65,7 @@ class EnumerationLinkTestImpl extends GeneratedDomainAndDaoTest implements Enume
   Enumeration enumerationB
 
   @Override
-  public BaseDomain getTestObject(Integer number, Integer sequence) {
+  public BaseDomain getTestObject(Integer number, Integer sequence, Boolean addChildrenFlag) {
     EnumerationLink enumerationLink = new EnumerationLink()
     
     enumerationLink.setLinkCreationRule(LinkCreationRule.getLinkCreationRuleBySequence(1))
@@ -123,7 +123,7 @@ class EnumerationLinkTestImpl extends GeneratedDomainAndDaoTest implements Enume
     enumerationLink.setColumn5Default("column5_default${number}")
     
     List<EnumerationLinkValue> linkValues = new ArrayList()
-    if (enumerationLinkValueTest != null) {
+    if (addChildrenFlag && enumerationLinkValueTest != null) {
       enumerationLinkValueTest.enumerationLink = enumerationLink
       (1..(number+2)).each { i ->
       linkValues.add(enumerationLinkValueTest.getTestObject(i+(10*number), i-1))

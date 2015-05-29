@@ -40,7 +40,7 @@ class ChildTestImpl extends GeneratedDomainAndDaoTest implements ChildTest {
 
 
   @Override
-  public BaseDomain getTestObject(Integer number, Integer sequence) {
+  public BaseDomain getTestObject(Integer number, Integer sequence, Boolean addChildrenFlag) {
     Child child = new Child()
     
     child.setTableId(number)

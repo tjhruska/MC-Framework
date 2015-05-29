@@ -35,7 +35,6 @@ abstract class GeneratedDomainAndDaoTest implements GeneratedDomainAndDaoTestIfa
 
   abstract DaoDomain getDao()
 
-  abstract BaseDomain getTestObject(Integer number, Integer sequence)
 
   abstract BaseDomain updateDomainObject(Integer number, BaseDomain domain)
 
@@ -43,8 +42,16 @@ abstract class GeneratedDomainAndDaoTest implements GeneratedDomainAndDaoTestIfa
 
   abstract void deleteObject(BaseDomain domain)
 
+  BaseDomain getTestObject(Integer number, Integer sequence) {
+    getTestObject(number, sequence, false)
+  }
+
   BaseDomain persistTestObject(Integer number) {
-    BaseDomain domain1 = getTestObject(number, 0)
+    persistTestObject(number, false)
+  }
+
+  BaseDomain persistTestObject(Integer number, Boolean addChildrenFlag) {
+    BaseDomain domain1 = getTestObject(number, 0, addChildrenFlag)
     //assertNull(domain1.getId()) -- the class knows if this should be null or not, either way it will fail to persist if it is wrong, testing here doesn't work
     assertNull(domain1.getAddDate())
 
@@ -56,13 +63,13 @@ abstract class GeneratedDomainAndDaoTest implements GeneratedDomainAndDaoTestIfa
 
   @Test
   void createTest(){
-    BaseDomain domain1 = persistTestObject(1)
+    BaseDomain domain1 = persistTestObject(1, true)
     assertNotNull(domain1.getId())
   }
 
   @Test
   void readTest(){
-    BaseDomain domain1 = persistTestObject(1)
+    BaseDomain domain1 = persistTestObject(1, true)
 
     BaseDomain domain1Found = dao.findByPK(domain1.getPK())
 
@@ -85,7 +92,7 @@ abstract class GeneratedDomainAndDaoTest implements GeneratedDomainAndDaoTestIfa
 
   @Test
   void deleteTest(){
-    BaseDomain domain1 = persistTestObject(1)
+    BaseDomain domain1 = persistTestObject(1, true)
 
     deleteObject(domain1)
 

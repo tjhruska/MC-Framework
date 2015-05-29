@@ -30,6 +30,8 @@ interface GeneratedDomainAndDaoTestIface {
 
   BaseDomain getTestObject(Integer number, Integer sequence)
 
+  BaseDomain getTestObject(Integer number, Integer sequence, Boolean addChildrenFlag)
+
   BaseDomain updateDomainObject(Integer number, BaseDomain domain)
 
   void assertDomainUpdates(BaseDomain expected, BaseDomain actual)
@@ -37,6 +39,8 @@ interface GeneratedDomainAndDaoTestIface {
   void deleteObject(BaseDomain domain)
 
   BaseDomain persistTestObject(Integer number)
+
+  BaseDomain persistTestObject(Integer number, Boolean addChildrenFlag)
 
   @Test
   void createTest()

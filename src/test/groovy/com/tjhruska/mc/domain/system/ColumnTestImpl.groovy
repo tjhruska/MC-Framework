@@ -61,7 +61,7 @@ class ColumnTestImpl extends GeneratedDomainAndDaoTest implements ColumnTest {
   Column guiFieldGroupGuardColumn
 
   @Override
-  public BaseDomain getTestObject(Integer number, Integer sequence) {
+  public BaseDomain getTestObject(Integer number, Integer sequence, Boolean addChildrenFlag) {
     Column column = new Column()
     
     if (table == null) {
@@ -110,7 +110,7 @@ class ColumnTestImpl extends GeneratedDomainAndDaoTest implements ColumnTest {
     column.setGuiFieldGroupFieldRequiredFlag(number == 0 || 36%number == 0)
     
     List<Column> guardedColumns = new ArrayList()
-    if (columnTest != null) {
+    if (addChildrenFlag && columnTest != null) {
       columnTest.guiFieldGroupGuardColumn = column
       (1..(number+2)).each { i ->
       guardedColumns.add(columnTest.getTestObject(i+(10*number), i-1))
