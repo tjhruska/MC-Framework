@@ -22,6 +22,8 @@ import static org.junit.Assert.*
 import org.junit.Before
 import org.junit.Ignore
 
+import groovy.util.logging.Slf4j
+
 import com.tjhruska.mc.database.BaseDomain
 import com.tjhruska.mc.database.DaoDomain
 import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTestIface
@@ -40,6 +42,7 @@ import com.tjhruska.mc.domain.system.ColumnTest
 //    To activate test: extend test class, and tweak fields with constraints to match database expectations.
 //    (Extended class won't be wiped out on regeneration, and must continue to match database expectations.)
 @Ignore 
+@Slf4j
 class IndexTestImpl extends GeneratedDomainAndDaoTest implements IndexTest {
   
   @Autowired
@@ -124,7 +127,12 @@ class IndexTestImpl extends GeneratedDomainAndDaoTest implements IndexTest {
     }
     Index target = (Index)domain
 
-    tableTest.deleteObject(target.table)
+    try {
+      tableTest.deleteObject(target.table)
+      table = null
+    } catch (Exception e) {
+      log.error("failed to delete Table table : ${target.table}", e)
+    }
     target?.columns.each {
       columnTest.deleteObject(it)
     }

@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import static org.junit.Assert.*
 import org.junit.Before
 
+import groovy.util.logging.Slf4j
+
 import com.tjhruska.mc.database.BaseDomain
 import com.tjhruska.mc.database.DaoDomain
 import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTestIface
@@ -28,6 +30,7 @@ import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTestIface
 import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTest
   
 
+@Slf4j
 class ChildTestImpl extends GeneratedDomainAndDaoTest implements ChildTest {
   
   @Autowired

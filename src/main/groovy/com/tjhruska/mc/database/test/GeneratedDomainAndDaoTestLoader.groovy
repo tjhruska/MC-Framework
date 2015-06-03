@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.BeansException
 import org.springframework.beans.MutablePropertyValues
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor
+import org.springframework.beans.factory.config.ConfigurableBeanFactory
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.beans.factory.config.ConstructorArgumentValues
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
@@ -34,6 +35,7 @@ import org.springframework.context.ApplicationContextAware
 import org.springframework.core.io.Resource
 
 import com.tjhruska.mc.util.Duo
+
 
 @Slf4j
 public class GeneratedDomainAndDaoTestLoader implements BeanFactoryPostProcessor, ApplicationContextAware {

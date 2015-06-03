@@ -22,6 +22,8 @@ import static org.junit.Assert.*
 import org.junit.Before
 import org.junit.Ignore
 
+import groovy.util.logging.Slf4j
+
 import com.tjhruska.mc.database.BaseDomain
 import com.tjhruska.mc.database.DaoDomain
 import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTestIface
@@ -43,6 +45,7 @@ import com.tjhruska.mc.domain.system.EnumerationLinkValueTest
 //    To activate test: extend test class, and tweak fields with constraints to match database expectations.
 //    (Extended class won't be wiped out on regeneration, and must continue to match database expectations.)
 @Ignore 
+@Slf4j
 class EnumerationLinkTestImpl extends GeneratedDomainAndDaoTest implements EnumerationLinkTest {
   
   @Autowired
@@ -255,8 +258,18 @@ class EnumerationLinkTestImpl extends GeneratedDomainAndDaoTest implements Enume
     }
     EnumerationLink target = (EnumerationLink)domain
 
-    enumerationTest.deleteObject(target.enumerationA)
-    enumerationTest.deleteObject(target.enumerationB)
+    try {
+      enumerationTest.deleteObject(target.enumerationA)
+      enumerationA = null
+    } catch (Exception e) {
+      log.error("failed to delete Enumeration enumerationA : ${target.enumerationA}", e)
+    }
+    try {
+      enumerationTest.deleteObject(target.enumerationB)
+      enumerationB = null
+    } catch (Exception e) {
+      log.error("failed to delete Enumeration enumerationB : ${target.enumerationB}", e)
+    }
     enumerationLinkDao.flush()
     enumerationLinkDao.evict(target)
   }

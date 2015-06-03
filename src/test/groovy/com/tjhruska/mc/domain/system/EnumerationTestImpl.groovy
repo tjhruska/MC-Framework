@@ -22,6 +22,8 @@ import static org.junit.Assert.*
 import org.junit.Before
 import org.junit.Ignore
 
+import groovy.util.logging.Slf4j
+
 import com.tjhruska.mc.database.BaseDomain
 import com.tjhruska.mc.database.DaoDomain
 import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTestIface
@@ -49,6 +51,7 @@ import com.tjhruska.mc.domain.system.EnumerationLinkTest
 //    To activate test: extend test class, and tweak fields with constraints to match database expectations.
 //    (Extended class won't be wiped out on regeneration, and must continue to match database expectations.)
 @Ignore 
+@Slf4j
 class EnumerationTestImpl extends GeneratedDomainAndDaoTest implements EnumerationTest {
   
   @Autowired

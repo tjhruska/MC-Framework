@@ -42,6 +42,8 @@ import org.junit.Ignore'
         else ''
     end || '
 
+import groovy.util.logging.Slf4j
+
 import com.tjhruska.mc.database.BaseDomain
 import com.tjhruska.mc.database.DaoDomain
 import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTestIface
@@ -182,7 +184,8 @@ interface ' || max(t.name_camel_case) || 'Test extends GeneratedDomainAndDaoTest
         else '
 '
      end) ||
-'class ' || max(t.name_camel_case) || 'TestImpl extends -=[testAbstractBaseClass]=- implements ' || max(t.name_camel_case) || 'Test {
+'@Slf4j
+class ' || max(t.name_camel_case) || 'TestImpl extends -=[testAbstractBaseClass]=- implements ' || max(t.name_camel_case) || 'Test {
   
   @Autowired
   DaoDomain<' || max(t.name_camel_case) || '> ' || max(lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case))) || 'Dao
@@ -701,11 +704,21 @@ select
   null::varchar as fragment2, '
 ' ||
   string_agg(distinct
-'    ' || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
-    || 'Test.deleteObject(target.' || c_with_fk.name_camel_case || ')' , '
+E'    try \{
+      ' || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
+    || 'Test.deleteObject(target.' || c_with_fk.name_camel_case || E')
+      ' || c_with_fk.name_camel_case || E' = null
+    \} catch (Exception e) \{
+      log.error("failed to delete ' || fk.name_camel_case || ' ' || c_with_fk.name_camel_case || E' : \$\{target.' || c_with_fk.name_camel_case || E'\}", e)
+    \}' , '
 ' order by 
-'    ' || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
-    || 'Test.deleteObject(target.' || c_with_fk.name_camel_case || ')'
+E'    try \{
+      ' || lower(substring(fk.name_camel_case, 1, 1)) || substring(fk.name_camel_case, 2, length(fk.name_camel_case))
+    || 'Test.deleteObject(target.' || c_with_fk.name_camel_case || E')
+      ' || c_with_fk.name_camel_case || E' = null
+    \} catch (Exception e) \{
+      log.error("failed to delete ' || fk.name_camel_case || ' ' || c_with_fk.name_camel_case || E' : \$\{target.' || c_with_fk.name_camel_case || E'\}", e)
+    \}'
   ) as fragment
 from
   -=[schema_name]=-.mc_table as t join
