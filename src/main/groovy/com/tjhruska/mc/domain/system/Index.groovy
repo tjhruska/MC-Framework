@@ -26,14 +26,39 @@ import java.util.List
 import groovy.transform.ToString
 import groovy.transform.Canonical
 
+import javax.validation.Valid
+import javax.validation.constraints.NotNull
+
 
 @Canonical (excludes=['columns'])
 @ToString (includeNames = true, includeSuper=true, includePackage=false)
+/**
+ * An multi-column Index for a Table.  (Single column indexes should be defined by Column.)
+ */
 public class Index extends BaseDomain {
 
+
+  /**
+   *Table/POJO on which to create the index/lookup.
+   */
+  @NotNull
   Table table
+
+  /**
+   *Type of Index.
+   */
+  @NotNull
   DbIndex index
+
+  /**
+   *Name for the index.
+   */
   String indexName
+
+  /**
+   *Columns (fields) that are properties of a Table, and their meta data that describe how to maintain them.
+   */
+  @Valid
   List<Column> columns
 
 }

@@ -24,12 +24,29 @@ import java.util.Map
 import groovy.transform.ToString
 import groovy.transform.Canonical
 
+import javax.validation.Valid
+import javax.validation.constraints.NotNull
+
 
 @Canonical (excludes=[])
 @ToString (includeNames = true, includeSuper=true, includePackage=false)
+/**
+ * Test table for json columns
+ */
 public class JsonExample extends BaseDomain {
 
+
+  /**
+   *Json Field 1
+   */
+  @Valid
   List jsonFoo
+
+  /**
+   *Json Field 2
+   */
+  @NotNull
+  @Valid
   Map<String,Integer> jsonBar
 
 }

@@ -23,19 +23,64 @@ import com.tjhruska.mc.domain.system.Enumeration
 import groovy.transform.ToString
 import groovy.transform.Canonical
 
+import javax.validation.Valid
+import javax.validation.constraints.NotNull
+
 
 @Canonical (excludes=[])
 @ToString (includeNames = true, includeSuper=true, includePackage=false)
+/**
+ * An entry into the set of values define for an enumeration.
+ */
 public class EnumerationValue extends BaseDomain {
 
+
+  /**
+   *Link back to parent enumeration definition.
+   */
+  @NotNull
   Enumeration enumeration
+
+  /**
+   *Name of the enumeration instance for this value.
+   */
+  @NotNull
   String name
+
+  /**
+   *Description for this value.
+   */
+  @NotNull
   String description
+
+  /**
+   *Sequence within the enuemration/class for this value.
+   */
   Short sequence
+
+  /**
+   *Value for column/field.
+   */
   String column1Value
+
+  /**
+   *Value for column/field.
+   */
   String column2Value
+
+  /**
+   *Value for column/field.
+   */
   String column3Value
+
+  /**
+   *Value for column/field.
+   */
   String column4Value
+
+  /**
+   *Value for column/field.
+   */
   String column5Value
 
 }

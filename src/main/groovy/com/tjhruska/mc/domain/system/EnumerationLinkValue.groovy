@@ -23,21 +23,76 @@ import com.tjhruska.mc.domain.system.EnumerationLink
 import groovy.transform.ToString
 import groovy.transform.Canonical
 
+import javax.validation.Valid
+import javax.validation.constraints.NotNull
+
 
 @Canonical (excludes=[])
 @ToString (includeNames = true, includeSuper=true, includePackage=false)
+/**
+ * A entry into the set of links between two enumerations as defined by the EnumerationLink.
+ */
 public class EnumerationLinkValue extends BaseDomain {
 
+
+  /**
+   *Link back to parent enumeration link definition.
+   */
+  @NotNull
   EnumerationLink enumerationLink
+
+  /**
+   *Instance of an enumeration value being linked to another enumeration value.
+   */
+  @NotNull
   Integer enumerationValueAId
+
+  /**
+   *Instance of an enumeration value being linked to another enumeration value.
+   */
+  @NotNull
   Integer enumerationValueBId
+
+  /**
+   *Name giving to this instance of the linking
+   */
+  @NotNull
   String name
+
+  /**
+   *Description of this link
+   */
+  @NotNull
   String description
+
+  /**
+   *Sequence for use in collections if needed.
+   */
   Short sequence
+
+  /**
+   *Value for column/field.
+   */
   String column1Value
+
+  /**
+   *Value for column/field.
+   */
   String column2Value
+
+  /**
+   *Value for column/field.
+   */
   String column3Value
+
+  /**
+   *Value for column/field.
+   */
   String column4Value
+
+  /**
+   *Value for column/field.
+   */
   String column5Value
 
 }
