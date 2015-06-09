@@ -36,50 +36,50 @@ public class EnumerationValue extends BaseDomain {
 
 
   /**
-   *Link back to parent enumeration definition.
+   * Link back to parent enumeration definition.
    */
   @NotNull
   Enumeration enumeration
 
   /**
-   *Name of the enumeration instance for this value.
+   * Name of the enumeration instance for this value.
    */
   @NotNull
   String name
 
   /**
-   *Description for this value.
+   * Description for this value.
    */
   @NotNull
   String description
 
   /**
-   *Sequence within the enuemration/class for this value.
+   * Sequence within the enuemration/class for this value.
    */
   Short sequence
 
   /**
-   *Value for column/field.
+   * Value for column/field.
    */
   String column1Value
 
   /**
-   *Value for column/field.
+   * Value for column/field.
    */
   String column2Value
 
   /**
-   *Value for column/field.
+   * Value for column/field.
    */
   String column3Value
 
   /**
-   *Value for column/field.
+   * Value for column/field.
    */
   String column4Value
 
   /**
-   *Value for column/field.
+   * Value for column/field.
    */
   String column5Value
 

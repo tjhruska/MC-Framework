@@ -231,7 +231,7 @@ select
   '
 
   /**
-   *' || c.description || '
+   * ' || c.description || '
    */
   ' || case when c.not_null_flag = true then '@NotNull
   ' else '' end
@@ -280,7 +280,7 @@ select
   null::varchar as fragment2, string_agg('
 
   /**
-   *' || collected_table.description || '
+   * ' || collected_table.description || '
    */
   @Valid
   ' || d.java_class || '<' 

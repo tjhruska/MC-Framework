@@ -36,62 +36,62 @@ public class EnumerationLinkValue extends BaseDomain {
 
 
   /**
-   *Link back to parent enumeration link definition.
+   * Link back to parent enumeration link definition.
    */
   @NotNull
   EnumerationLink enumerationLink
 
   /**
-   *Instance of an enumeration value being linked to another enumeration value.
+   * Instance of an enumeration value being linked to another enumeration value.
    */
   @NotNull
   Integer enumerationValueAId
 
   /**
-   *Instance of an enumeration value being linked to another enumeration value.
+   * Instance of an enumeration value being linked to another enumeration value.
    */
   @NotNull
   Integer enumerationValueBId
 
   /**
-   *Name giving to this instance of the linking
+   * Name giving to this instance of the linking
    */
   @NotNull
   String name
 
   /**
-   *Description of this link
+   * Description of this link
    */
   @NotNull
   String description
 
   /**
-   *Sequence for use in collections if needed.
+   * Sequence for use in collections if needed.
    */
   Short sequence
 
   /**
-   *Value for column/field.
+   * Value for column/field.
    */
   String column1Value
 
   /**
-   *Value for column/field.
+   * Value for column/field.
    */
   String column2Value
 
   /**
-   *Value for column/field.
+   * Value for column/field.
    */
   String column3Value
 
   /**
-   *Value for column/field.
+   * Value for column/field.
    */
   String column4Value
 
   /**
-   *Value for column/field.
+   * Value for column/field.
    */
   String column5Value
 

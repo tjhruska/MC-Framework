@@ -35,47 +35,47 @@ public class Child extends BaseDomain {
 
 
   /**
-   *Original ancestor in which this child is inherited from.  (Always filled.)
+   * Original ancestor in which this child is inherited from.  (Always filled.)
    */
   @NotNull
   Integer tableId
 
   /**
-   *Immediate parent, if not the original ancestor.  (Don't fill this in on first gen children.)
+   * Immediate parent, if not the original ancestor.  (Don't fill this in on first gen children.)
    */
   Integer parentId
 
   /**
-   *Child table/POJO which can add columns/indexes.
+   * Child table/POJO which can add columns/indexes.
    */
   @NotNull
   String description
 
   /**
-   *Name of "object" using ClassCamelCaseRules.
+   * Name of "object" using ClassCamelCaseRules.
    */
   @NotNull
   String nameCamelCase
 
   /**
-   *Used to map records to subclasses within mapping file.
+   * Used to map records to subclasses within mapping file.
    */
   @NotNull
   String ormDiscriminatorValue
 
   /**
-   *Create constraint on table to limit fields to match introduction by subclass.
+   * Create constraint on table to limit fields to match introduction by subclass.
    */
   @NotNull
   Boolean createConstraintUsingDiscriminatorFlag
 
   /**
-   *Add this java code to POJO after last method.
+   * Add this java code to POJO after last method.
    */
   String extraJavaCode
 
   /**
-   *Extra ORM code to be added to the end of the mapping file.
+   * Extra ORM code to be added to the end of the mapping file.
    */
   String extraORMCode
 

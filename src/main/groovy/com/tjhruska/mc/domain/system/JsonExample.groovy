@@ -37,13 +37,13 @@ public class JsonExample extends BaseDomain {
 
 
   /**
-   *Json Field 1
+   * Json Field 1
    */
   @Valid
   List jsonFoo
 
   /**
-   *Json Field 2
+   * Json Field 2
    */
   @NotNull
   @Valid
