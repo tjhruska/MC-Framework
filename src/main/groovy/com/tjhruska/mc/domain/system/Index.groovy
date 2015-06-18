@@ -29,6 +29,8 @@ import groovy.transform.Canonical
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
+import org.hibernate.validator.constraints.NotEmpty
+
 
 @Canonical (excludes=['columns'])
 @ToString (includeNames = true, includeSuper=true, includePackage=false)

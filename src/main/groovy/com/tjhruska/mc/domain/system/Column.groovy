@@ -31,6 +31,8 @@ import groovy.transform.Canonical
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
+import org.hibernate.validator.constraints.NotEmpty
+
 
 @Canonical (excludes=['guardedColumns'])
 @ToString (includeNames = true, includeSuper=true, includePackage=false)
@@ -55,19 +57,19 @@ public class Column extends BaseDomain {
   /**
    * Column Name on the Table.
    */
-  @NotNull
+  @NotEmpty
   String name
 
   /**
    * Description of the Column for documentation purposes.
    */
-  @NotNull
+  @NotEmpty
   String description
 
   /**
    * Name of how the column would appear in a POJO using fieldCamelCaseSyntax.
    */
-  @NotNull
+  @NotEmpty
   String nameCamelCase
 
   /**

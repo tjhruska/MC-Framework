@@ -35,6 +35,8 @@ import groovy.transform.Canonical
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
+import org.hibernate.validator.constraints.NotEmpty
+
 
 @Canonical (excludes=['enumerationValues', 'linksAsA', 'linksAsB'])
 @ToString (includeNames = true, includeSuper=true, includePackage=false)
@@ -47,19 +49,19 @@ public class Enumeration extends BaseDomain {
   /**
    * Name to reference within code for lookups.
    */
-  @NotNull
+  @NotEmpty
   String name
 
   /**
    * Name of table to create if synchronized.
    */
-  @NotNull
+  @NotEmpty
   String tableName
 
   /**
    * Name of enumeration for use to name java enumeration/class.
    */
-  @NotNull
+  @NotEmpty
   String tableNameCamelCase
 
   /**

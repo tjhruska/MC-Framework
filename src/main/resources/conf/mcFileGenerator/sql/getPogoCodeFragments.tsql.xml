@@ -144,6 +144,8 @@ import groovy.transform.Canonical
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
+import org.hibernate.validator.constraints.NotEmpty
+
 
 @Canonical (excludes=[' || 
   string_agg(distinct
@@ -233,8 +235,12 @@ select
   /**
    * ' || c.description || '
    */
-  ' || case when c.not_null_flag = true then '@NotNull
-  ' else '' end
+  ' || case 
+         when c.not_null_flag = true and c.datatype_ev_id = 3 then '@NotEmpty
+  ' 
+         when c.not_null_flag = true then '@NotNull
+  ' 
+         else '' end
   || case
     when c.fk_table_id is not null and c.fk_orm_lazy_flag is not null and c.fk_pojo_collection_container_ev_id is null
     then '@Valid

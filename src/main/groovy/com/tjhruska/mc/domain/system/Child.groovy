@@ -25,6 +25,8 @@ import groovy.transform.Canonical
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
+import org.hibernate.validator.constraints.NotEmpty
+
 
 @Canonical (excludes=[])
 @ToString (includeNames = true, includeSuper=true, includePackage=false)
@@ -48,19 +50,19 @@ public class Child extends BaseDomain {
   /**
    * Child table/POJO which can add columns/indexes.
    */
-  @NotNull
+  @NotEmpty
   String description
 
   /**
    * Name of "object" using ClassCamelCaseRules.
    */
-  @NotNull
+  @NotEmpty
   String nameCamelCase
 
   /**
    * Used to map records to subclasses within mapping file.
    */
-  @NotNull
+  @NotEmpty
   String ormDiscriminatorValue
 
   /**

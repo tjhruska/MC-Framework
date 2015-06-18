@@ -26,6 +26,8 @@ import groovy.transform.Canonical
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
+import org.hibernate.validator.constraints.NotEmpty
+
 
 @Canonical (excludes=[])
 @ToString (includeNames = true, includeSuper=true, includePackage=false)
@@ -44,13 +46,13 @@ public class EnumerationValue extends BaseDomain {
   /**
    * Name of the enumeration instance for this value.
    */
-  @NotNull
+  @NotEmpty
   String name
 
   /**
    * Description for this value.
    */
-  @NotNull
+  @NotEmpty
   String description
 
   /**

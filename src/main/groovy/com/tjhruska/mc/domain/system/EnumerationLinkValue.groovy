@@ -26,6 +26,8 @@ import groovy.transform.Canonical
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
+import org.hibernate.validator.constraints.NotEmpty
+
 
 @Canonical (excludes=[])
 @ToString (includeNames = true, includeSuper=true, includePackage=false)
@@ -56,13 +58,13 @@ public class EnumerationLinkValue extends BaseDomain {
   /**
    * Name giving to this instance of the linking
    */
-  @NotNull
+  @NotEmpty
   String name
 
   /**
    * Description of this link
    */
-  @NotNull
+  @NotEmpty
   String description
 
   /**
