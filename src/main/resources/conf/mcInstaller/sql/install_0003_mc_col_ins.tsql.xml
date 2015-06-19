@@ -83,7 +83,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
 VALUES (13, 1, 13, 'create_pojo_flag', 'Generate Plain Old Java Object (POJO).', 'createPOJOFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,true,  true, 'CONSTRAINT mc_table_create_pojo_field_requirements CHECK (
 CASE
     WHEN create_pojo_flag = true AND java_fq_superclass IS NOT NULL AND src_folder_tag IS NOT NULL AND suppress_pojo_changes_flag IS NOT NULL AND java_package IS NOT NULL AND constructor_from_field_flag IS NOT NULL THEN true
-    WHEN create_pojo_flag = false AND java_fq_superclass IS NULL AND src_folder_tag IS NULL AND suppress_pojo_changes_flag IS NULL AND constructor_from_field_flag IS NULL AND extra_java_code IS NULL THEN true
+    WHEN create_pojo_flag = false AND java_fq_superclass IS NULL AND src_folder_tag IS NULL AND suppress_pojo_changes_flag IS NULL AND constructor_from_field_flag IS NULL AND class_imports IS NULL AND class_annotation_code IS NULL AND extra_java_code IS NULL THEN true
     ELSE false
 END)', false, 'Create POJO', 'Plain Old Java Object (POJO)  Will be created within the java source folder and within the indicated java package.', true, 'POJO', 1, 13, true);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
@@ -160,7 +160,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (19, 1, 19, 'extra_java_code', 'Add this java code to POJO after last method.', 'extraJavaCode', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Extra Java Code', 'Will add extra java code to the end of the class file.', false, 'POJO', 7, 13, false);
+VALUES (199, 1, 19, 'class_imports', 'Add these java imports to POJO in import section.', 'classImports', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Class Imports', 'Will add imports to java code for class definition.', false, 'POJO', 7, 13, false);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -170,7 +170,27 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (20, 1, 20, 'create_orm_flag', 'Create Object Relational Mapping (ORM) files within same package as POJO.', 'createORMFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false,  true, 'CONSTRAINT mc_table_create_orm_field_requirements CHECK (
+VALUES (200, 1, 20, 'class_annotation_code', 'Add these java annotations to POJO.', 'classAnnotationsCode', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Class Annotations Code', 'Will add annotations code to class definition.', false, 'POJO', 7, 13, false);
+INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
+  name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
+  fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
+  fk_orm_lazy_flag, fk_orm_link_thru_to_table_id, fk_orm_inverse_flag,
+  not_null_flag, default_value, 
+  constraint_sql, pojo_constructor_field_flag, gui_header, 
+  gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
+  gui_field_group_sequence, gui_field_group_guard_column_id, 
+  gui_field_group_field_required_flag)
+VALUES (19, 1, 21, 'extra_java_code', 'Add this java code to POJO after last method.', 'extraJavaCode', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Extra Java Code', 'Will add extra java code to the end of the class file.', false, 'POJO', 7, 13, false);
+INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
+  name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
+  fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
+  fk_orm_lazy_flag, fk_orm_link_thru_to_table_id, fk_orm_inverse_flag,
+  not_null_flag, default_value, 
+  constraint_sql, pojo_constructor_field_flag, gui_header, 
+  gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
+  gui_field_group_sequence, gui_field_group_guard_column_id, 
+  gui_field_group_field_required_flag)
+VALUES (20, 1, 22, 'create_orm_flag', 'Create Object Relational Mapping (ORM) files within same package as POJO.', 'createORMFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false,  true, 'CONSTRAINT mc_table_create_orm_field_requirements CHECK (
 CASE
     WHEN create_orm_flag IS NULL THEN true
     WHEN create_orm_flag = true AND create_table_flag = true AND suppress_orm_changes_flag IS NOT NULL THEN true
@@ -186,7 +206,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (21, 1, 21, 'suppress_orm_changes_flag', 'If True don''t create/recreate the ORM file, if False rename old, and create new.', 'suppressORMChangesFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false,  false, null, false, 'suppress ORM Changes', 'Will prevent system creation and replacement of ORM files.', true, 'ORM', 2, 20, true);
+VALUES (21, 1, 23, 'suppress_orm_changes_flag', 'If True don''t create/recreate the ORM file, if False rename old, and create new.', 'suppressORMChangesFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false,  false, null, false, 'suppress ORM Changes', 'Will prevent system creation and replacement of ORM files.', true, 'ORM', 2, 20, true);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -196,7 +216,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (22, 1, 22, 'extra_orm_code', 'Extra ORM code to be added to the end of the mapping file.', 'extraORMCode', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Extra ORM Code', 'Will add extra ORM code to the end of the mapping file.', false, 'ORM', 4, 20, false);
+VALUES (22, 1, 24, 'extra_orm_code', 'Extra ORM code to be added to the end of the mapping file.', 'extraORMCode', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Extra ORM Code', 'Will add extra ORM code to the end of the mapping file.', false, 'ORM', 4, 20, false);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -206,7 +226,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag, fk_gui_column_filter_local, fk_gui_column_filter_foreign)
-VALUES (23, 1, 23, 'orm_discriminator_column_id', 'If the POJO shall be subclassed via the mc_child table use this descriminator column to manage subclassing within mapping file.', 'ormDiscriminatorColumn', 2, 25, false, true, 2, null, null,null,null,null,null,null,false, null, null, false, 'ORM Discriminator Column', 'Will utilize discriminator column, and child table setup to map database table to POJO class heirarchy.', false, 'ORM', 3, 20, false, 'id', 'tableId');
+VALUES (23, 1, 25, 'orm_discriminator_column_id', 'If the POJO shall be subclassed via the mc_child table use this descriminator column to manage subclassing within mapping file.', 'ormDiscriminatorColumn', 2, 25, false, true, 2, null, null,null,null,null,null,null,false, null, null, false, 'ORM Discriminator Column', 'Will utilize discriminator column, and child table setup to map database table to POJO class heirarchy.', false, 'ORM', 3, 20, false, 'id', 'tableId');
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -216,7 +236,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (24, 1, 24, 'create_gui_data_service_flag', 'Create Graphical User Inteface methods to allow for the online editing of this object utilizing created POJO, ORM and gui library.', 'createGUIDataServiceFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false,  true, 'CONSTRAINT mc_table_create_gui_data_service_field_requirements CHECK (
+VALUES (24, 1, 26, 'create_gui_data_service_flag', 'Create Graphical User Inteface methods to allow for the online editing of this object utilizing created POJO, ORM and gui library.', 'createGUIDataServiceFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false,  true, 'CONSTRAINT mc_table_create_gui_data_service_field_requirements CHECK (
 CASE
     WHEN create_gui_data_service_flag IS NULL THEN true
     WHEN create_gui_data_service_flag = true AND create_table_flag = true AND suppress_gui_data_service_changes_flag IS NOT NULL AND gui_pagify_flag IS NOT NULL THEN true
@@ -232,7 +252,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (25, 1, 25, 'suppress_gui_data_service_changes_flag', 'If True don''t create/recreate the GUI library for this object, if False rename old, and create new.', 'suppressGUIDataServiceChangesFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false,  false, null, false, 'suppress GUI Editor Changes', 'Will prevent system creation and replacement of GUI Editor.  Old editor files will be renamed.', true, 'GUI', 2, 24, true);
+VALUES (25, 1, 27, 'suppress_gui_data_service_changes_flag', 'If True don''t create/recreate the GUI library for this object, if False rename old, and create new.', 'suppressGUIDataServiceChangesFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false,  false, null, false, 'suppress GUI Editor Changes', 'Will prevent system creation and replacement of GUI Editor.  Old editor files will be renamed.', true, 'GUI', 2, 24, true);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -242,7 +262,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (26, 1, 26, 'gui_pagify_flag', 'If true GUI library for this object should provide pagification widgets.', 'guiPagifyFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false,  true, 'CONSTRAINT mc_table_gui_pagify_field_requirements CHECK (
+VALUES (26, 1, 28, 'gui_pagify_flag', 'If true GUI library for this object should provide pagification widgets.', 'guiPagifyFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false,  true, 'CONSTRAINT mc_table_gui_pagify_field_requirements CHECK (
 CASE
     WHEN gui_pagify_flag IS NULL OR gui_pagify_flag = true THEN true
     WHEN gui_pagify_flag = false AND gui_records_per_page IS NULL THEN true
@@ -257,7 +277,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (27, 1, 27, 'gui_records_per_page', 'Requires gui_pagify_flag=true, show this many records per page.', 'guiRecordsPerPage', 44, 25, false, false, null, null, null,null,null,null,null,null,false,  25, null, false, 'Number of Pages', null, false, 
+VALUES (27, 1, 29, 'gui_records_per_page', 'Requires gui_pagify_flag=true, show this many records per page.', 'guiRecordsPerPage', 44, 25, false, false, null, null, null,null,null,null,null,null,false,  25, null, false, 'Number of Pages', null, false, 
   'GUI', 4, 26, true);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
@@ -268,7 +288,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag, fk_gui_column_filter_local, fk_gui_column_filter_foreign)
-VALUES (191, 1, 28, 'gui_picker_description_column_id', 'Field to use as a unique descripter for record within containers like comboboxes.', 'guiPickerDescriptionColumn', 2, 25, false, true, 2, null, null,null,null,null,null,null,false, null, null, false, 'GUI Descriptor Column', 'Will use descriptor column to build dropdown list boxes and uniquely identify records within lookups', false, 
+VALUES (191, 1, 30, 'gui_picker_description_column_id', 'Field to use as a unique descripter for record within containers like comboboxes.', 'guiPickerDescriptionColumn', 2, 25, false, true, 2, null, null,null,null,null,null,null,false, null, null, false, 'GUI Descriptor Column', 'Will use descriptor column to build dropdown list boxes and uniquely identify records within lookups', false, 
   'GUI', 5, 26, false, 'id', 'tableId');
   
   
@@ -624,7 +644,34 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (49, 2, 29, 'pojo_constructor_field_flag', 'Put this field into the POJO constructor list if indicated on by Table.ConstructorFromFieldFlag.', 'pojoConstructorFieldFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Add to POJO Constructor', 'Will be added to the POJO as a parameter based upon sequence order.', true, 'POJO', 1, 43, true);
+VALUES (49, 2, 29, 'pojo_constructor_field_flag', 'Put this field into the POJO constructor list if indicated on by Table.ConstructorFromFieldFlag.', 'pojoConstructorFieldFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Add to POJO Constructor', 'Will be added to the POJO as a parameter based upon sequence order.', true, 'POJO', 
+  1, 43, true);
+INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
+  name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
+  fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, fk_orm_lazy_flag, fk_orm_link_thru_to_table_id, fk_orm_inverse_flag,
+  not_null_flag, default_value, constraint_sql, pojo_constructor_field_flag, 
+  gui_header, gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
+  gui_field_group_sequence, gui_field_group_guard_column_id, gui_field_group_field_required_flag)
+VALUES (201, 2, 30, 'pojo_field_annotation_import', 'Java imports needed to support the annotations on this field.', 
+  'pojoFieldAnnotationImport', 3, 25, false, false, null, null, 
+  null,null,null,null,null,null,
+  false, null, null, false, 
+  'Import for Field Annotation', null, true, 'POJO', 
+  3, 202, false);
+  
+INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
+  name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
+  fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, fk_orm_lazy_flag, fk_orm_link_thru_to_table_id, fk_orm_inverse_flag,
+  not_null_flag, default_value, constraint_sql, pojo_constructor_field_flag, 
+  gui_header, gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
+  gui_field_group_sequence, gui_field_group_guard_column_id, gui_field_group_field_required_flag)
+VALUES (202, 2, 31, 'pojo_field_annotation', 'Java annotations for this field', 
+  'pojoFieldAnnotation', 3, 25, false, false, null, null, 
+  null,null,null,null,null,null,
+  false, null, null, false, 
+  'Field Annotation', null, true, 'POJO', 
+  2, 202, false);
+  
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -634,7 +681,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (50, 2, 30, 'gui_header', 'Name of this field that should appear in a GUI editor as either a Column Header, or Field Name.', 'guiHeader', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Field Name', 'Column name within a grid, or field name in a single record editor.', true, 'GUI', 1, 44, true);
+VALUES (50, 2, 32, 'gui_header', 'Name of this field that should appear in a GUI editor as either a Column Header, or Field Name.', 'guiHeader', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Field Name', 'Column name within a grid, or field name in a single record editor.', true, 'GUI', 1, 44, true);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -644,7 +691,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (51, 2, 31, 'gui_tool_tip', 'Helpful data that shall appear within a tooltip upon mouse hover/click for this field.', 'guiToolTip', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Tool Tip', 'Pop up / mouse over tool-tip (like this one…)', false, 'GUI', 2, 44, false);
+VALUES (51, 2, 33, 'gui_tool_tip', 'Helpful data that shall appear within a tooltip upon mouse hover/click for this field.', 'guiToolTip', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Tool Tip', 'Pop up / mouse over tool-tip (like this one…)', false, 'GUI', 2, 44, false);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -654,7 +701,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (52, 2, 32, 'gui_sortable_flag', 'Whether this field can be used to sort the table in a grid view.', 'guiSortableFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Sortable', 'This column will be enabled to sort a grid.', true, 'GUI', 3, 44, true);
+VALUES (52, 2, 34, 'gui_sortable_flag', 'Whether this field can be used to sort the table in a grid view.', 'guiSortableFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Sortable', 'This column will be enabled to sort a grid.', true, 'GUI', 3, 44, true);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -664,7 +711,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (53, 2, 33, 'gui_field_group_name', 'Name of the field group that this column belongs to in editor, can be null if not part of a group.', 'guiFieldGroupName', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, 'CONSTRAINT mc_column_gui_field_group_field_requirements CHECK (
+VALUES (53, 2, 35, 'gui_field_group_name', 'Name of the field group that this column belongs to in editor, can be null if not part of a group.', 'guiFieldGroupName', 3, 25, false, false, null, null, null,null,null,null,null,null,false, null, 'CONSTRAINT mc_column_gui_field_group_field_requirements CHECK (
 CASE
     WHEN gui_field_group_name IS NOT NULL AND gui_field_group_sequence IS NOT NULL AND gui_field_group_guard_column_id IS NOT NULL AND gui_field_group_field_required_flag IS NOT NULL THEN true
     WHEN gui_field_group_name IS NULL AND gui_field_group_sequence IS NULL AND gui_field_group_guard_column_id IS NULL AND gui_field_group_field_required_flag IS NULL THEN true
@@ -679,7 +726,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (54, 2, 34, 'gui_field_group_sequence', 'Sequence in which this field should appear withing group.', 'guiFieldGroupSequence', 44, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Group Sequence', 'Order of fields within grouping in an editor.', true, 'GUI Grouping', 2, 47, true);
+VALUES (54, 2, 36, 'gui_field_group_sequence', 'Sequence in which this field should appear withing group.', 'guiFieldGroupSequence', 44, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Group Sequence', 'Order of fields within grouping in an editor.', true, 'GUI Grouping', 2, 47, true);
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -689,7 +736,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag, fk_pojo_collection_orm_cascade)
-VALUES (55, 2, 35, 'gui_field_group_guard_column_id', 'Column which activates/deactivates this group.  (I know this is currently not 3rd Normal Form…)', 'guiFieldGroupGuardColumn', 2, 25, false, true, 2, 28, 10,'guardedColumns',54,false,null,true,false, null, null, false, 'Group Activation Column', 'Inactivate this column unless the activation column has a value.  (Requires that the activation column point to itself.)', true, 'GUI Grouping', 3, 47, true, 'save-update');
+VALUES (55, 2, 37, 'gui_field_group_guard_column_id', 'Column which activates/deactivates this group.  (I know this is currently not 3rd Normal Form…)', 'guiFieldGroupGuardColumn', 2, 25, false, true, 2, 28, 10,'guardedColumns',54,false,null,true,false, null, null, false, 'Group Activation Column', 'Inactivate this column unless the activation column has a value.  (Requires that the activation column point to itself.)', true, 'GUI Grouping', 3, 47, true, 'save-update');
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 
   fk_pojo_collection_container_ev_id, fk_pojo_collection_name_camel_case, fk_pojo_collection_local_key_column_id, 
@@ -699,7 +746,7 @@ INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "
   gui_tool_tip, gui_sortable_flag, gui_field_group_name, 
   gui_field_group_sequence, gui_field_group_guard_column_id, 
   gui_field_group_field_required_flag)
-VALUES (56, 2, 36, 'gui_field_group_field_required_flag', 'If this field is Not Null when the group is active.', 'guiFieldGroupFieldRequiredFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Required if Group Active', 'This field is required if the group is active.', false, 'GUI Grouping', 4, 47, true);
+VALUES (56, 2, 38, 'gui_field_group_field_required_flag', 'If this field is Not Null when the group is active.', 'guiFieldGroupFieldRequiredFlag', 1, 25, false, false, null, null, null,null,null,null,null,null,false, null, null, false, 'Required if Group Active', 'This field is required if the group is active.', false, 'GUI Grouping', 4, 47, true);
 
 INSERT INTO -=[schema_name]=-.mc_column(mc_column_id, mc_table_id, "sequence", "name", description, 
   name_camel_case, datatype_ev_id, index_ev_id, pk_flag, fk_flag, fk_table_id, fk_collected_table_pk_column_id, 

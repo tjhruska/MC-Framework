@@ -99,18 +99,20 @@ class ColumnTestImpl extends GeneratedDomainAndDaoTest implements ColumnTest {
     column.setDefaultValue("default_value${number}")
     column.setConstraintSQL("constraint_sql${number}")
     column.setPojoConstructorFieldFlag(number == 0 || 29%number == 0)
+    column.setPojoFieldAnnotationImport("pojo_field_annotation_import${number}")
+    column.setPojoFieldAnnotation("pojo_field_annotation${number}")
     column.setGuiHeader("gui_header${number}")
     column.setGuiToolTip("gui_tool_tip${number}")
-    column.setGuiSortableFlag(number == 0 || 32%number == 0)
+    column.setGuiSortableFlag(number == 0 || 34%number == 0)
     column.setGuiFieldGroupName("gui_field_group_name${number}")
-    column.setGuiFieldGroupSequence((Short)(34 * number))
+    column.setGuiFieldGroupSequence((Short)(36 * number))
     if (guiFieldGroupGuardColumn == null) {
       column.setGuiFieldGroupGuardColumn(null)
       column.guiFieldGroupGuardColumn.guardedColumns.add(column)
     } else {
       column.setGuiFieldGroupGuardColumn(guiFieldGroupGuardColumn)
     }
-    column.setGuiFieldGroupFieldRequiredFlag(number == 0 || 36%number == 0)
+    column.setGuiFieldGroupFieldRequiredFlag(number == 0 || 38%number == 0)
     
     List<Column> guardedColumns = new ArrayList()
     if (addChildrenFlag && columnTest != null) {
@@ -155,6 +157,8 @@ class ColumnTestImpl extends GeneratedDomainAndDaoTest implements ColumnTest {
     target.setDefaultValue(source.getDefaultValue())
     target.setConstraintSQL(source.getConstraintSQL())
     target.setPojoConstructorFieldFlag(source.getPojoConstructorFieldFlag())
+    target.setPojoFieldAnnotationImport(source.getPojoFieldAnnotationImport())
+    target.setPojoFieldAnnotation(source.getPojoFieldAnnotation())
     target.setGuiHeader(source.getGuiHeader())
     target.setGuiToolTip(source.getGuiToolTip())
     target.setGuiSortableFlag(source.getGuiSortableFlag())
@@ -206,6 +210,8 @@ class ColumnTestImpl extends GeneratedDomainAndDaoTest implements ColumnTest {
     assertEquals("defaultValue is different than expected", expectedD.getDefaultValue(), actualD.getDefaultValue())
     assertEquals("constraintSQL is different than expected", expectedD.getConstraintSQL(), actualD.getConstraintSQL())
     assertEquals("pojoConstructorFieldFlag is different than expected", expectedD.getPojoConstructorFieldFlag(), actualD.getPojoConstructorFieldFlag())
+    assertEquals("pojoFieldAnnotationImport is different than expected", expectedD.getPojoFieldAnnotationImport(), actualD.getPojoFieldAnnotationImport())
+    assertEquals("pojoFieldAnnotation is different than expected", expectedD.getPojoFieldAnnotation(), actualD.getPojoFieldAnnotation())
     assertEquals("guiHeader is different than expected", expectedD.getGuiHeader(), actualD.getGuiHeader())
     assertEquals("guiToolTip is different than expected", expectedD.getGuiToolTip(), actualD.getGuiToolTip())
     assertEquals("guiSortableFlag is different than expected", expectedD.getGuiSortableFlag(), actualD.getGuiSortableFlag())

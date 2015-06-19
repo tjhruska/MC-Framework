@@ -53,6 +53,8 @@ limitations under the License.
         <property name="javaPackage" type="string" column="java_package" not-null="false"/>
         <property name="javaFullyQualifiedSuperClass" type="string" column="java_fq_superclass" not-null="false"/>
         <property name="constructorFromFieldsFlag" type="boolean" column="constructor_from_field_flag" not-null="false"/>
+        <property name="classImports" type="string" column="class_imports" not-null="false"/>
+        <property name="classAnnotationsCode" type="string" column="class_annotation_code" not-null="false"/>
         <property name="extraJavaCode" type="string" column="extra_java_code" not-null="false"/>
         <property name="createORMFlag" type="boolean" column="create_orm_flag" not-null="false"/>
         <property name="suppressORMChangesFlag" type="boolean" column="suppress_orm_changes_flag" not-null="false"/>

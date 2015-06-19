@@ -129,6 +129,16 @@ public class Table extends BaseDomain {
   Boolean constructorFromFieldsFlag
 
   /**
+   * Add these java imports to POJO in import section.
+   */
+  String classImports
+
+  /**
+   * Add these java annotations to POJO.
+   */
+  String classAnnotationsCode
+
+  /**
    * Add this java code to POJO after last method.
    */
   String extraJavaCode

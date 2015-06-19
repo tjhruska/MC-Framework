@@ -144,7 +144,26 @@ import groovy.transform.Canonical
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
-import org.hibernate.validator.constraints.NotEmpty
+import org.hibernate.validator.constraints.NotEmpty' || case 
+       when t.class_imports is not null 
+       then '
+       
+' || t.class_imports
+       else '' 
+     end
+|| string_agg(distinct
+    case 
+      when c.pojo_field_annotation_import is not null
+      then '
+' || c.pojo_field_annotation_import
+      else ''
+    end, '' order by 
+    case 
+      when c.pojo_field_annotation_import is not null
+      then '
+' || c.pojo_field_annotation_import
+      else ''
+    end) || '
 
 
 @Canonical (excludes=[' || 
@@ -164,7 +183,13 @@ import org.hibernate.validator.constraints.NotEmpty
       else ''
     end) || '])
 @ToString (includeNames = true, includeSuper=true, includePackage=false)
-/**
+' || case 
+       when t.class_annotation_code is not null 
+       then t.class_annotation_code || '
+' 
+       else '' 
+     end || 
+'/**
  * ' || t.description || '
  */
 public class ' || max(t.name_camel_case) || case 
@@ -251,6 +276,12 @@ select
     then '@Valid
   '
     else ''
+  end || 
+  case 
+    when c.pojo_field_annotation is not null 
+    then c.pojo_field_annotation || '
+  ' 
+    else '' 
   end ||
     coalesce(
       case when c.fk_table_id is not null and c.fk_orm_lazy_flag is not null then fkt.name_camel_case end, 

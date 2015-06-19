@@ -51,6 +51,8 @@ CREATE TABLE -=[schema_name]=-.mc_table
   java_package character varying,
   java_fq_superclass character varying,
   constructor_from_field_flag boolean default true,
+  class_imports character varying,
+  class_annotation_code character varying,
   extra_java_code character varying,
   create_orm_flag boolean default true,
   suppress_orm_changes_flag boolean default false,
@@ -84,7 +86,7 @@ END),
   CONSTRAINT mc_table_create_pojo_field_requirements CHECK (
 CASE
     WHEN create_pojo_flag = true AND java_fq_superclass IS NOT NULL AND src_folder_tag IS NOT NULL AND suppress_pojo_changes_flag IS NOT NULL AND java_package IS NOT NULL AND constructor_from_field_flag IS NOT NULL THEN true
-    WHEN create_pojo_flag = false AND java_fq_superclass IS NULL AND src_folder_tag IS NULL AND suppress_pojo_changes_flag IS NULL AND constructor_from_field_flag IS NULL AND extra_java_code IS NULL THEN true
+    WHEN create_pojo_flag = false AND java_fq_superclass IS NULL AND src_folder_tag IS NULL AND suppress_pojo_changes_flag IS NULL AND constructor_from_field_flag IS NULL AND class_imports IS NULL AND class_annotation_code IS NULL AND extra_java_code IS NULL THEN true
     ELSE false
 END),
   CONSTRAINT mc_table_create_table_field_requirements CHECK (
@@ -175,7 +177,11 @@ CREATE TABLE -=[schema_name]=-.mc_column
   not_null_flag boolean NOT NULL,
   default_value character varying,
   constraint_sql character varying,
+  
   pojo_constructor_field_flag boolean,
+  pojo_field_annotation_import character varying,
+  pojo_field_annotation character varying,
+  
   gui_header character varying,
   gui_tool_tip character varying,
   gui_sortable_flag boolean,

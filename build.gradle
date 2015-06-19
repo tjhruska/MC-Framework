@@ -5,7 +5,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 
 group = 'com.tjhruska.mc-framework'
-version = '1.4.1'
+version = '1.4.5'
 
 sourceCompatibility=1.7
 
@@ -55,6 +55,7 @@ dependencies {
 	compile "org.hibernate:hibernate-core:4.3.5.Final"
 
 	compile "org.hibernate:hibernate-validator:5.2.0.CR1"
+	compile "org.hibernate:hibernate-validator-cdi:5.2.0.CR1"
 	compile "javax.el:javax.el-api:2.2.4"
 	compile "org.glassfish.web:javax.el:2.2.4"
 

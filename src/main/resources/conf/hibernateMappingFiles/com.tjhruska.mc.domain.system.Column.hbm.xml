@@ -76,6 +76,8 @@ limitations under the License.
         <property name="defaultValue" type="string" column="default_value" not-null="false"/>
         <property name="constraintSQL" type="string" column="constraint_sql" not-null="false"/>
         <property name="pojoConstructorFieldFlag" type="boolean" column="pojo_constructor_field_flag" not-null="false"/>
+        <property name="pojoFieldAnnotationImport" type="string" column="pojo_field_annotation_import" not-null="false"/>
+        <property name="pojoFieldAnnotation" type="string" column="pojo_field_annotation" not-null="false"/>
         <property name="guiHeader" type="string" column="gui_header" not-null="false"/>
         <property name="guiToolTip" type="string" column="gui_tool_tip" not-null="false"/>
         <property name="guiSortableFlag" type="boolean" column="gui_sortable_flag" not-null="false"/>

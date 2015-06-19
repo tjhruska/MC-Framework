@@ -188,6 +188,16 @@ public class Column extends BaseDomain {
   Boolean pojoConstructorFieldFlag
 
   /**
+   * Java imports needed to support the annotations on this field.
+   */
+  String pojoFieldAnnotationImport
+
+  /**
+   * Java annotations for this field
+   */
+  String pojoFieldAnnotation
+
+  /**
    * Name of this field that should appear in a GUI editor as either a Column Header, or Field Name.
    */
   String guiHeader
