@@ -18,6 +18,7 @@ package com.tjhruska.mc.domain.system
 
 
 import com.tjhruska.mc.database.BaseDomain
+import com.tjhruska.mc.util.Solo
 import java.util.List
 import java.util.Map
 
@@ -50,5 +51,12 @@ public class JsonExample extends BaseDomain {
   @NotNull
   @Valid
   Map<String,Integer> jsonBar
+
+  /**
+   * Json Field 3
+   */
+  @NotNull
+  @Valid
+  Map<String,Solo<Integer>> jsonBaz
 
 }

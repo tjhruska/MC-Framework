@@ -59,7 +59,13 @@ false,  null, null, false,
 'jsonBar', 58, 'java.util.Map', 'Map<String,Integer>', 'new java.util.HashMap<String,Integer>()', 25, false, false, null, null, 
 null,null,null,null,null,null,
 true, E'\'{}\'', null, false, 
-'JSON Bar', 'Test JSON Field 2 (Not Nullable)', false, null, null, null, null);
+'JSON Bar', 'Test JSON Field 2 (Not Nullable)', false, null, null, null, null),
+
+(505, 50, 5, 'json_baz', 'Json Field 3', 
+'jsonBaz', 59, 'com.tjhruska.mc.util.Solo', 'Map<String,Solo<Integer>>', E'[\'bazzy\' : new Solo(42)]', 25, false, false, null, null, 
+null,null,null,null,null,null,
+true, null, null, false, 
+'JSON Baz', 'Test JSON Field 3 (Not Nullable)', false, null, null, null, null);
 
 commit transaction;
          ]]></value>

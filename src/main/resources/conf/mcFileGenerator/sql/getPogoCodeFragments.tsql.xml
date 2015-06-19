@@ -127,7 +127,7 @@ from
 where
   t.create_pojo_flag = true
   and t.mc_table_id = c.mc_table_id
-  and c.datatype_ev_id = 58
+  and c.datatype_ev_id in (58, 59)
 UNION
 -------------------------
 --Section 30 - open class declaration, and constructor if indicated (use string_agg to make constructor)

@@ -25,6 +25,10 @@ limitations under the License.
         <param name="mappedClass">java.util.Map</param>
     </typedef>
 
+    <typedef name="json_baz" class="com.tjhruska.mc.database.JsonToMapStringToTypeUserType">
+        <param name="mappedClass">com.tjhruska.mc.util.Solo</param>
+    </typedef>
+
     <typedef name="json_foo" class="com.tjhruska.mc.database.JsonToClassUserType">
         <param name="mappedClass">java.util.List</param>
     </typedef>
@@ -41,5 +45,6 @@ limitations under the License.
 
         <property name="jsonFoo" type="json_foo" column="json_foo" not-null="false"/>
         <property name="jsonBar" type="json_bar" column="json_bar" not-null="true"/>
+        <property name="jsonBaz" type="json_baz" column="json_baz" not-null="true"/>
     </class>    
 </hibernate-mapping>

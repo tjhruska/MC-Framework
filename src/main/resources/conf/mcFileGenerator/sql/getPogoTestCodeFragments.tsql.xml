@@ -59,6 +59,26 @@ where
   
 UNION
 -------------------------
+--Section 20 - import classes represented by json data types
+--id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
+select
+  t.mc_table_id as id, 20.000 as sequence, 
+  'import ' || c.datatype_ref1 as sequence2,
+  t.suppress_pojo_changes_flag as suppress_changes_flag,
+  t.src_folder_tag as folder_tag, replace(t.java_package, '.', '/') as java_package, t.name_camel_case || 'TestImpl.groovy' as fileName, t.name_camel_case || 'Test.groovy' as fileName2,
+  null::varchar as fragment2, 
+'
+import ' || c.datatype_ref1
+ as fragment
+from
+  -=[schema_name]=-.mc_table as t,
+  -=[schema_name]=-.mc_column as c
+where
+  t.create_pojo_flag = true
+  and t.mc_table_id = c.mc_table_id
+  and c.datatype_ev_id in (58, 59)
+UNION
+-------------------------
 --Section 20 - import a distinct list of containers and classes that represented by foreign keys on another table
 --id,sequence,sequence2,suppress_changes_flag,folder_tag,java_package,fileName,fileName2,fragment2,fragment
 select
@@ -411,7 +431,7 @@ select
     ' || lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || 
         '.set' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || 
         '(' || c.name_camel_case || ')'
-    when d.datatype_ev_id = 58 then --json, creation of variable is in datatype_ref3
+    when d.datatype_ev_id in (58, 59) then --json, creation of variable is in datatype_ref3
       lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || 
         '.set' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || 
         '(' || c.datatype_ref3 || ')'

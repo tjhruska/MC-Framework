@@ -28,6 +28,9 @@ import com.tjhruska.mc.database.DaoDomain
 import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTestIface
 
 import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTest
+import com.tjhruska.mc.util.Solo
+import java.util.List
+import java.util.Map
   
 
 @Slf4j
@@ -48,6 +51,7 @@ class JsonExampleTestImpl extends GeneratedDomainAndDaoTest implements JsonExamp
     
     jsonExample.setJsonFoo(new java.util.ArrayList())
     jsonExample.setJsonBar(new java.util.HashMap<String,Integer>())
+    jsonExample.setJsonBaz(['bazzy' : new Solo(42)])
     
     jsonExample
   }
@@ -58,6 +62,7 @@ class JsonExampleTestImpl extends GeneratedDomainAndDaoTest implements JsonExamp
     JsonExample target = (JsonExample)domain
     target.setJsonFoo(source.getJsonFoo())
     target.setJsonBar(source.getJsonBar())
+    target.setJsonBaz(source.getJsonBaz())
 
     return source
   }
@@ -68,6 +73,7 @@ class JsonExampleTestImpl extends GeneratedDomainAndDaoTest implements JsonExamp
     JsonExample actualD = (JsonExample)actual
     assertEquals("jsonFoo is different than expected", expectedD.getJsonFoo(), actualD.getJsonFoo())
     assertEquals("jsonBar is different than expected", expectedD.getJsonBar(), actualD.getJsonBar())
+    assertEquals("jsonBaz is different than expected", expectedD.getJsonBaz(), actualD.getJsonBaz())
   }
   
   @Override
