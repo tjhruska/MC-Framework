@@ -18,6 +18,7 @@ package com.tjhruska.mc.domain.system
 
 
 import com.tjhruska.mc.database.BaseDomain
+import com.tjhruska.mc.enums.Datatype
 import com.tjhruska.mc.util.Solo
 import java.util.List
 import java.util.Map
@@ -29,6 +30,8 @@ import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
 import org.hibernate.validator.constraints.NotEmpty
+       
+import static com.tjhruska.mc.enums.Datatype.*
 
 
 @Canonical (excludes=[])
@@ -48,15 +51,22 @@ public class JsonExample extends BaseDomain {
   /**
    * Json Field 2
    */
-  @NotNull
+  @NotEmpty
   @Valid
   Map<String,Integer> jsonBar
 
   /**
    * Json Field 3
    */
-  @NotNull
+  @NotEmpty
   @Valid
   Map<String,Solo<Integer>> jsonBaz
+
+  /**
+   * Json Field 4
+   */
+  @NotNull
+  @Valid
+  List<Datatype> jsonList
 
 }

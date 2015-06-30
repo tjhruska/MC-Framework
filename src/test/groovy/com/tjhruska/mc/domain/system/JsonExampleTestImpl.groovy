@@ -26,8 +26,11 @@ import groovy.util.logging.Slf4j
 import com.tjhruska.mc.database.BaseDomain
 import com.tjhruska.mc.database.DaoDomain
 import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTestIface
+       
+import static com.tjhruska.mc.enums.Datatype.*
 
 import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTest
+import com.tjhruska.mc.enums.Datatype
 import com.tjhruska.mc.util.Solo
 import java.util.List
 import java.util.Map
@@ -52,6 +55,7 @@ class JsonExampleTestImpl extends GeneratedDomainAndDaoTest implements JsonExamp
     jsonExample.setJsonFoo(new java.util.ArrayList())
     jsonExample.setJsonBar(new java.util.HashMap<String,Integer>())
     jsonExample.setJsonBaz(['bazzy' : new Solo(42)])
+    jsonExample.setJsonList([DATE, JSON])
     
     jsonExample
   }
@@ -63,6 +67,7 @@ class JsonExampleTestImpl extends GeneratedDomainAndDaoTest implements JsonExamp
     target.setJsonFoo(source.getJsonFoo())
     target.setJsonBar(source.getJsonBar())
     target.setJsonBaz(source.getJsonBaz())
+    target.setJsonList(source.getJsonList())
 
     return source
   }
@@ -74,6 +79,7 @@ class JsonExampleTestImpl extends GeneratedDomainAndDaoTest implements JsonExamp
     assertEquals("jsonFoo is different than expected", expectedD.getJsonFoo(), actualD.getJsonFoo())
     assertEquals("jsonBar is different than expected", expectedD.getJsonBar(), actualD.getJsonBar())
     assertEquals("jsonBaz is different than expected", expectedD.getJsonBaz(), actualD.getJsonBaz())
+    assertEquals("jsonList is different than expected", expectedD.getJsonList(), actualD.getJsonList())
   }
   
   @Override

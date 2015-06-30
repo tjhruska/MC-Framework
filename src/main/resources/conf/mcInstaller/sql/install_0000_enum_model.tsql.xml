@@ -1993,6 +1993,8 @@ INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumerati
     VALUES (58, 2, '2015-01-21 07:12:01.218051-06', 'JSON', 'Javascript Object Notation', 15, 'java_class_dynamic', null, 'json', 'hibernate_dynamic', NULL);
 INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
     VALUES (59, 2, '2015-06-19 11:53:01.218051-06', 'JSON_MAP', 'Javascript Object Notation of Map', 16, 'java_class_dynamic', null, 'json', 'hibernate_dynamic', NULL);
+INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
+    VALUES (60, 2, '2015-06-30 06:38:01.218051-06', 'JSON_LIST', 'Javascript Object Notation of List', 17, 'java_class_dynamic', null, 'json', 'hibernate_dynamic', NULL);
 
 -------------------
 --test linking records

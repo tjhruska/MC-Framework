@@ -42,7 +42,8 @@ enum Datatype {
     DOUBLE(56, "DOUBLE", "Double", 13, "Double", "double", "float8", "double"),
     DATE(57, "DATE", "Local Date", 14, "org.joda.time.LocalDate", null, "timestamp without time zone", "org.jadira.usertype.dateandtime.joda.PersistentLocalDate"),
     JSON(58, "JSON", "Javascript Object Notation", 15, "java_class_dynamic", null, "json", "hibernate_dynamic"),
-    JSON_MAP(59, "JSON_MAP", "Javascript Object Notation of Map", 16, "java_class_dynamic", null, "json", "hibernate_dynamic")
+    JSON_MAP(59, "JSON_MAP", "Javascript Object Notation of Map", 16, "java_class_dynamic", null, "json", "hibernate_dynamic"),
+    JSON_LIST(60, "JSON_LIST", "Javascript Object Notation of List", 17, "java_class_dynamic", null, "json", "hibernate_dynamic")
 
     final static int enumerationId = 2
     final static String idColumnName = "datatype_ev_id"

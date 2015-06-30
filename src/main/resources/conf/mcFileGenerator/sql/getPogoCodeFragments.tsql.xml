@@ -127,7 +127,7 @@ from
 where
   t.create_pojo_flag = true
   and t.mc_table_id = c.mc_table_id
-  and c.datatype_ev_id in (58, 59)
+  and c.datatype_ev_id in (58, 59, 60)
 UNION
 -------------------------
 --Section 30 - open class declaration, and constructor if indicated (use string_agg to make constructor)
@@ -261,7 +261,7 @@ select
    * ' || c.description || '
    */
   ' || case 
-         when c.not_null_flag = true and c.datatype_ev_id = 3 then '@NotEmpty
+         when c.not_null_flag = true and c.datatype_ev_id in (3, 58, 59) then '@NotEmpty
   ' 
          when c.not_null_flag = true then '@NotNull
   ' 

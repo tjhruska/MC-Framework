@@ -201,8 +201,8 @@ CREATE TABLE -=[schema_name]=-.mc_column
   CONSTRAINT mc_column_sequence_unique UNIQUE (mc_table_id, sequence) DEFERRABLE INITIALLY DEFERRED,
   CONSTRAINT mc_column_datatype_ref_integrity CHECK (
 CASE
-    WHEN datatype_ev_id not in (58, 59) and (datatype_ref1 is not null or datatype_ref2 is not null or datatype_ref3 is not null) THEN false
-    WHEN datatype_ev_id in (58, 59) and (pk_flag = true or fk_flag = true) THEN false
+    WHEN datatype_ev_id not in (58, 59, 60) and (datatype_ref1 is not null or datatype_ref2 is not null or datatype_ref3 is not null) THEN false
+    WHEN datatype_ev_id in (58, 59, 60) and (pk_flag = true or fk_flag = true) THEN false
     ELSE true
 END),   
   CONSTRAINT mc_column_fk_pojo_collection CHECK (

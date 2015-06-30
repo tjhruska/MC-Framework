@@ -18,13 +18,13 @@ set constraints all deferred;
 INSERT INTO -=[schema_name]=-.mc_table(add_date,
   mc_table_id, system_no_modify_flag, "name", description, name_camel_case,
   table_creation_rule_ev_id, suppress_table_changes_flag, create_iud_table_flag, schema_name, within_create_sql, post_create_sql,
-  create_pojo_flag, src_folder_tag, suppress_pojo_changes_flag, java_package, java_fq_superclass, constructor_from_field_flag, extra_java_code,
+  create_pojo_flag, src_folder_tag, suppress_pojo_changes_flag, java_package, java_fq_superclass, constructor_from_field_flag, class_imports, extra_java_code,
   create_orm_flag, suppress_orm_changes_flag, extra_orm_code, orm_discriminator_column_id,
   create_gui_data_service_flag, suppress_gui_data_service_changes_flag, gui_pagify_flag, gui_records_per_page)
 VALUES ('2015-02-10 04:44PM',
   50, false, 'json_example', 'Test table for json columns', 'JsonExample', -- base
   32, false, true, '-=[schema_name]=-', null, null, --table related
-  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', false, null, --pojo
+  true, 'rootDirectory', false, '-=[packageBase]=-.mc.domain.system', 'com.tjhruska.mc.database.BaseDomain', false, 'import static com.tjhruska.mc.enums.Datatype.*', null, --pojo
   true, false, null, null, --orm
   true, false, true, 25); --gui
 
@@ -65,7 +65,13 @@ true, E'\'{}\'', null, false,
 'jsonBaz', 59, 'com.tjhruska.mc.util.Solo', 'Map<String,Solo<Integer>>', E'[\'bazzy\' : new Solo(42)]', 25, false, false, null, null, 
 null,null,null,null,null,null,
 true, null, null, false, 
-'JSON Baz', 'Test JSON Field 3 (Not Nullable)', false, null, null, null, null);
+'JSON Baz', 'Test JSON Field 3 (Not Nullable)', false, null, null, null, null),
+
+(506, 50, 6, 'json_list', 'Json Field 4', 
+'jsonList', 60, 'com.tjhruska.mc.enums.Datatype', 'List<Datatype>', E'[DATE, JSON]', 25, false, false, null, null, 
+null,null,null,null,null,null,
+true, null, null, false, 
+'JSON List', 'Test JSON Field 4 (Not Nullable)', false, null, null, null, null);
 
 commit transaction;
          ]]></value>

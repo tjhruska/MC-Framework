@@ -46,7 +46,13 @@ import groovy.util.logging.Slf4j
 
 import com.tjhruska.mc.database.BaseDomain
 import com.tjhruska.mc.database.DaoDomain
-import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTestIface
+import com.tjhruska.mc.database.test.GeneratedDomainAndDaoTestIface' || case 
+       when t.class_imports is not null 
+       then '
+       
+' || t.class_imports
+       else '' 
+     end || '
 
 import -=[testAbstractBaseImport]=-' as fragment
 from
@@ -76,7 +82,7 @@ from
 where
   t.create_pojo_flag = true
   and t.mc_table_id = c.mc_table_id
-  and c.datatype_ev_id in (58, 59)
+  and c.datatype_ev_id in (58, 59, 60)
 UNION
 -------------------------
 --Section 20 - import a distinct list of containers and classes that represented by foreign keys on another table
@@ -431,7 +437,7 @@ select
     ' || lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || 
         '.set' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || 
         '(' || c.name_camel_case || ')'
-    when d.datatype_ev_id in (58, 59) then --json, creation of variable is in datatype_ref3
+    when d.datatype_ev_id in (58, 59, 60) then --json, creation of variable is in datatype_ref3
       lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || 
         '.set' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || 
         '(' || c.datatype_ref3 || ')'

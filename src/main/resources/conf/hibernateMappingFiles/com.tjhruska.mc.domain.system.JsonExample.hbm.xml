@@ -33,6 +33,10 @@ limitations under the License.
         <param name="mappedClass">java.util.List</param>
     </typedef>
 
+    <typedef name="json_list" class="com.tjhruska.mc.database.JsonToListTypeUserType">
+        <param name="mappedClass">com.tjhruska.mc.enums.Datatype</param>
+    </typedef>
+
     <class name="JsonExample" table="json_example" schema="mc" dynamic-update="true">
         
         <id name="id" type="int" column="json_example_id">
@@ -46,5 +50,6 @@ limitations under the License.
         <property name="jsonFoo" type="json_foo" column="json_foo" not-null="false"/>
         <property name="jsonBar" type="json_bar" column="json_bar" not-null="true"/>
         <property name="jsonBaz" type="json_baz" column="json_baz" not-null="true"/>
+        <property name="jsonList" type="json_list" column="json_list" not-null="true"/>
     </class>    
 </hibernate-mapping>
