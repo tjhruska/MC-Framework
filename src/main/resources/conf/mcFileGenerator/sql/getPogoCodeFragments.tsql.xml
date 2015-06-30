@@ -261,7 +261,7 @@ select
    * ' || c.description || '
    */
   ' || case 
-         when c.not_null_flag = true and c.datatype_ev_id in (3, 58, 59) then '@NotEmpty
+         when c.not_null_flag = true and c.datatype_ev_id in (3, 59, 60) then '@NotEmpty
   ' 
          when c.not_null_flag = true then '@NotNull
   ' 
