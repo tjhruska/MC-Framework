@@ -5,7 +5,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 
 group = 'com.tjhruska.mc-framework'
-version = '1.4.11'
+version = '1.4.12'
 
 sourceCompatibility=1.7
 
