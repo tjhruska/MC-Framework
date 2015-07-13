@@ -197,7 +197,7 @@ public class DaoHibernate<T extends BaseDomain> implements DaoDomain<T> {
   public T findOneByCriteria(Restriction restriction) {
     List<T> results = findByCriteria(restriction)
     if (results.size() != 1) {
-      throw new EntityNotFoundException("Expected exactly one ${type.getSimpleName()}, but found " + results.size())
+      throw new EntityNotFoundException("Expected exactly one ${type.getSimpleName()}, but found " + results.size() + " based upon restriction : $restriction")
     }
     return results.iterator().next()
   }
