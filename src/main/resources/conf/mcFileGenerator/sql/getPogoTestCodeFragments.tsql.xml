@@ -424,7 +424,7 @@ select
       lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || 
         '.set' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || 
         '((new org.joda.time.LocalTime()).plusHours(number))'
-    when d.datatype_ev_id = 51 then --decimal (big)
+    when d.datatype_ev_id in (51, 61) then --decimal (big)
       lower(substring(t.name_camel_case, 1, 1)) || substring(t.name_camel_case, 2, length(t.name_camel_case)) || 
         '.set' || upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || 
         '((new BigDecimal("3.14")).multiply(number))'

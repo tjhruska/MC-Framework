@@ -51,7 +51,7 @@ public class JsonExample extends BaseDomain {
   /**
    * Json Field 2
    */
-  @NotEmpty
+  @NotNull
   @Valid
   Map<String,Integer> jsonBar
 
@@ -65,7 +65,7 @@ public class JsonExample extends BaseDomain {
   /**
    * Json Field 4
    */
-  @NotNull
+  @NotEmpty
   @Valid
   List<Datatype> jsonList
 
