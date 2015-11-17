@@ -44,7 +44,8 @@ enum Datatype {
     JSON(58, "JSON", "Javascript Object Notation", 15, "java_class_dynamic", null, "json", "hibernate_dynamic"),
     JSON_MAP(59, "JSON_MAP", "Javascript Object Notation of Map", 16, "java_class_dynamic", null, "json", "hibernate_dynamic"),
     JSON_LIST(60, "JSON_LIST", "Javascript Object Notation of List", 17, "java_class_dynamic", null, "json", "hibernate_dynamic"),
-    DECIMAL_12_2(61, "DECIMAL_12_2", "Decimal", 18, "java.math.BigDecimal", null, "numeric(12,2)", "big_decimal")
+    DECIMAL_12_2(61, "DECIMAL_12_2", "Decimal", 18, "java.math.BigDecimal", null, "numeric(12,2)", "big_decimal"),
+    DECIMAL_12_5(62, "DECIMAL_12_5", "Decimal", 19, "java.math.BigDecimal", null, "numeric(12,5)", "big_decimal")
 
     final static int enumerationId = 2
     final static String idColumnName = "datatype_ev_id"
