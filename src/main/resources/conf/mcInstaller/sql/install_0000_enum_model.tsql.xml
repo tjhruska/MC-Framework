@@ -1975,8 +1975,6 @@ INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumerati
 INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
     VALUES (50, 2, '2010-11-19 00:06:33.218051-06', 'TIME', 'Time', 7, 'java.sql.Time', null, 'time without time zone', 'time', NULL);
 INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
-    VALUES (51, 2, '2011-11-14 00:07:51.218051-06', 'DECIMAL', 'Decimal', 8, 'java.math.BigDecimal', null, 'double precision', 'big_decimal', NULL);
-INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
     VALUES (52, 2, '2007-11-14 00:16:53.218051-06', 'INTEGER_ARRAY', 'Integer[]', 9, 'Integer[]', 'int[]', 'integer[]', 'com.tjhruska.mc.database.IntegerArrayUserType', NULL);
 INSERT INTO -=[schema_name]=-.enumeration_value (enumeration_value_id, enumeration_id, add_date, name, description, "sequence", column1_value, column2_value, column3_value, column4_value, column5_value)
     VALUES (53, 2, '2010-11-14 00:16:53.218051-06', 'SHORT_ARRAY', 'Short[]', 10, 'Short[]', 'short[]', 'smallint[]', 'com.tjhruska.mc.database.ShortArrayUserType', NULL);

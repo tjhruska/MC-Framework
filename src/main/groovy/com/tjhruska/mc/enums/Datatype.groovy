@@ -34,7 +34,6 @@ enum Datatype {
     SERIAL(45, "SERIAL", "Serial", 5, "Integer", "int", "serial", "int"),
     DATETIME(46, "DATETIME", "Date Time", 6, "org.joda.time.DateTime", null, "timestamp with time zone", "org.jadira.usertype.dateandtime.joda.PersistentDateTime"),
     TIME(50, "TIME", "Time", 7, "java.sql.Time", null, "time without time zone", "time"),
-    DECIMAL(51, "DECIMAL", "Decimal", 8, "java.math.BigDecimal", null, "double precision", "big_decimal"),
     INTEGER_ARRAY(52, "INTEGER_ARRAY", "Integer[]", 9, "Integer[]", "int[]", "integer[]", "com.tjhruska.mc.database.IntegerArrayUserType"),
     SHORT_ARRAY(53, "SHORT_ARRAY", "Short[]", 10, "Short[]", "short[]", "smallint[]", "com.tjhruska.mc.database.ShortArrayUserType"),
     DECIMAL_ARRAY(54, "DECIMAL_ARRAY", "Decimal[]", 11, "java.math.BigDecimal[]", null, "numeric[]", "com.tjhruska.mc.database.BigDecimalArrayUserType"),
