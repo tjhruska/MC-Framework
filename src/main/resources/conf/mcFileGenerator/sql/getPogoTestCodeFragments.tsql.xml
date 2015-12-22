@@ -653,7 +653,8 @@ select
             when d.datatype_ev_id in (51, 56) 
             then ', 0.000001' 
             when d.datatype_ev_id in (61, 62) 
-            else '.stripTrailingZeros()' 
+            then '.stripTrailingZeros()' 
+            else '' 
                 end || ')'
       end, '
     ' order by c.sequence) as fragment
