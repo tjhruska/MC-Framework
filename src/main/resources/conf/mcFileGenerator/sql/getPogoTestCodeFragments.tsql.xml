@@ -649,7 +649,12 @@ select
         '(), actualD.get' ||
           upper(substring(c.name_camel_case, 1, 1)) || substring(c.name_camel_case, 2, length(c.name_camel_case)) || 
           case when e.mc_table_id is null and c.fk_flag = true and c.fk_orm_lazy_flag is null then 'Id' else '' end ||
-        '()' || case when d.datatype_ev_id in (51, 56) then ', 0.000001' else '' end || ')'
+        '()' || case 
+            when d.datatype_ev_id in (51, 56) 
+            then ', 0.000001' 
+            when d.datatype_ev_id in (61, 62) 
+            else '.stripTrailingZeros()' 
+                end || ')'
       end, '
     ' order by c.sequence) as fragment
 from
